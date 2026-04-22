@@ -1,5 +1,5 @@
 """
-易搭 (YiDa) NoCode Platform - Backend API
+零搭 (LingDa) NoCode Platform - Backend API
 Flask + SQLAlchemy + JWT
 """
 import os
@@ -97,7 +97,7 @@ def create_app():
     # 健康检查
     @app.route('/api/health')
     def health():
-        return jsonify({'status': 'ok', 'service': 'yida-platform'})
+        return jsonify({'status': 'ok', 'service': 'lingda-platform'})
 
     # 全局错误处理
     @app.errorhandler(404)

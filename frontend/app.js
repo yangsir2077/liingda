@@ -1,4 +1,4 @@
-// 易搭 NoCode Platform - Frontend App
+// 零搭 NoCode Platform - Frontend App
 const { createApp, ref, computed, onMounted, watch, nextTick } = Vue;
 
 // API 基础 URL
@@ -7,13 +7,13 @@ const API_BASE = 'http://localhost:5000/api';
 // Axios 实例
 const api = axios.create({ baseURL: API_BASE, timeout: 10000 });
 api.interceptors.request.use(cfg => {
-  const token = localStorage.getItem('yida_token');
+  const token = localStorage.getItem('lingda_token');
   if (token) cfg.headers.Authorization = `Bearer ${token}`;
   return cfg;
 });
 api.interceptors.response.use(r => r, err => {
   if (err.response?.status === 401) {
-    localStorage.removeItem('yida_token');
+    localStorage.removeItem('lingda_token');
     if (location.hash !== '#login') location.hash = '#login';
   }
   return Promise.reject(err);
@@ -54,7 +54,7 @@ const ICON_OPTIONS = [
     <div class="auth-page">
       <div class="auth-card">
         <div class="auth-logo">
-          <h1>易搭</h1>
+          <h1>零搭</h1>
           <p>可视化管理系统构建平台</p>
         </div>
         <div class="auth-tabs">
@@ -95,7 +95,7 @@ const ICON_OPTIONS = [
           ? { email: email.value, password: password.value }
           : { email: email.value, password: password.value, name: name.value };
         const res = await api.post(endpoint, payload);
-        localStorage.setItem('yida_token', res.data.token);
+        localStorage.setItem('lingda_token', res.data.token);
         location.hash = '#dashboard';
         location.reload();
       } catch (e) {
@@ -541,16 +541,16 @@ const App = {
       return parts[0] || 'dashboard';
     }
     async function checkAuth() {
-      const token = localStorage.getItem('yida_token');
+      const token = localStorage.getItem('lingda_token');
       if (!token) { route.value = 'login'; return; }
       try {
         await api.get('/auth/me');
         route.value = parseRoute(location.hash.slice(1) || 'dashboard');
         if (route.value === 'login') route.value = 'dashboard';
-      } catch { localStorage.removeItem('yida_token'); route.value = 'login'; }
+      } catch { localStorage.removeItem('lingda_token'); route.value = 'login'; }
     }
     function navigate() { route.value = parseRoute(location.hash.slice(1) || 'dashboard'); }
-    function logout() { localStorage.removeItem('yida_token'); location.hash = '#login'; location.reload(); }
+    function logout() { localStorage.removeItem('lingda_token'); location.hash = '#login'; location.reload(); }
     onMounted(async () => { await checkAuth(); window.addEventListener('hashchange', navigate); });
     const currentView = computed(() => typeof route.value === 'string' ? route.value : (route.value?.view || null));
     const routeParams = computed(() => typeof route.value === 'object' ? route.value : null);
@@ -561,7 +561,7 @@ const App = {
     <div v-else class="admin-layout">
       <div class="sidebar">
         <div class="sidebar-logo">
-          <h2>易搭</h2>
+          <h2>零搭</h2>
           <span>NoCode 平台</span>
         </div>
         <div class="sidebar-nav">
