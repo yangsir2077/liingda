@@ -2,7 +2,7 @@
 const { createApp, ref, computed, onMounted, watch, nextTick } = Vue;
 
 // API 基础 URL
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'http://192.168.0.104:5000/api';
 
 // Axios 实例
 const api = axios.create({ baseURL: API_BASE, timeout: 10000 });
@@ -32,20 +32,20 @@ function showToast(msg, type = 'info') {
   toastTimeout = setTimeout(() => el.remove(), 3000);
 }
 
-// ============ 图标选项 ============
+// ============ 图标选项（清晰表意的Unicode符号） ============
 const ICON_OPTIONS = [
-  { icon: '📋', label: '文档', bg: '#EEF2FF', color: '#4F46E5' },
-  { icon: '👥', label: '客户', bg: '#E0F2FE', color: '#0891B2' },
-  { icon: '📊', label: '数据', bg: '#D1FAE5', color: '#059669' },
-  { icon: '🛒', label: '电商', bg: '#FEF3C7', color: '#D97706' },
-  { icon: '📅', label: '日程', bg: '#F3E8FF', color: '#7C3AED' },
-  { icon: '💰', label: '财务', bg: '#FEE2E2', color: '#DC2626' },
-  { icon: '📦', label: '库存', bg: '#FFEDD5', color: '#EA580C' },
-  { icon: '🏢', label: '行政', bg: '#F1F5F9', color: '#64748B' },
-  { icon: '📞', label: '客服', bg: '#FCE7F3', color: '#DB2777' },
-  { icon: '🎓', label: '培训', bg: '#CCFBF1', color: '#0D9488' },
-  { icon: '🚚', label: '物流', bg: '#EDE9FE', color: '#9333EA' },
-  { icon: '🔧', label: '工具', bg: '#E2E8F0', color: '#475569' },
+  { icon: '▤', label: '文档', bg: '#EEF2FF', color: '#4F46E5' },
+  { icon: '⊕', label: '客户', bg: '#E0F2FE', color: '#0891B2' },
+  { icon: '≡', label: '数据', bg: '#D1FAE5', color: '#059669' },
+  { icon: '◫', label: '项目', bg: '#FEF3C7', color: '#D97706' },
+  { icon: '☑', label: '日程', bg: '#F3E8FF', color: '#7C3AED' },
+  { icon: '¥', label: '财务', bg: '#FEE2E2', color: '#DC2626' },
+  { icon: '◫', label: '库存', bg: '#FFEDD5', color: '#EA580C' },
+  { icon: '⚙', label: '行政', bg: '#F1F5F9', color: '#64748B' },
+  { icon: '✉', label: '客服', bg: '#FCE7F3', color: '#DB2777' },
+  { icon: '✎', label: '培训', bg: '#CCFBF1', color: '#0D9488' },
+  { icon: '◁', label: '物流', bg: '#EDE9FE', color: '#9333EA' },
+  { icon: '◧', label: '工具', bg: '#E2E8F0', color: '#475569' },
 ];
 
 // ============ 认证页面 ============
@@ -118,7 +118,8 @@ const AppList = {
       </div>
       <div class="app-grid">
         <div class="app-card" v-for="app in apps" :key="app.id" @click="openApp(app)">
-          <div class="app-card-icon">{{ app.icon }}</div>
+          <div class="app-card-icon" :style="{ background: ICON_OPTIONS.find(o=>o.icon===app.icon)?.bg || '#EEF2FF', color: ICON_OPTIONS.find(o=>o.icon===app.icon)?.color || '#4F46E5' }">{{ app.icon || '▤' }}</div>
+          <button @click.stop="deleteApp(app)" title="删除应用" style="position:absolute;top:-6px;right:-6px;width:22px;height:22px;background:#FEE2E2;border:1.5px solid #FECACA;border-radius:50%;cursor:pointer;color:#DC2626;font-size:13px;line-height:20px;text-align:center;font-weight:bold;padding:0;z-index:2">×</button>
           <div class="app-card-name">{{ app.name }}</div>
           <div class="app-card-desc">{{ app.description || '暂无描述' }}</div>
           <div class="app-card-meta">{{ app.table_count }} 个数据表</div>
@@ -143,16 +144,22 @@ const AppList = {
               <label>选择图标</label>
               <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:8px">
                 <div v-for="opt in ICON_OPTIONS" :key="opt.icon"
-                  @click="newApp.icon = opt.icon"
+                  @click="pickIcon(opt.icon)"
                   :style="newApp.icon === opt.icon ? 'border-color:' + opt.color + ';background:' + opt.bg : ''"
                   style="padding:10px 6px;border-radius:10px;border:2px solid var(--border);cursor:pointer;text-align:center;transition:all 0.15s">
-                  <div style="font-size:24px;margin-bottom:2px">{{ opt.icon }}</div>
+                  <div style="font-size:24px;margin-bottom:2px;color:#333">{{ opt.icon }}</div>
                   <div style="font-size:10px;color:var(--text-secondary)">{{ opt.label }}</div>
                 </div>
+                <div @click="showIconPicker = true"
+                  style="padding:10px 6px;border-radius:10px;border:2px dashed var(--border);cursor:pointer;text-align:center;transition:all 0.15s;color:var(--text-secondary)">
+                  <div style="font-size:24px;margin-bottom:2px">✎</div>
+                  <div style="font-size:10px">自定义</div>
+                </div>
               </div>
+              <!-- 选中图标预览 -->
               <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
-                <span style="font-size:13px;color:var(--text-secondary)">自定义：</span>
-                <input v-model="newApp.icon" maxlength="4" placeholder="emoji或文字" style="width:80px;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none">
+                <span style="font-size:13px;color:var(--text-secondary)">当前：</span>
+                <span style="display:inline-block;padding:6px 14px;border-radius:10px;font-size:20px;background:#EEF2FF">{{ newApp.icon || '▤' }}</span>
               </div>
             </div>
             <div class="form-group">
@@ -166,16 +173,41 @@ const AppList = {
           </form>
         </div>
       </div>
+      <!-- 自定义图标弹窗 -->
+      <div class="modal-overlay" v-if="showIconPicker" @click.self="showIconPicker=false">
+        <div class="modal" style="max-width:360px">
+          <div class="modal-header">
+            <div class="modal-title">自定义图标</div>
+            <button class="modal-close" @click="showIconPicker=false">×</button>
+          </div>
+          <div class="form-group">
+            <label style="font-weight:600;margin-bottom:8px;display:block">输入任意字符作为图标</label>
+            <input v-model="newApp.icon" maxlength="4" placeholder="输入图标字符" style="width:100%;padding:14px;border:1.5px solid var(--border);border-radius:10px;font-size:28px;outline:none;text-align:center;letter-spacing:8px" autofocus @keyup.enter="showIconPicker=false">
+            <div style="margin-top:8px;font-size:12px;color:var(--text-secondary);text-align:center">输入任意字符：字母、数字、符号、emoji</div>
+          </div>
+          <div style="display:flex;justify-content:center;margin-top:16px">
+            <button class="btn btn-primary" @click="showIconPicker=false" style="min-width:120px">确定</button>
+          </div>
+        </div>
+      </div>
     </div>
   `,
   setup() {
     const apps = ref([]);
     const showCreate = ref(false);
-    const newApp = ref({ name: '', icon: '📋', description: '' });
+    const showIconPicker = ref(false);
+    const newApp = ref({ name: '', icon: '▤', description: '' });
     const creating = ref(false);
+    const ICON_LIST = '▤⊕▊◫☑¥⚙✉✎◁⚡◈⬡✧◎⬢✶☰◆▣◈'.split('');
     async function load() {
       try { const res = await api.get('/apps'); apps.value = res.data; }
       catch (e) { showToast('加载失败', 'error'); }
+    }
+    function pickIcon(icon) { newApp.value.icon = icon; }
+    async function deleteApp(app) {
+      if (!confirm(`确定删除应用"${app.name}"？所有数据将被永久删除！`)) return;
+      try { await api.delete(`/apps/${app.id}`); apps.value = apps.value.filter(x => x.id !== app.id); showToast('已删除', 'success'); }
+      catch (e) { showToast('删除失败', 'error'); }
     }
     function openApp(app) { location.hash = `#app/${app.id}`; }
     async function createApp() {
@@ -185,14 +217,14 @@ const AppList = {
         const res = await api.post('/apps', newApp.value);
         apps.value.unshift(res.data);
         showCreate.value = false;
-        newApp.value = { name: '', icon: '📋', description: '' };
+        newApp.value = { name: '', icon: '▤', description: '' };
         showToast('应用创建成功', 'success');
         openApp(res.data);
       } catch (e) { showToast(e.response?.data?.error || '创建失败', 'error'); }
       finally { creating.value = false; }
     }
     onMounted(load);
-    return { apps, showCreate, newApp, creating, openApp, createApp, ICON_OPTIONS };
+    return { apps, showCreate, showIconPicker, newApp, creating, openApp, createApp, pickIcon, ICON_OPTIONS, ICON_LIST };
   }
 };
 
@@ -202,8 +234,8 @@ const AppDetail = {
   template: `
     <div class="page-content">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
-        <button class="btn btn-secondary" @click="location.hash='#dashboard'" style="padding:8px 14px;">
-          <i class="pi pi-arrow-left"></i>
+        <button class="btn btn-secondary" @click="location.hash='#dashboard'" style="padding:8px 14px;border-radius:10px">
+          ←
         </button>
         <div>
           <h2 style="font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;">
@@ -379,7 +411,7 @@ const TableDetail = {
     <div class="page-content">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
         <button class="btn btn-secondary" @click="location.hash='#app/'+appId" style="padding:8px 14px;">
-          <i class="pi pi-arrow-left"></i>
+          ←
         </button>
         <div>
           <h2 style="font-size:18px;font-weight:800;">{{ table.name }}</h2>
