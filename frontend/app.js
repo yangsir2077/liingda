@@ -401,26 +401,20 @@ const TableDetail = {
         <span style="font-size:13px;color:var(--text-secondary)">共 {{ total }} 条</span>
       </div>
 
-      <!-- 表格 -->
-      <div style="background:var(--surface);border-radius:12px;overflow:auto;border:1px solid var(--border)">
+      <!-- 表格（桌面） -->
+      <div style="background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--border);display:none" class="desktop-table">
         <table style="width:100%;border-collapse:collapse;min-width:600px">
           <thead>
             <tr>
-              <th v-for="f in table.fields" :key="f.name" style="padding:12px 16px;text-align:left;font-weight:700;font-size:13px;color:var(--text-secondary);border-bottom:1px solid var(--border);white-space:nowrap;background:var(--bg)">
-                {{ f.name }}<span v-if="f.required" style="color:var(--danger)">*</span>
-              </th>
+              <th v-for="f in table.fields" :key="f.name" style="padding:12px 16px;text-align:left;font-weight:700;font-size:13px;color:var(--text-secondary);border-bottom:1px solid var(--border);white-space:nowrap;background:var(--bg)">{{ f.name }}<span v-if="f.required" style="color:var(--danger)">*</span></th>
               <th style="padding:12px 16px;width:100px;background:var(--bg);border-bottom:1px solid var(--border)">操作</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="r in records" :key="r.id" style="transition:background 0.1s">
               <td v-for="f in table.fields" :key="f.name" style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px">
-                <template v-if="f.type==='checkbox'">
-                  <span :style="r.data[f.name] ? 'color:var(--accent)' : 'color:var(--text-secondary)'">{{ r.data[f.name] ? '☑ 是' : '☐ 否' }}</span>
-                </template>
-                <template v-else-if="f.type==='select'">
-                  <span style="display:inline-block;padding:2px 10px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:12px;font-weight:600">{{ r.data[f.name] || '—' }}</span>
-                </template>
+                <template v-if="f.type==='checkbox'"><span :style="r.data[f.name] ? 'color:var(--accent)' : 'color:var(--text-secondary)'">{{ r.data[f.name] ? '☑ 是' : '☐ 否' }}</span></template>
+                <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:2px 10px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:12px;font-weight:600">{{ r.data[f.name] || '—' }}</span></template>
                 <template v-else><span style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">{{ r.data[f.name] || '—' }}</span></template>
               </td>
               <td style="padding:12px 16px;border-bottom:1px solid var(--border)">
@@ -428,14 +422,30 @@ const TableDetail = {
                 <button @click="deleteRecord(r)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:13px">删除</button>
               </td>
             </tr>
-            <tr v-if="!records.length">
-              <td :colspan="(table.fields?.length||1)+1" style="text-align:center;padding:48px;color:var(--text-secondary)">
-                <div style="font-size:40px;margin-bottom:8px">📭</div>
-                暂无数据，点击上方"添加记录"开始
-              </td>
-            </tr>
+            <tr v-if="!records.length"><td :colspan="(table.fields?.length||1)+1" style="text-align:center;padding:48px;color:var(--text-secondary)"><div style="font-size:40px;margin-bottom:8px">📭</div>暂无数据</td></tr>
           </tbody>
         </table>
+      </div>
+      <!-- 卡片列表（手机） -->
+      <div class="record-cards" style="display:none;flex-direction:column;gap:12px">
+        <div v-for="r in records" :key="r.id" style="background:var(--surface);border-radius:12px;padding:14px 16px;border:1px solid var(--border)">
+          <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px">
+            <div style="font-size:12px;color:var(--text-secondary)">#{{ r.id }}</div>
+            <div style="display:flex;gap:8px">
+              <button @click="editRecord(r)" style="background:var(--primary-light);border:none;cursor:pointer;color:var(--primary);font-size:12px;padding:4px 10px;border-radius:6px;font-weight:600">编辑</button>
+              <button @click="deleteRecord(r)" style="background:#FEE2E2;border:none;cursor:pointer;color:#DC2626;font-size:12px;padding:4px 10px;border-radius:6px;font-weight:600">删除</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div v-for="f in table.fields" :key="f.name">
+              <div style="font-size:11px;color:var(--text-secondary);margin-bottom:2px">{{ f.name }}</div>
+              <template v-if="f.type==='checkbox'"><span :style="r.data[f.name] ? 'color:var(--accent)' : 'color:var(--text-secondary)'">{{ r.data[f.name] ? '☑' : '☐' }} {{ r.data[f.name] ? '是' : '否' }}</span></template>
+              <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:2px 8px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:12px;font-weight:600">{{ r.data[f.name] || '—' }}</span></template>
+              <template v-else><span style="font-size:14px;font-weight:500">{{ r.data[f.name] || '—' }}</span></template>
+            </div>
+          </div>
+        </div>
+        <div v-if="!records.length" style="text-align:center;padding:40px;color:var(--text-secondary)"><div style="font-size:40px;margin-bottom:8px">📭</div>暂无数据，点击添加记录开始</div>
       </div>
 
       <!-- 分页 -->
@@ -580,9 +590,24 @@ const App = {
           <div class="topbar-title">{{ currentView === 'app' ? '应用详情' : currentView === 'table' ? '数据管理' : '我的应用' }}</div>
         </div>
         <app-list v-if="currentView==='dashboard'" />
-        <app-detail v-else-if="currentView==='app'" :appId="routeParams?.appId" :key="routeParams?.appId" />
-        <table-detail v-else-if="currentView==='table'" :appId="routeParams?.appId" :tableId="routeParams?.tableId" :key="routeParams?.tableId" />
+        <app-detail v-else-if="currentView==='app'" :appId="routeParams?.appId" :key="'app-'+routeParams?.appId" />
+        <table-detail v-else-if="currentView==='table'" :appId="routeParams?.appId" :tableId="routeParams?.tableId" :key="'table-'+routeParams?.tableId" />
       </div>
+      <!-- 手机底部导航 -->
+      <nav class="mobile-nav">
+        <div class="mobile-nav-item" :class="{active: currentView==='dashboard'}" @click="location.hash='#dashboard'">
+          <i class="pi pi-th-large"></i>
+          <span>应用</span>
+        </div>
+        <div class="mobile-nav-item" v-if="currentView!=='dashboard'" @click="location.hash='#app/'+(routeParams?.appId||'')">
+          <i class="pi pi-sitemap"></i>
+          <span>数据表</span>
+        </div>
+        <div class="mobile-nav-item" @click="logout">
+          <i class="pi pi-sign-out"></i>
+          <span>退出</span>
+        </div>
+      </nav>
     </div>
   `,
   components: { AuthPage, AppList, AppDetail, TableDetail }
