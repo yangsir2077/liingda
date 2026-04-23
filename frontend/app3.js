@@ -533,7 +533,7 @@ const AppDetail = {
               <button v-for="type in fieldTypes" :key="type.value" type="button" @click="addField(type)"
                 style="padding:4px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--bg);cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;transition:all 0.15s"
                 :style="hoverStyle">
-                <span>{{ type.icon }}</span> {{ type.label }}
+                <span v-html="type.icon"></span> {{ type.label }}
               </button>
             </div>
           </div>
