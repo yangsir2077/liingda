@@ -1644,11 +1644,39 @@ const ProfileView = {
       window.location.hash = '#login';
       window.location.reload();
     }
+    function exportData() {
+      const token = localStorage.getItem('lingda_token');
+      fetch(window.location.origin + '/api/auth/export-data', {
+        headers: { Authorization: 'Bearer ' + token },
+      }).then(r => r.json()).then(data => {
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'lingda_data_' + new Date().toISOString().slice(0,10) + '.json'; a.click();
+        URL.revokeObjectURL(url);
+        showToast('数据已导出', 'success');
+      }).catch(() => showToast('导出失败', 'error'));
+    }
+    function deleteAccount() {
+      const pwd = prompt('请输入当前密码以确认注销账号（此操作不可逆，会删除所有数据）：');
+      if (!pwd) return;
+      if (!confirm('确定要注销账号吗？所有数据将被永久删除！')) return;
+      const token = localStorage.getItem('lingda_token');
+      fetch(window.location.origin + '/api/auth/delete-account', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pwd }),
+      }).then(r => r.json()).then(data => {
+        if (data.error) { showToast(data.error, 'error'); return; }
+        showToast('账号已注销，再见！', 'success');
+        setTimeout(() => { localStorage.removeItem('lingda_token'); window.location.hash = '#login'; window.location.reload(); }, 1500);
+      }).catch(() => showToast('注销失败', 'error'));
+    }
     const initials = computed(() => {
       if (!props.user?.name) return '?';
       return props.user.name.slice(0, 2);
     });
-    return { darkMode, toggleDark, logout, initials };
+    return { darkMode, toggleDark, logout, initials, exportData, deleteAccount };
   },
   template: `
     <div class="profile-view">
@@ -1661,6 +1689,15 @@ const ProfileView = {
         <div class="profile-section-title">设置</div>
         <div class="profile-item" @click="toggleDark">
           <span>{{ darkMode ? '☀️ 切换亮色模式' : '🌙 切换暗色模式' }}</span>
+        </div>
+      </div>
+      <div class="profile-section">
+        <div class="profile-section-title">数据管理</div>
+        <div class="profile-item" @click="exportData">
+          <span>📥 导出我的数据</span>
+        </div>
+        <div class="profile-item danger" @click="deleteAccount">
+          <span>⚠️ 注销账号</span>
         </div>
       </div>
       <div style="flex:1"></div>

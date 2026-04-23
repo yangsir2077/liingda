@@ -239,6 +239,47 @@ def me():
     return jsonify(user.to_dict())
 
 
+@auth_bp.route('/export-data', methods=['GET'])
+@jwt_required()
+def export_data():
+    """导出用户所有数据（合规要求）"""
+    user_id = get_jwt_identity()
+    user = User.query.get_or_404(user_id)
+    apps = App.query.filter_by(user_id=user_id).all()
+    result = {
+        'user': user.to_dict(),
+        'apps': [],
+        'exported_at': datetime.utcnow().isoformat(),
+    }
+    for app in apps:
+        app_data = app.to_dict()
+        app_data['tables'] = []
+        for table in app.tables:
+            table_data = table.to_dict()
+            table_data['records'] = [r.to_dict() for r in table.records.all()]
+            app_data['tables'].append(table_data)
+        result['apps'].append(app_data)
+    return jsonify(result)
+
+
+@auth_bp.route('/delete-account', methods=['POST'])
+@jwt_required()
+def delete_account():
+    """注销账号（合规要求，会删除所有关联数据）"""
+    user_id = get_jwt_identity()
+    data = request.get_json() or {}
+    password = data.get('password', '')
+    user = User.query.get_or_404(user_id)
+    if not check_password_hash(user.password_hash, password):
+        return jsonify({'error': '密码错误，无法删除账号'}), 400
+    # 删除关联数据（级联）
+    App.query.filter_by(user_id=user_id).delete()
+    AppMember.query.filter_by(user_id=user_id).delete()
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({'message': '账号已注销，所有数据已删除'})
+
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
