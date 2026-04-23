@@ -638,11 +638,10 @@ const TableDetail = {
               <input v-else-if="f.type==='email'" type="email" v-model="formData[f.name]" placeholder="email@example.com" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
               <input v-else-if="f.type==='phone'" type="tel" v-model="formData[f.name]" placeholder="手机号码" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
               <input v-else-if="f.type==='url'" type="url" v-model="formData[f.name]" placeholder="https://" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
-              <select v-else-if="f.type==='select' && (f.options||[]).length > 0" v-model="formData[f.name]" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none;background:white">
-                <option value="">请选择</option>
+              <select v-else-if="f.type==='select'" v-model="formData[f.name]" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none;background:white">
+                <option value="">{{ (f.options||[]).length > 0 ? '请选择' : '请先在编辑字段中添加选项' }}</option>
                 <option v-for="opt in (f.options||[])" :key="opt" :value="opt">{{ opt }}</option>
               </select>
-              <input v-else-if="f.type==='select'" type="text" v-model="formData[f.name]" placeholder="请先在「编辑字段」中添加选项后使用下拉" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
               <input v-else type="text" v-model="formData[f.name]" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
             </div>
           </div>
