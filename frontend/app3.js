@@ -304,12 +304,12 @@ const AppList = {
       <div class="app-grid">
         <div v-for="app in apps" :key="app.id" style="position:relative">
           <div class="app-card" @click="goApp(app)">
-            <div class="app-card-icon" :style="{background:ICON_OPTIONS.find(o=>o.icon===app.icon)?.bg||'#EEF2FF',color:ICON_OPTIONS.find(o=>o.icon===app.icon)?.color||'#4F46E5'}">app.icon}}</div>
+            <div class="app-card-icon" :style="{background:ICON_OPTIONS.find(o=>o.icon===app.icon)?.bg||'#EEF2FF',color:ICON_OPTIONS.find(o=>o.icon===app.icon)?.color||'#4F46E5'}" v-html="app.icon"></div>
             <div class="app-card-name">{{ app.name }}</div>
             <div class="app-card-desc">{{ app.description||'暂无描述' }}</div>
             <div class="app-card-meta">{{ app.table_count }} 个数据表</div>
           </div>
-          <button @click="delApp(app)" title="删除" style="position:absolute;top:8px;right:8px;width:28px;height:28px;background:rgba(239,68,68,0.1);border:1.5px solid #FECACA;border-radius:50%;cursor:pointer;color:#DC2626;font-size:14px;line-height:26px;text-align:center;padding:0">×</button>
+          <button @click.stop="delApp(app)" title="删除" style="position:absolute;top:8px;right:8px;width:28px;height:28px;background:rgba(239,68,68,0.1);border:1.5px solid #FECACA;border-radius:50%;cursor:pointer;color:#DC2626;display:flex;align-items:center;justify-content:center;padding:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
         </div>
         <div class="new-app-card" @click="showCreate = true">
           <span>+ 创建新应用</span>
@@ -321,7 +321,7 @@ const AppList = {
         <div class="modal" style="max-width:480px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
             <h3 style="font-size:17px;font-weight:700">新建应用</h3>
-            <button @click="showCreate = false" style="background:none;border:none;font-size:22px;cursor:pointer;padding:0">×</button>
+            <button @click="showCreate = false" style="background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;color:var(--text-secondary)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
           </div>
           <div class="form-group">
             <label style="font-weight:600;margin-bottom:6px;display:block">应用名称</label>
@@ -360,7 +360,7 @@ const AppList = {
         <div class="modal" style="max-width:360px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
             <h3 style="font-size:16px;font-weight:700">选择图标</h3>
-            <button @click="showPicker=false" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px">×</button>
+            <button @click="showPicker=false" style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;color:var(--text-secondary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
           </div>
           <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-height:50vh;overflow-y:auto;padding:0 4px 8px">
             <div v-for="opt in ICON_OPTIONS" :key="opt.icon"
@@ -438,7 +438,7 @@ const AppDetail = {
         </button>
         <div>
           <h2 style="font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;">
-            <span>{{ app.icon }}</span> {{ app.name }}
+            <span v-html="app.icon"></span> {{ app.name }}
           </h2>
           <div style="font-size:13px;color:var(--text-secondary);margin-top:2px;">{{ app.description || '暂无描述' }}</div>
         </div>
@@ -457,7 +457,7 @@ const AppDetail = {
         <div class="modal" style="max-width:560px">
           <div class="modal-header">
             <div class="modal-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> 应用成员</div>
-            <button class="modal-close" @click="showMembers=false">×</button>
+            <button class="modal-close" @click="showMembers=false" style="background:none;border:none;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-secondary)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
           </div>
           <!-- 邀请新成员 -->
           <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
@@ -520,7 +520,7 @@ const AppDetail = {
         <div class="modal" style="max-width:700px">
           <div class="modal-header">
             <div class="modal-title">{{ editingTable ? '编辑数据表' : '新建数据表' }}</div>
-            <button class="modal-close" @click="showBuilder=false">×</button>
+            <button class="modal-close" @click="showBuilder=false" style="background:none;border:none;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-secondary)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
           </div>
           <div class="form-group">
             <label>数据表名称</label>
@@ -552,7 +552,7 @@ const AppDetail = {
                   @blur="ensureOption(f)">
                 <button @click="addOption(f)" style="background:none;border:1px dashed var(--border);border-radius:4px;padding:2px 8px;font-size:12px;cursor:pointer;color:var(--text-secondary)">+选项</button>
               </div>
-              <button @click="removeField(i)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:16px">×</button>
+              <button @click="removeField(i)" style="background:none;border:none;cursor:pointer;color:var(--danger);display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             </div>
             <div v-if="!tableForm.fields.length" style="text-align:center;padding:24px;color:var(--text-secondary);border:2px dashed var(--border);border-radius:10px;">
               点击上方按钮添加字段
@@ -726,7 +726,7 @@ const TableDetail = {
         <div class="modal" style="max-width:640px">
           <div class="modal-header">
             <div class="modal-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg> 导入 CSV 数据</div>
-            <button class="modal-close" @click="showImport=false">×</button>
+            <button class="modal-close" @click="showImport=false" style="background:none;border:none;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-secondary)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
           </div>
           <div v-if="!importStep || importStep==='upload'">
             <p style="color:var(--text-secondary);font-size:13px;margin:0 0 16px">请上传 CSV 文件（第一行应为字段名，建议用 UTF-8 编码）</p>
@@ -976,7 +976,7 @@ const TableDetail = {
         <div class="modal" style="max-width:600px">
           <div class="modal-header">
             <div class="modal-title">{{ editingRecord ? '编辑记录' : '添加记录' }}</div>
-            <button class="modal-close" @click="closeModal">×</button>
+            <button class="modal-close" @click="closeModal" style="background:none;border:none;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-secondary)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
           </div>
           <div style="max-height:60vh;overflow-y:auto;padding-right:4px">
             <div class="form-group" v-for="f in table.fields" :key="f.name">
