@@ -2,7 +2,7 @@
 const { createApp, ref, computed, onMounted, watch, nextTick } = Vue;
 
 // API 基础 URL
-const API_BASE = '/api';
+const API_BASE = 'http://localhost:5000/api';
 
 // Axios 实例
 const api = axios.create({ baseURL: API_BASE, timeout: 10000 });
@@ -257,8 +257,8 @@ const AppDetail = {
           <div style="font-size:13px;color:var(--text-secondary);margin-top:2px;">{{ app.description || '暂无描述' }}</div>
         </div>
         <div style="margin-left:auto;display:flex;gap:10px;">
-          <button class="btn btn-secondary" @click="openBuilder">
-            <i class="+"></i> 添加数据表
+          <button class="btn btn-primary" @click="openBuilder" style="font-size:14px;padding:10px 18px;">
+            <span style="font-size:18px;line-height:1;font-weight:700">+</span> 添加数据表
           </button>
         </div>
       </div>
@@ -267,15 +267,15 @@ const AppDetail = {
       <div v-if="tables.length">
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
           <div class="table-item" v-for="t in tables" :key="t.id" @click="openTable(t)" style="cursor:pointer">
-            <div style="display:flex;align-items:center;gap:12px;flex:1">
-              <div style="width:44px;height:44px;background:linear-gradient(135deg,#4F46E5,#7C3AED);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;">📊</div>
-              <div style="flex:1;min-width:0">
-                <div style="font-weight:700;font-size:15px;">{{ t.name }}</div>
-                <div style="font-size:12px;color:var(--text-secondary);">{{ t.record_count }} 条 · {{ t.fields?.length || 0 }} 个字段</div>
-              </div>
+            <div style="width:48px;height:48px;background:linear-gradient(135deg,#4F46E5,#7C3AED);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;flex-shrink:0;box-shadow:0 2px 8px rgba(79,70,229,0.3)">📊</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:700;font-size:15px;margin-bottom:4px">{{ t.name }}</div>
+              <div style="font-size:12px;color:var(--text-secondary)">{{ t.record_count }} 条记录 · {{ t.fields?.length || 0 }} 个字段</div>
             </div>
-            <button class="btn btn-secondary" @click.stop="editTable(t)" style="padding:6px 10px;font-size:12px;margin-right:8px">编辑</button>
-            <button class="btn btn-secondary" @click.stop="deleteTable(t)" style="padding:6px 10px;font-size:12px;color:var(--danger)">删除</button>
+            <div style="display:flex;gap:6px;flex-shrink:0">
+              <button @click.stop="editTable(t)" style="background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px;transition:all 0.15s" onmouseover="this.style.borderColor='var(--primary)',this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--border)',this.style.color='var(--text)'">✏️ 编辑</button>
+              <button @click.stop="deleteTable(t)" style="background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px;color:var(--danger);transition:all 0.15s" onmouseover="this.style.borderColor='var(--danger)',this.style.background='#FEF2F2'" onmouseout="this.style.borderColor='var(--border)',this.style.background='var(--bg)'">🗑️ 删除</button>
+            </div>
           </div>
         </div>
       </div>
@@ -442,8 +442,8 @@ const TableDetail = {
           <button class="btn btn-secondary" @click="location.hash='#app/'+appId">
             <i class="⚙"></i> 设计表结构
           </button>
-          <button class="btn btn-primary" @click="openAdd">
-            <i class="+"></i> 添加记录
+          <button class="btn btn-primary" @click="openAdd" style="font-size:14px;padding:10px 18px">
+            <span style="font-size:18px;line-height:1;font-weight:700">+</span> 添加记录
           </button>
         </div>
       </div>
