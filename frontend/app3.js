@@ -49,7 +49,7 @@ const ICON_OPTIONS = [
 ];
 
 // ============ 认证页面 ============
- AuthPage = {
+const AuthPage = {
   template: `
     <div class="auth-page">
       <div class="auth-card">
@@ -57,52 +57,237 @@ const ICON_OPTIONS = [
           <h1>零搭</h1>
           <p>可视化管理系统构建平台</p>
         </div>
-        <div class="auth-tabs">
-          <div class="auth-tab" :class="{active: mode === 'login'}" @click="mode = 'login'">登录</div>
-          <div class="auth-tab" :class="{active: mode === 'register'}" @click="mode = 'register'">注册</div>
+        <div class="auth-steps">
+          <div class="auth-step" :class="{active: step==='login', done: step==='verify'||step==='reset'}">
+            <div class="auth-step-num">1</div><div class="auth-step-label">账号</div>
+          </div>
+          <div class="auth-step-line"></div>
+          <div class="auth-step" :class="{active: step==='verify'||step==='reset', done: step==='done'}">
+            <div class="auth-step-num">2</div><div class="auth-step-label">验证</div>
+          </div>
         </div>
-        <form @submit.prevent="submit">
+
+        <!-- ===== 登录 ===== -->
+        <form v-if="step==='login'" @submit.prevent="doLogin">
           <div class="form-group">
             <label>邮箱</label>
             <input type="email" v-model="email" placeholder="your@email.com" required>
           </div>
           <div class="form-group">
             <label>密码</label>
-            <input type="password" v-model="password" placeholder="至少6位" required>
+            <input type="password" v-model="password" placeholder="输入密码" required>
           </div>
-          <div class="form-group" v-if="mode === 'register'">
+          <div style="text-align:right;margin-bottom:12px">
+            <a href="#" @click.prevent="step='reset';resetEmail='';resetCode='';newPassword='';resetSent=false;error='';successMsg=''" style="font-size:13px;color:var(--primary);text-decoration:none">忘记密码？</a>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" :disabled="loading">
+            {{ loading ? '登录中...' : '登录' }}
+          </button>
+          <p style="text-align:center;margin-top:16px;font-size:14px;color:var(--text-secondary)">
+            还没有账号？<a href="#" @click.prevent="step='register';error=''" style="color:var(--primary);text-decoration:none;font-weight:600">立即注册</a>
+          </p>
+        </form>
+
+        <!-- ===== 注册 ===== -->
+        <form v-else-if="step==='register'" @submit.prevent="doRegister">
+          <div class="form-group">
+            <label>邮箱</label>
+            <input type="email" v-model="email" placeholder="your@email.com" required>
+          </div>
+          <div class="form-group">
+            <label>密码</label>
+            <input type="password" v-model="password" placeholder="至少6位" required minlength="6">
+          </div>
+          <div class="form-group">
             <label>昵称（选填）</label>
             <input type="text" v-model="name" placeholder="你怎么称呼">
           </div>
           <button type="submit" class="btn btn-primary btn-block" :disabled="loading">
-            {{ loading ? '处理中...' : (mode === 'login' ? '登录' : '注册') }}
+            {{ loading ? '发送中...' : '注册并验证邮箱' }}
           </button>
+          <p v-if="error" style="color:var(--danger);font-size:13px;text-align:center;margin-top:8px">{{ error }}</p>
+          <p style="text-align:center;margin-top:16px;font-size:14px;color:var(--text-secondary)">
+            已有账号？<a href="#" @click.prevent="step='login';error=''" style="color:var(--primary);text-decoration:none;font-weight:600">直接登录</a>
+          </p>
         </form>
+
+        <!-- ===== 验证邮箱 ===== -->
+        <form v-else-if="step==='verify'" @submit.prevent="doVerify">
+          <div style="text-align:center;margin-bottom:20px">
+            <div style="font-size:40px;margin-bottom:12px">📧</div>
+            <p style="color:var(--text);font-size:15px;font-weight:600;margin:0 0 8px">验证您的邮箱</p>
+            <p style="color:var(--text-secondary);font-size:13px;margin:0">验证码已发送至</p>
+            <p style="color:var(--primary);font-weight:700;font-size:15px;margin:4px 0 0">{{ pendingEmail }}</p>
+          </div>
+          <div class="form-group">
+            <label>验证码</label>
+            <input type="text" v-model="verifyCode" placeholder="请输入6位数字验证码" maxlength="6" required style="letter-spacing:4px;font-size:18px;text-align:center">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" :disabled="loading || verifyCode.length!==6">
+            {{ loading ? '验证中...' : '验证并登录' }}
+          </button>
+          <p v-if="error" style="color:var(--danger);font-size:13px;text-align:center;margin-top:8px">{{ error }}</p>
+          <div style="text-align:center;margin-top:16px">
+            <span style="color:var(--text-secondary);font-size:13px">没收到？</span>
+            <button type="button" @click="resendCode" :disabled="resendCd>0" style="background:none;border:none;color:var(--primary);font-size:13px;cursor:pointer;font-weight:600">
+              {{ resendCd > 0 ? resendCd+'秒后可重发' : '重新发送验证码' }}
+            </button>
+          </div>
+          <p style="text-align:center;margin-top:8px">
+            <a href="#" @click.prevent="step='register';verifyCode=''" style="font-size:13px;color:var(--text-secondary);text-decoration:none">← 返回注册</a>
+          </p>
+        </form>
+
+        <!-- ===== 密码重置 ===== -->
+        <form v-else-if="step==='reset'" @submit.prevent="doReset">
+          <div v-if="!resetSent">
+            <div style="text-align:center;margin-bottom:20px">
+              <div style="font-size:40px;margin-bottom:12px">🔑</div>
+              <p style="color:var(--text);font-size:15px;font-weight:600;margin:0 0 8px">重置密码</p>
+              <p style="color:var(--text-secondary);font-size:13px;margin:0">输入您注册的邮箱，我们会发送验证码</p>
+            </div>
+            <div class="form-group">
+              <label>邮箱</label>
+              <input type="email" v-model="resetEmail" placeholder="your@email.com" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" :disabled="loading">
+              {{ loading ? '发送中...' : '发送验证码' }}
+            </button>
+          </div>
+          <div v-else>
+            <div style="text-align:center;margin-bottom:20px">
+              <div style="font-size:40px;margin-bottom:12px">📧</div>
+              <p style="color:var(--text);font-size:15px;font-weight:600;margin:0 0 8px">输入验证码</p>
+              <p style="color:var(--text-secondary);font-size:13px;margin:0">验证码已发送至 {{ resetEmail }}</p>
+            </div>
+            <div class="form-group">
+              <label>验证码</label>
+              <input type="text" v-model="resetCode" placeholder="6位验证码" maxlength="6" required style="letter-spacing:4px;font-size:18px;text-align:center">
+            </div>
+            <div class="form-group">
+              <label>新密码</label>
+              <input type="password" v-model="newPassword" placeholder="至少6位" required minlength="6">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" :disabled="loading || resetCode.length!==6 || newPassword.length<6">
+              {{ loading ? '重置中...' : '确认重置密码' }}
+            </button>
+          </div>
+          <p v-if="error" style="color:var(--danger);font-size:13px;text-align:center;margin-top:8px">{{ error }}</p>
+          <p v-if="successMsg" style="color:var(--accent);font-size:13px;text-align:center;margin-top:8px;font-weight:600">{{ successMsg }}</p>
+          <p style="text-align:center;margin-top:12px">
+            <a href="#" @click.prevent="step='login';resetSent=false;resetCode='';error='';successMsg=''" style="font-size:13px;color:var(--text-secondary);text-decoration:none">← 返回登录</a>
+          </p>
+        </form>
+
+        <!-- ===== 成功 ===== -->
+        <div v-else-if="step==='done'" style="text-align:center;padding:20px 0">
+          <div style="font-size:56px;margin-bottom:16px">🎉</div>
+          <h3 style="color:var(--text);margin:0 0 8px">{{ successMsg }}</h3>
+          <p style="color:var(--text-secondary);font-size:14px;margin:0 0 24px">即将跳转...</p>
+        </div>
+
       </div>
     </div>
   `,
   setup() {
-    const mode = ref('login');
+    const step = ref('login');
     const email = ref('');
     const password = ref('');
     const name = ref('');
     const loading = ref(false);
-    async function submit() {
-      loading.value = true;
+    const error = ref('');
+    const successMsg = ref('');
+    const verifyCode = ref('');
+    const pendingEmail = ref('');
+    const resendCd = ref(0);
+    const resetEmail = ref('');
+    const resetSent = ref(false);
+    const resetCode = ref('');
+    const newPassword = ref('');
+    let cdTimer = null;
+
+    function showErr(m) { error.value = m; successMsg.value = ''; }
+    function showOk(m) { successMsg.value = m; error.value = ''; }
+
+    async function doLogin() {
+      loading.value = true; error.value = '';
       try {
-        const endpoint = mode.value === 'login' ? '/auth/login' : '/auth/register';
-        const payload = mode.value === 'login'
-          ? { email: email.value, password: password.value }
-          : { email: email.value, password: password.value, name: name.value };
-        const res = await api.post(endpoint, payload);
+        const res = await api.post('/auth/login', { email: email.value, password: password.value });
         localStorage.setItem('lingda_token', res.data.token);
         location.hash = '#dashboard';
         location.reload();
       } catch (e) {
-        showToast(e.response?.data?.error || '操作失败', 'error');
+        const d = e.response?.data;
+        if (d?.need_verify) { pendingEmail.value = email.value; step.value = 'verify'; startCd(); }
+        else { showErr(d?.error || '登录失败'); }
       } finally { loading.value = false; }
     }
-    return { mode, email, password, name, loading, submit };
+
+    async function doRegister() {
+      if (!email.value || !password.value) { showErr('请填写邮箱和密码'); return; }
+      loading.value = true; error.value = '';
+      try {
+        await api.post('/auth/register', { email: email.value, password: password.value, name: name.value });
+        pendingEmail.value = email.value; step.value = 'verify';
+        showOk('验证码已发送，请查收邮件'); startCd();
+      } catch (e) { showErr(e.response?.data?.error || '注册失败'); }
+      finally { loading.value = false; }
+    }
+
+    async function doVerify() {
+      if (verifyCode.value.length !== 6) { showErr('请输入6位验证码'); return; }
+      loading.value = true; error.value = '';
+      try {
+        const res = await api.post('/auth/verify-email', { email: pendingEmail.value, code: verifyCode.value });
+        localStorage.setItem('lingda_token', res.data.token);
+        showOk('验证成功，欢迎加入零搭！'); step.value = 'done';
+        setTimeout(() => { location.hash = '#dashboard'; location.reload(); }, 1500);
+      } catch (e) { showErr(e.response?.data?.error || '验证失败'); }
+      finally { loading.value = false; }
+    }
+
+    async function resendCode() {
+      if (resendCd.value > 0) return;
+      try {
+        await api.post('/auth/resend-verify', { email: pendingEmail.value });
+        showOk('验证码已重新发送'); startCd();
+      } catch (e) { showErr(e.response?.data?.error || '发送失败'); }
+    }
+
+    async function doReset() {
+      error.value = ''; successMsg.value = '';
+      if (!resetSent.value) {
+        loading.value = true;
+        try {
+          await api.post('/auth/send-reset-code', { email: resetEmail.value });
+          resetSent.value = true; showOk('验证码已发送，请查收邮件'); startCd();
+        } catch (e) { showErr(e.response?.data?.error || '发送失败'); }
+        finally { loading.value = false; }
+      } else {
+        if (resetCode.value.length !== 6) { showErr('请输入6位验证码'); return; }
+        if (newPassword.value.length < 6) { showErr('新密码至少6位'); return; }
+        loading.value = true;
+        try {
+          await api.post('/auth/reset-password', { email: resetEmail.value, code: resetCode.value, new_password: newPassword.value });
+          showOk('密码重置成功！'); step.value = 'done';
+          setTimeout(() => { step.value = 'login'; resetSent.value = false; resetCode.value = ''; newPassword.value = ''; }, 2000);
+        } catch (e) { showErr(e.response?.data?.error || '重置失败'); }
+        finally { loading.value = false; }
+      }
+    }
+
+    function startCd() {
+      resendCd.value = 60;
+      if (cdTimer) clearInterval(cdTimer);
+      cdTimer = setInterval(() => { resendCd.value--; if (resendCd.value <= 0) { clearInterval(cdTimer); cdTimer = null; } }, 1000);
+    }
+
+    return {
+      step, email, password, name, loading, error, successMsg,
+      verifyCode, pendingEmail, resendCd,
+      resetEmail, resetSent, resetCode, newPassword,
+      doLogin, doRegister, doVerify, resendCode, doReset,
+    };
   }
 };
 

@@ -40,6 +40,15 @@
     .auth-logo h1 { font-size: 28px; color: var(--primary); margin-bottom: 4px; }
     .auth-logo p { color: var(--text-secondary); font-size: 14px; }
     .auth-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+    .auth-step { display: flex; align-items: center; gap: 6px; }
+    .auth-step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--border); color: var(--text-secondary); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .auth-step.active .auth-step-num { background: var(--primary); color: #fff; }
+    .auth-step.done .auth-step-num { background: var(--accent); color: #fff; }
+    .auth-step-label { font-size: 13px; color: var(--text-secondary); }
+    .auth-step.active .auth-step-label { color: var(--primary); font-weight: 600; }
+    .auth-step.done .auth-step-label { color: var(--accent); }
+    .auth-step-line { flex: 1; height: 1px; background: var(--border); margin: 0 8px; min-width: 24px; }
+    .auth-steps { display: flex; align-items: center; justify-content: center; margin-bottom: 28px; }
     .auth-tab { flex: 1; padding: 10px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: 500; color: var(--text-secondary); background: var(--bg); transition: all 0.2s; }
     .auth-tab.active { background: var(--primary); color: white; }
     .form-group { margin-bottom: 16px; }

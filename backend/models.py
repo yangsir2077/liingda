@@ -11,6 +11,11 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(256), nullable=False)
     name = db.Column(db.String(80), nullable=True)
+    email_verified = db.Column(db.Boolean, default=False)          # 邮箱是否已验证
+    verification_code = db.Column(db.String(6), nullable=True)       # 邮箱验证码
+    verification_expires = db.Column(db.DateTime, nullable=True)     # 验证码过期时间
+    reset_code = db.Column(db.String(6), nullable=True)              # 密码重置验证码
+    reset_expires = db.Column(db.DateTime, nullable=True)           # 重置验证码过期时间
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     apps = db.relationship('App', backref='owner', lazy='dynamic', cascade='all,delete-orphan')
@@ -20,6 +25,7 @@ class User(db.Model):
             'id': self.id,
             'email': self.email,
             'name': self.name,
+            'email_verified': self.email_verified,
             'created_at': self.created_at.isoformat() if self.created_at else None,
         }
 
