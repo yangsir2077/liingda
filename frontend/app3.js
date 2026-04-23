@@ -1156,15 +1156,18 @@ const App = {
       }
       return parts[0] || 'dashboard';
     }
+    const currentUser = ref(null);
     async function checkAuth() {
       const token = localStorage.getItem('lingda_token');
       if (!token) { route.value = 'login'; return; }
       try {
-        await api.get('/auth/me');
+        const res = await api.get('/auth/me');
+        currentUser.value = res.data;
         route.value = parseRoute(location.hash.slice(1) || 'dashboard');
         if (route.value === 'login') route.value = 'dashboard';
       } catch { localStorage.removeItem('lingda_token'); route.value = 'login'; }
     }
+    function goProfile() { location.hash = '#profile'; }
     function navigate() { route.value = parseRoute(location.hash.slice(1) || 'dashboard'); }
     function logout() { localStorage.removeItem('lingda_token'); location.hash = '#login'; location.reload(); }
     function goDashboard() { location.hash = '#dashboard'; }
@@ -1173,7 +1176,7 @@ const App = {
     onMounted(async () => { await checkAuth(); window.addEventListener('hashchange', navigate); });
     const currentView = computed(() => typeof route.value === 'string' ? route.value : (route.value?.view || null));
     const routeParams = computed(() => typeof route.value === 'object' ? route.value : null);
-    return { view: route, currentView, routeParams, logout, goDashboard, goAppFromMobile, confirmLogout };
+    return { view: route, currentView, routeParams, logout, goDashboard, goAppFromMobile, confirmLogout, goProfile, currentUser };
   },
   template: `
     <auth-page v-if="view==='login'" />
@@ -1206,6 +1209,7 @@ const App = {
         <app-list v-if="currentView==='dashboard'" />
         <app-detail v-else-if="currentView==='app'" :appId="routeParams?.appId" :key="'app-'+routeParams?.appId" />
         <table-detail v-else-if="currentView==='table'" :appId="routeParams?.appId" :tableId="routeParams?.tableId" :key="'table-'+routeParams?.tableId" />
+        <profile-view v-else-if="currentView==='profile'" :user="currentUser" />
       </div>
       <!-- 手机底部导航 -->
       <nav class="mobile-nav">
@@ -1217,14 +1221,59 @@ const App = {
           <i class="⊕"></i>
           <span>数据表</span>
         </div>
-        <div class="mobile-nav-item" @click="confirmLogout">
+        <div class="mobile-nav-item" @click="goProfile">
           <i class="👤"></i>
           <span>我的</span>
         </div>
       </nav>
     </div>
   `,
-  components: { AuthPage, AppList, AppDetail, TableDetail, PublicForm }
+  components: { AuthPage, AppList, AppDetail, TableDetail, PublicForm, ProfileView }
+};
+
+
+// ============ 个人中心 ============
+const ProfileView = {
+  props: ['user'],
+  setup(props) {
+    const darkMode = ref(localStorage.getItem('lingda_dark') === '1');
+    function toggleDark() {
+      darkMode.value = !darkMode.value;
+      localStorage.setItem('lingda_dark', darkMode.value ? '1' : '0');
+      document.body.classList.toggle('dark-mode', darkMode.value);
+    }
+    function logout() {
+      localStorage.removeItem('lingda_token');
+      location.hash = '#login';
+      location.reload();
+    }
+    const initials = computed(() => {
+      if (!props.user?.name) return '?';
+      return props.user.name.slice(0, 2);
+    });
+    return { darkMode, toggleDark, logout, initials };
+  },
+  template: `
+    <div class="profile-view">
+      <div class="profile-card">
+        <div class="profile-avatar">{{ initials }}</div>
+        <div class="profile-name">{{ user?.name || '未设置昵称' }}</div>
+        <div class="profile-email">{{ user?.email || '' }}</div>
+      </div>
+      <div class="profile-section">
+        <div class="profile-section-title">设置</div>
+        <div class="profile-item" @click="toggleDark">
+          <span>{{ darkMode ? '☀️ 切换亮色模式' : '🌙 切换暗色模式' }}</span>
+        </div>
+      </div>
+      <div style="flex:1"></div>
+      <div class="profile-section">
+        <div class="profile-item danger" @click="logout">
+          <span>⏻ 退出登录</span>
+        </div>
+      </div>
+    </div>
+  `
 };
 
 const app = createApp(App);
