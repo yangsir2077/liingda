@@ -110,100 +110,82 @@ const ICON_OPTIONS = [
 const AppList = {
   template: `
     <div class="page-content">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-        <h2 style="font-size:20px; font-weight:800;">我的应用</h2>
-        <button class="btn btn-primary" @click="showCreate = true">
-          <i class="pi pi-plus"></i> 新建应用
-        </button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+        <h2 style="font-size:20px;font-weight:800">我的应用</h2>
+        <button class="btn btn-primary" @click="showCreate = true">+ 新建应用</button>
       </div>
-      <!-- 无遮罩层，靠点击卡片本身收回 -->
       <div class="app-grid">
-        <div v-for="app in apps" :key="app.id" style="position:relative;overflow:hidden;border-radius:12px;margin-bottom:12px">
-          <!-- 删除区域（滑开才显示） -->
-          <div v-if="swipedId === app.id"
-            @click="swipedId = null"
-            style="position:absolute;top:0;right:0;bottom:0;width:80px;background:#DC2626;display:flex;align-items:center;justify-content:center;z-index:0;border-radius:12px">
-            <button @click.stop="deleteApp(app)"
-              style="background:none;border:none;color:white;font-size:13px;font-weight:700;cursor:pointer;text-align:center;line-height:1.4">
-              删<br>除
-            </button>
-          </div>
-          <!-- 卡片主体 -->
-          <div class="app-card"
-            @touchstart="onTouchStart($event, app.id)"
-            @touchmove="onTouchMove($event, app.id)"
-            @touchend="onTouchEnd($event, app.id)"
-            @click="handleCardClick(app)"
-            :style="{ transform: swipedId === app.id ? 'translateX(-80px)' : 'translateX(0)', transition: transitioning ? 'transform 0.3s' : 'none', position:'relative',zIndex:1 }">
-            <div class="app-card-icon" :style="{ background: ICON_OPTIONS.find(o=>o.icon===app.icon)?.bg || '#EEF2FF', color: ICON_OPTIONS.find(o=>o.icon===app.icon)?.color || '#4F46E5' }">{{ app.icon || '▤' }}</div>
+        <div v-for="app in apps" :key="app.id" style="position:relative">
+          <div class="app-card" @click="goApp(app)">
+            <div class="app-card-icon" :style="{background:ICON_OPTIONS.find(o=>o.icon===app.icon)?.bg||'#EEF2FF',color:ICON_OPTIONS.find(o=>o.icon===app.icon)?.color||'#4F46E5'}">{{ app.icon||'▤' }}</div>
             <div class="app-card-name">{{ app.name }}</div>
-            <div class="app-card-desc">{{ app.description || '暂无描述' }}</div>
+            <div class="app-card-desc">{{ app.description||'暂无描述' }}</div>
             <div class="app-card-meta">{{ app.table_count }} 个数据表</div>
           </div>
+          <button @click="delApp(app)" title="删除" style="position:absolute;top:8px;right:8px;width:28px;height:28px;background:rgba(239,68,68,0.1);border:1.5px solid #FECACA;border-radius:50%;cursor:pointer;color:#DC2626;font-size:14px;line-height:26px;text-align:center;padding:0">×</button>
         </div>
         <div class="new-app-card" @click="showCreate = true">
-          <i class="pi pi-plus-circle"></i>
-          <span>创建新应用</span>
+          <span>+ 创建新应用</span>
         </div>
       </div>
+
+      <!-- 新建应用弹窗 -->
       <div class="modal-overlay" v-if="showCreate" @click.self="showCreate = false">
         <div class="modal" style="max-width:480px">
-          <div class="modal-header">
-            <div class="modal-title">新建应用</div>
-            <button class="modal-close" @click="showCreate = false">×</button>
-          </div>
-          <form @submit.prevent="createApp">
-            <div class="form-group">
-              <label>应用名称</label>
-              <input v-model="newApp.name" placeholder="如：客户管理系统" required autofocus style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
-            </div>
-            <div class="form-group">
-              <label>选择图标</label>
-              <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:8px">
-                <div v-for="opt in ICON_OPTIONS" :key="opt.icon"
-                  @click="pickIcon(opt.icon)"
-                  :style="newApp.icon === opt.icon ? 'border-color:' + opt.color + ';background:' + opt.bg : ''"
-                  style="padding:10px 6px;border-radius:10px;border:2px solid var(--border);cursor:pointer;text-align:center;transition:all 0.15s">
-                  <div style="font-size:24px;margin-bottom:2px;color:#333">{{ opt.icon }}</div>
-                  <div style="font-size:10px;color:var(--text-secondary)">{{ opt.label }}</div>
-                </div>
-                <div @click="showIconPicker = true"
-                  style="padding:10px 6px;border-radius:10px;border:2px dashed var(--border);cursor:pointer;text-align:center;transition:all 0.15s;color:var(--text-secondary)">
-                  <div style="font-size:24px;margin-bottom:2px">✎</div>
-                  <div style="font-size:10px">自定义</div>
-                </div>
-              </div>
-              <!-- 选中图标预览 -->
-              <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
-                <span style="font-size:13px;color:var(--text-secondary)">当前：</span>
-                <span style="display:inline-block;padding:6px 14px;border-radius:10px;font-size:20px;background:#EEF2FF">{{ newApp.icon || '▤' }}</span>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>描述（选填）</label>
-              <textarea v-model="newApp.description" placeholder="简单描述..." rows="2" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:10px;resize:none;font-size:15px;outline:none"></textarea>
-            </div>
-            <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:16px;">
-              <button type="button" class="btn btn-secondary" @click="showCreate=false">取消</button>
-              <button type="submit" class="btn btn-primary" :disabled="creating">{{ creating ? '创建中...' : '创建应用' }}</button>
-            </div>
-          </form>
-        </div>
-      </div>
-      <!-- 自定义图标弹窗 -->
-      <div class="modal-overlay" v-if="showIconPicker" @click.self="showIconPicker=false">
-        <div class="modal" style="max-width:360px">
-          <div class="modal-header">
-            <div class="modal-title">自定义图标</div>
-            <button class="modal-close" @click="showIconPicker=false">×</button>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <h3 style="font-size:17px;font-weight:700">新建应用</h3>
+            <button @click="showCreate = false" style="background:none;border:none;font-size:22px;cursor:pointer;padding:0">×</button>
           </div>
           <div class="form-group">
-            <label style="font-weight:600;margin-bottom:8px;display:block">输入任意字符作为图标</label>
-            <input v-model="newApp.icon" maxlength="4" placeholder="输入图标字符" style="width:100%;padding:14px;border:1.5px solid var(--border);border-radius:10px;font-size:28px;outline:none;text-align:center;letter-spacing:8px" autofocus @keyup.enter="showIconPicker=false">
-            <div style="margin-top:8px;font-size:12px;color:var(--text-secondary);text-align:center">输入任意字符：字母、数字、符号、emoji</div>
+            <label style="font-weight:600;margin-bottom:6px;display:block">应用名称</label>
+            <input v-model="newApp.name" placeholder="如：客户管理系统" required autofocus style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
           </div>
-          <div style="display:flex;justify-content:center;margin-top:16px">
-            <button class="btn btn-primary" @click="showIconPicker=false" style="min-width:120px">确定</button>
+          <div class="form-group">
+            <label style="font-weight:600;margin-bottom:8px;display:block">选择图标</label>
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:8px">
+              <div v-for="opt in ICON_OPTIONS" :key="opt.icon"
+                @click="newApp.icon = opt.icon"
+                :style="newApp.icon===opt.icon?'border-color:'+opt.color+';background:'+opt.bg:'border-color:var(--border)'"
+                style="padding:10px 4px;border-radius:10px;border:2px solid var(--border);cursor:pointer;text-align:center;transition:all 0.15s">
+                <div style="font-size:22px;margin-bottom:2px;color:#333">{{ opt.icon }}</div>
+                <div style="font-size:10px;color:var(--text-secondary)">{{ opt.label }}</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:13px;color:var(--text-secondary)">自定义：</span>
+              <button @click="showPicker = true" style="padding:6px 14px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px">选择更多</button>
+              <span style="display:inline-block;padding:4px 12px;background:#EEF2FF;border-radius:8px;font-size:18px">{{ newApp.icon }}</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="font-weight:600;margin-bottom:6px;display:block">描述（选填）</label>
+            <textarea v-model="newApp.description" placeholder="简单描述..." rows="2" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:10px;resize:none;font-size:15px;outline:none"></textarea>
+          </div>
+          <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:16px">
+            <button class="btn btn-secondary" @click="showCreate=false">取消</button>
+            <button class="btn btn-primary" @click="doCreate" :disabled="creating">{{ creating?'创建中...':'创建应用' }}</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 图标选择器 -->
+      <div class="modal-overlay" v-if="showPicker" @click.self="showPicker=false">
+        <div class="modal" style="max-width:360px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <h3 style="font-size:17px;font-weight:700">选择图标</h3>
+            <button @click="showPicker=false" style="background:none;border:none;font-size:22px;cursor:pointer">×</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-height:50vh;overflow-y:auto">
+            <div v-for="ic in ICON_LIST" :key="ic"
+              @click="newApp.icon=ic;showPicker=false"
+              :style="newApp.icon===ic?'border-color:var(--primary);background:var(--primary-light)':''"
+              style="padding:12px 8px;text-align:center;border-radius:10px;border:1.5px solid var(--border);cursor:pointer;font-size:24px;transition:all 0.15s">
+              {{ ic }}
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:12px">
+            <label style="font-weight:600;margin-bottom:6px;display:block">输入任意字符</label>
+            <input v-model="newApp.icon" maxlength="4" placeholder="输入字符" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:20px;outline:none;text-align:center;letter-spacing:6px">
           </div>
         </div>
       </div>
@@ -212,89 +194,50 @@ const AppList = {
   setup() {
     const apps = ref([]);
     const showCreate = ref(false);
-    const showIconPicker = ref(false);
+    const showPicker = ref(false);
     const newApp = ref({ name: '', icon: '▤', description: '' });
     const creating = ref(false);
-    const ICON_LIST = '▤⊕▊◫☑¥⚙✉✎◁⚡◈⬡✧◎⬢✶☰◆▣◈'.split('');
-    const swipedId = ref(null);
-    const transitioning = ref(false);
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let didSwipe = false;
-    let clickBlocked = false;
-    function handleCardClick(app) {
-      if (clickBlocked) { clickBlocked = false; return; }
-      swipedId.value = null;
-      openApp(app);
-    }
-    function onTouchStart(e, id) {
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-      didSwipe = false;
-      transitioning.value = false;
-    }
-    function onTouchMove(e, id) {
-      const dx = e.touches[0].clientX - touchStartX;
-      const dy = e.touches[0].clientY - touchStartY;
-      if (!didSwipe) {
-        if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
-          didSwipe = true;
-        }
-      }
-      if (didSwipe) {
-        e.preventDefault();
-        const card = e.currentTarget;
-        card.style.transform = `translateX(${Math.max(-80, dx)}px)`;
-        if (swipedId.value !== id) swipedId.value = id;
-      }
-    }
-    function onTouchEnd(e, id) {
-      transitioning.value = true;
-      const card = e.currentTarget;
-      const dx = e.changedTouches[0].clientX - touchStartX;
-      if (!didSwipe) {
-        // 轻触 -> 让click事件自然触发
-        swipedId.value = null;
-        card.style.transform = '';
-      } else {
-        // 滑动结束 -> 吸附，并阻止click
-        clickBlocked = true;
-        if (dx < -40) {
-          card.style.transform = 'translateX(-80px)';
-          swipedId.value = id;
-        } else {
-          card.style.transform = '';
-          swipedId.value = null;
-        }
-      }
-    }
+    const ICON_OPTIONS = [
+      {icon:'▤',label:'文档',bg:'#EEF2FF',color:'#4F46E5'},
+      {icon:'⊕',label:'客户',bg:'#E0F2FE',color:'#0891B2'},
+      {icon:'≡',label:'数据',bg:'#D1FAE5',color:'#059669'},
+      {icon:'◫',label:'项目',bg:'#FEF3C7',color:'#D97706'},
+      {icon:'☑',label:'日程',bg:'#F3E8FF',color:'#7C3AED'},
+      {icon:'¥',label:'财务',bg:'#FEE2E2',color:'#DC2626'},
+      {icon:'▣',label:'库存',bg:'#FFEDD5',color:'#EA580C'},
+      {icon:'⚙',label:'行政',bg:'#F1F5F9',color:'#64748B'},
+      {icon:'✉',label:'客服',bg:'#FCE7F3',color:'#DB2777'},
+      {icon:'✎',label:'培训',bg:'#CCFBF1',color:'#0D9488'},
+      {icon:'◁',label:'物流',bg:'#EDE9FE',color:'#9333EA'},
+      {icon:'◧',label:'工具',bg:'#E2E8F0',color:'#475569'},
+    ];
+    const ICON_LIST = '▤⊕▊◫☑¥⚙✉✎◁⚡◈⬡✧◎⬢✶☰◆▣'.split('');
+
     async function load() {
-      try { const res = await api.get('/apps'); apps.value = res.data; }
-      catch (e) { showToast('加载失败', 'error'); }
+      try { const r = await api.get('/apps'); apps.value = r.data; }
+      catch (e) { showToast('加载失败','error'); }
     }
-    function pickIcon(icon) { newApp.value.icon = icon; }
-    function goBack() { history.back(); }
-    async function deleteApp(app) {
-      if (!confirm(`确定删除应用"${app.name}"？所有数据将被永久删除！`)) return;
-      try { await api.delete(`/apps/${app.id}`); apps.value = apps.value.filter(x => x.id !== app.id); showToast('已删除', 'success'); }
-      catch (e) { showToast('删除失败', 'error'); }
+    function goApp(app) { location.hash = '#app/'+app.id; }
+    async function delApp(app) {
+      if (!confirm('确定删除应用"'+app.name+'"？所有数据将被永久删除！')) return;
+      try { await api.delete('/apps/'+app.id); apps.value = apps.value.filter(x=>x.id!==app.id); showToast('已删除','success'); }
+      catch (e) { showToast('删除失败','error'); }
     }
-    function openApp(app) { location.hash = `#app/${app.id}`; }
-    async function createApp() {
-      if (!newApp.value.name.trim()) return;
+    async function doCreate() {
+      if (!newApp.value.name.trim()) { showToast('请输入名称','error'); return; }
       creating.value = true;
       try {
-        const res = await api.post('/apps', newApp.value);
-        apps.value.unshift(res.data);
+        const r = await api.post('/apps', {name:newApp.value.name, icon:newApp.value.icon||'▤', description:newApp.value.description});
+        apps.value.unshift(r.data);
         showCreate.value = false;
-        newApp.value = { name: '', icon: '▤', description: '' };
-        showToast('应用创建成功', 'success');
-        openApp(res.data);
-      } catch (e) { showToast(e.response?.data?.error || '创建失败', 'error'); }
+        newApp.value = {name:'',icon:'▤',description:''};
+        showToast('创建成功','success');
+        goApp(r.data);
+      } catch (e) { showToast(e.response?.data?.error||'创建失败','error'); }
       finally { creating.value = false; }
     }
     onMounted(load);
-    return { apps, showCreate, showIconPicker, newApp, creating, openApp, createApp, pickIcon, ICON_OPTIONS, ICON_LIST, swipedId, transitioning, onTouchStart, onTouchMove, onTouchEnd };
+    return { apps, showCreate, showPicker, newApp, creating, ICON_OPTIONS, ICON_LIST, goApp, delApp, doCreate };
   }
 };
 
@@ -315,7 +258,7 @@ const AppDetail = {
         </div>
         <div style="margin-left:auto;display:flex;gap:10px;">
           <button class="btn btn-secondary" @click="openBuilder">
-            <i class="pi pi-plus"></i> 添加数据表
+            <i class="+"></i> 添加数据表
           </button>
         </div>
       </div>
@@ -341,7 +284,7 @@ const AppDetail = {
         <h3>还没有数据表</h3>
         <p>点击上方按钮添加第一个数据表<br>或使用下方的可视化构建器</p>
         <button class="btn btn-primary" @click="openBuilder" style="margin-top:16px">
-          <i class="pi pi-wrench"></i> 可视化构建器
+          <i class="⚙"></i> 可视化构建器
         </button>
       </div>
 
@@ -490,10 +433,10 @@ const TableDetail = {
         </div>
         <div style="margin-left:auto;display:flex;gap:10px;">
           <button class="btn btn-secondary" @click="location.hash='#app/'+appId">
-            <i class="pi pi-wrench"></i> 设计表结构
+            <i class="⚙"></i> 设计表结构
           </button>
           <button class="btn btn-primary" @click="openAdd">
-            <i class="pi pi-plus"></i> 添加记录
+            <i class="+"></i> 添加记录
           </button>
         </div>
       </div>
@@ -680,11 +623,11 @@ const App = {
         </div>
         <div class="sidebar-nav">
           <div class="sidebar-item" :class="{active: currentView==='dashboard'}" @click="location.hash='#dashboard'">
-            <i class="pi pi-th-large"></i> 我的应用
+            <i class="□"></i> 我的应用
           </div>
           <div style="margin-top:auto;padding-top:16px;border-top:1px solid var(--border)">
             <div class="sidebar-item" @click="logout" style="color:var(--danger)">
-              <i class="pi pi-sign-out"></i> 退出登录
+              <i class="⏻"></i> 退出登录
             </div>
           </div>
         </div>
@@ -693,8 +636,8 @@ const App = {
         <div class="topbar" style="display:flex;align-items:center;justify-content:space-between">
           <div class="topbar-title">{{ currentView === 'app' ? '应用详情' : currentView === 'table' ? '数据管理' : '我的应用' }}</div>
           <div style="display:flex;align-items:center;gap:12px">
-            <div style="font-size:13px;color:var(--text-secondary);display:none" class="show-mobile">我的</div>
-            <button @click="logout" class="btn btn-secondary" style="padding:6px 14px;font-size:13px;border-radius:20px" class="show-desktop">退出</button>
+            <div style="font-size:13px;color:var(--text-secondary);display:none" class="show-mobile">退出登录</div>
+            <button @click="logout" class="btn btn-secondary" style="padding:6px 14px;font-size:13px;border-radius:20px" class="show-desktop">退出登录</button>
           </div>
         </div>
         <app-list v-if="currentView==='dashboard'" />
@@ -704,15 +647,15 @@ const App = {
       <!-- 手机底部导航 -->
       <nav class="mobile-nav">
         <div class="mobile-nav-item" :class="{active: currentView==='dashboard'}" @click="location.hash='#dashboard'">
-          <i class="pi pi-th-large"></i>
+          <i class="□"></i>
           <span>应用</span>
         </div>
         <div class="mobile-nav-item" v-if="currentView!=='dashboard'" @click="location.hash='#app/'+(routeParams?.appId||'')">
-          <i class="pi pi-sitemap"></i>
+          <i class="⊕"></i>
           <span>数据表</span>
         </div>
-        <div class="mobile-nav-item" @click="if(confirm('确定退出登录？')) logout()">
-          <i class="pi pi-user"></i>
+        <div class="mobile-nav-item" @click="confirm('确定退出登录？')&&logout()">
+          <i class="👤"></i>
           <span>我的</span>
         </div>
       </nav>

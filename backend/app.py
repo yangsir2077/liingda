@@ -3,7 +3,7 @@
 Flask + SQLAlchemy + JWT
 """
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
@@ -100,9 +100,27 @@ def create_app():
         return jsonify({'status': 'ok', 'service': 'lingda-platform'})
 
     # 全局错误处理
+    # 前端静态文件
+    frontend_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend')
+    @app.route('/')
+    def serve_index():
+        return send_from_directory(frontend_dir, 'index.html')
+    @app.route('/<path:filename>')
+    def serve_static(filename):
+        from flask import make_response
+        resp = make_response(send_from_directory(frontend_dir, filename))
+        if filename.endswith('.js'):
+            resp.headers['Content-Type'] = 'text/javascript; charset=utf-8'
+        elif filename.endswith('.css'):
+            resp.headers['Content-Type'] = 'text/css; charset=utf-8'
+        elif filename.endswith('.html'):
+            resp.headers['Content-Type'] = 'text/html; charset=utf-8'
+        return resp
     @app.errorhandler(404)
     def not_found(e):
-        return jsonify({'error': '资源不存在'}), 404
+        if request.path.startswith('/api/'):
+            return jsonify({'error': '资源不存在'}), 404
+        return send_from_directory(frontend_dir, 'index.html')
 
     @app.errorhandler(500)
     def server_error(e):

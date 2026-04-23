@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>简单测试</title>
+</head>
+<body>
+<h2>简单测试</h2>
+<button id="b1">按钮1 - 直接修改内容</button>
+<span id="s1">等待中...</span>
+<br><br>
+<button id="b2">按钮2 - fetch请求</button>
+<span id="s2">等待中...</span>
+<br><br>
+<a href="#dashboard">跳转dashboard</a>
+<pre id="out">页面加载完成</pre>
+<script>
+document.getElementById('b1').addEventListener('click', function() {
+  document.getElementById('s1').textContent = '成功! ' + new Date();
+});
+document.getElementById('b2').addEventListener('click', function() {
+  document.getElementById('s2').textContent = '请求中...';
+  fetch('/api/health').then(function(r){return r.json();}).then(function(d){
+    document.getElementById('s2').textContent = '结果: ' + JSON.stringify(d);
+  }).catch(function(e){
+    document.getElementById('s2').textContent = '错误: ' + e;
+  });
+});
+document.getElementById('out').textContent += '\n页面加载完成，JS运行正常';
+</script>
+</body>
+</html>

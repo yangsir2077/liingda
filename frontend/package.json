@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "axios": "^1.15.2",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.2.5",
+    "vue": "^3.5.33"
+  }
+}

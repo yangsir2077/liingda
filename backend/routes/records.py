@@ -81,6 +81,64 @@ def update_record(record_id):
     return jsonify(record.to_dict())
 
 
+# 看板视图接口
+@records_bp.route('/tables/<int:table_id>/kanban', methods=['GET'])
+@jwt_required()
+def kanban_view(table_id):
+    """获取看板数据，按指定分组字段聚合所有记录"""
+    user_id = get_jwt_identity()
+    table = Table.query.get_or_404(table_id)
+    App.query.filter_by(id=table.app_id, user_id=user_id).first_or_404()
+
+    group_by = request.args.get('group_by', None)  # 字段名
+    records = Record.query.filter_by(table_id=table_id).order_by(Record.sort_order.asc(), Record.created_at.desc()).all()
+
+    if not group_by:
+        return jsonify({'columns': [], 'records': [r.to_dict() for r in records], 'group_by': None})
+
+    # 按分组字段值聚合成列
+    from collections import OrderedDict
+    columns = OrderedDict()
+    fields = json.loads(table.fields) if table.fields else []
+    field_meta = next((f for f in fields if f['name'] == group_by), None)
+
+    for r in records:
+        rd = json.loads(r.data) if r.data else {}
+        key = rd.get(group_by, '未分类')
+        if key not in columns:
+            columns[key] = []
+        columns[key].append(r.to_dict())
+
+    return jsonify({
+        'columns': list(columns.keys()),
+        'records_by_column': columns,
+        'group_by': group_by,
+        'field_meta': field_meta,
+    })
+
+
+@records_bp.route('/records/<int:record_id>/kanban', methods=['PUT'])
+@jwt_required()
+def kanban_move(record_id):
+    """看板中拖拽移动卡片：更新分组字段值和sort_order"""
+    user_id = get_jwt_identity()
+    record = Record.query.get_or_404(record_id)
+    table = Table.query.get_or_404(record.table_id)
+    App.query.filter_by(id=table.app_id, user_id=user_id).first_or_404()
+
+    data = request.get_json() or {}
+    rd = json.loads(record.data) if record.data else {}
+
+    if 'group_value' in data:
+        rd[data['group_field']] = data['group_value']
+    if 'sort_order' in data:
+        record.sort_order = data['sort_order']
+
+    record.data = json.dumps(rd)
+    db.session.commit()
+    return jsonify(record.to_dict())
+
+
 @records_bp.route('/records/<int:record_id>', methods=['DELETE'])
 @jwt_required()
 def delete_record(record_id):

@@ -8,9 +8,6 @@
   <meta name="theme-color" content="#4F46E5">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link href="https://cdn.jsdelivr.net/npm/primevue@4.2.5/resources/themes/lara-light-indigo/theme.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/primevue@4.2.5/resources/primevue.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.min.css" rel="stylesheet">
   <style>
     :root {
       --primary: #4F46E5;
@@ -121,6 +118,12 @@
       .admin-layout { flex-direction: column; padding-bottom: 70px; }
       .app-grid { grid-template-columns: 1fr; }
       .topbar { padding: 12px 16px; }
+      .show-desktop { display: none !important; }
+      .show-mobile { display: block !important; }
+    }
+    @media (min-width: 769px) {
+      .show-mobile { display: none !important; }
+    }
       .page-content { padding: 16px; }
       /* 手机底部导航 */
       .mobile-nav {
@@ -172,31 +175,8 @@
 <body>
   <div id="app"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.global.prod.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/core/core.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/button/button.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/inputtext/inputtext.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/dropdown/dropdown.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/datatable/datatable.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/column/column.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/dialog/dialog.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/toast/toast.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/toastservice/toastservice.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/menu/menu.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/tag/tag.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/breadcrumb/breadcrumb.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/iconfield/iconfield.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/inputicon/inputicon.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/textarea/textarea.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/select/select.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/confirmpopup/confirmpopup.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/confirmdialog/confirmdialog.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/useservice/useservice.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/badgebadge/badgebadge.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/progressbar/progressbar.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/ripple/ripple.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/primevue@4.2.5/poppreset/poppreset.min.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script src="app.js"></script>
+  <script src="/node_modules/vue/dist/vue.global.prod.js"></script>
+  <script src="/node_modules/axios/dist/axios.min.js"></script>
+  <script src="app3.js"></script>
 </body>
 </html>

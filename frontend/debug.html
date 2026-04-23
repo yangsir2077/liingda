@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>零搭 Debug</title>
+<script src="/node_modules/vue/dist/vue.global.prod.js"></script>
+<script src="/node_modules/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<h1>零搭 Debug</h1>
+<div id="d1" style="margin:10px"><button onclick="t1()">1. DOM测试</button></div>
+<div id="d2" style="margin:10px"><button onclick="t2()">2. 弹窗测试</button></div>
+<div id="d3" style="margin:10px"><button onclick="t3()">3. fetch测试</button></div>
+<div id="d4" style="margin:10px"><button onclick="t4()">4. axios测试</button></div>
+<div id="d5" style="margin:10px"><button onclick="t5()">5. 跳转测试</button></div>
+<pre id="out" style="background:#eee;padding:15px;min-height:80px">就绪</pre>
+<script>
+function log(m) { document.getElementById('out').textContent = m; }
+function t1() { document.getElementById('d1').innerHTML += ' ✓'; log('DOM正常'); }
+function t2() { alert('弹窗!'); log('弹窗触发'); }
+function t3() {
+  log('fetching...');
+  fetch('/api/health').then(r => r.json()).then(d => log('fetch成功: '+JSON.stringify(d))).catch(e => log('fetch失败: '+e));
+}
+function t4() {
+  log('axios请求中...');
+  axios.get('/api/health').then(r => log('axios成功: '+JSON.stringify(r.data))).catch(e => log('axios失败: '+e));
+}
+function t5() { location.hash = '#dashboard'; log('已跳转'); }
+log('JS加载完成 - Vue='+Vue.version+', axios='+(typeof axios!=='undefined'?'OK':'MISSING'));
+</script>
+</body>
+</html>
