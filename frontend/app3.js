@@ -438,6 +438,7 @@ const TableDetail = {
             <button @click="switchView('kanban')" :style="viewMode==='kanban'?'background:var(--primary);color:white;border-radius:8px':''" style="padding:6px 14px;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s;background:transparent">📑 看板</button>
             <button @click="switchView('calendar')" :style="viewMode==='calendar'?'background:var(--primary);color:white;border-radius:8px':''" style="padding:6px 14px;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s;background:transparent">📅 日历</button>
           </div>
+          <button class="btn btn-secondary" @click="showFormsPanel=!showFormsPanel" style="position:relative">📝 表单</button>
           <button class="btn btn-secondary" @click="location.hash='#app/'+appId">
             <i class="⚙"></i> 设计表结构
           </button>
@@ -646,6 +647,60 @@ const TableDetail = {
           </div>
         </div>
       </div>
+      <!-- 表单管理面板 -->
+      <div class="modal-overlay" v-if="showFormsPanel" @click.self="showFormsPanel=false">
+        <div class="modal" style="max-width:640px">
+          <div class="modal-header">
+            <div class="modal-title">📝 表单管理</div>
+            <button class="modal-close" @click="showFormsPanel=false">×</button>
+          </div>
+          <div style="max-height:60vh;overflow-y:auto;padding:4px 0">
+            <div v-if="forms.length === 0" style="text-align:center;padding:40px 20px;color:var(--text-secondary)">
+              <p>还没有表单，创建一个吧</p>
+            </div>
+            <div v-for="f in forms" :key="f.id" style="padding:14px;border-bottom:1px solid var(--border)">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                <span style="font-weight:700;font-size:15px;flex:1">{{ f.name }}</span>
+                <span :style="{'color':f.enabled?'var(--success)':'var(--text-secondary)','font-size':'12px'}">{{ f.enabled?'✅ 启用':'⛔ 停用' }}</span>
+                <button @click="deleteForm(f)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:14px">🗑</button>
+              </div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">{{ f.description || '无描述' }}</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+                <span v-for="fn in f.allowed_fields" :key="fn" style="font-size:12px;padding:2px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">{{ fn }}</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input :value="formPublicUrl(f.form_key)" readonly onclick="this.select()"
+                  style="flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;background:var(--bg)">
+                <button @click="copyFormUrl(f.form_key)" class="btn btn-secondary" style="padding:8px 12px;font-size:12px">复制链接</button>
+              </div>
+            </div>
+            <div style="padding:16px;border-top:1.5px solid var(--border);margin-top:4px">
+              <div style="font-weight:700;margin-bottom:12px;font-size:14px">创建新表单</div>
+              <div class="form-group">
+                <label style="display:block;margin-bottom:6px;font-weight:600;font-size:14px">表单名称</label>
+                <input v-model="newForm.name" placeholder="如：客户反馈表单" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
+              </div>
+              <div class="form-group">
+                <label style="display:block;margin-bottom:6px;font-weight:600;font-size:14px">描述（可选）</label>
+                <input v-model="newForm.description" placeholder="表单用途说明" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
+              </div>
+              <div class="form-group">
+                <label style="display:block;margin-bottom:6px;font-weight:600;font-size:14px">允许提交的字段</label>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <label v-for="field in table.fields" :key="field.name" style="display:flex;align-items:center;gap:4px;font-size:13px;padding:4px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border);cursor:pointer">
+                    <input type="checkbox" :checked="newForm.allowed_fields.includes(field.name)" @change="toggleFormField(field.name)">
+                    {{ field.name }}
+                  </label>
+                </div>
+              </div>
+              <button class="btn btn-primary" @click="createForm" :disabled="savingForm" style="margin-top:8px">
+                {{ savingForm ? '创建中...' : '创建表单' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   `,
   props: ['appId', 'tableId'],
@@ -856,6 +911,67 @@ const TableDetail = {
       if (viewMode.value === 'calendar') loadCalendar();
     }
 
+    // ========== 表单管理 ==========
+    const showFormsPanel = ref(false);
+    const forms = ref([]);
+    const savingForm = ref(false);
+    const newForm = ref({ name: '', description: '', allowed_fields: [] });
+
+    async function loadForms() {
+      try {
+        const res = await api.get(`/tables/${props.tableId}/forms`);
+        forms.value = res.data;
+      } catch (e) { console.error('加载表单失败', e); }
+    }
+
+    async function createForm() {
+      if (!newForm.value.name.trim()) return;
+      savingForm.value = true;
+      try {
+        await api.post(`/tables/${props.tableId}/forms`, {
+          name: newForm.value.name,
+          description: newForm.value.description,
+          allowed_fields: newForm.value.allowed_fields,
+        });
+        newForm.value = { name: '', description: '', allowed_fields: [] };
+        await loadForms();
+        showToast('表单创建成功', 'success');
+      } catch (e) { showToast('创建失败', 'error'); }
+      finally { savingForm.value = false; }
+    }
+
+    async function deleteForm(f) {
+      if (!confirm(`删除表单「${f.name}」？`)) return;
+      try {
+        await api.delete(`/forms/${f.id}`);
+        await loadForms();
+        showToast('已删除', 'success');
+      } catch (e) { showToast('删除失败', 'error'); }
+    }
+
+    function toggleFormField(name) {
+      const idx = newForm.value.allowed_fields.indexOf(name);
+      if (idx >= 0) newForm.value.allowed_fields.splice(idx, 1);
+      else newForm.value.allowed_fields.push(name);
+    }
+
+    function formPublicUrl(key) {
+      return `${location.origin}/#/public/form/${key}`;
+    }
+
+    function copyFormUrl(key) {
+      navigator.clipboard.writeText(formPublicUrl(key)).then(() => showToast('链接已复制', 'success'));
+    }
+
+    watch(showFormsPanel, (v) => { if (v) loadForms(); });
+
+    watch(() => props.tableId, () => { showFormsPanel.value = false; });
+
+    watch(() => table.value.fields, (fields) => {
+      // 默认全选所有字段
+      newForm.value.allowed_fields = fields.map(f => f.name);
+    }, { immediate: true });
+
     watch(() => props.tableId, () => { loadTable(); loadRecords(); }, { immediate: true });
     return {
       table, records, total, pages, page, search, showModal, editingRecord, formData, saving,
@@ -863,8 +979,93 @@ const TableDetail = {
       debounceSearch, openAdd, editRecord, saveRecord, deleteRecord, closeModal, loadRecords, goBack,
       switchView, loadKanban, kanbanDragStart, kanbanDragOver, kanbanDragLeave, kanbanDrop, openAddForColumn,
       calDateField, calYear, calMonth, calCells, calDateFields, calPrevMonth, calNextMonth, calToday, loadCalendar, openAddForDate,
+      showFormsPanel, forms, savingForm, newForm, createForm, deleteForm, toggleFormField, formPublicUrl, copyFormUrl,
     };
   }
+};
+
+// ============ 公开表单（无需登录）============
+const PublicForm = {
+  props: ['formKey'],
+  setup(props) {
+    const formDef = ref(null);
+    const formData = ref({});
+    const submitting = ref(false);
+    const submitted = ref(false);
+    const error = ref('');
+    async function loadForm() {
+      try {
+        const res = await fetch(`/api/public/forms/${props.formKey}`);
+        if (!res.ok) throw new Error('表单不存在或已停用');
+        const data = await res.json();
+        formDef.value = data;
+        data.fields.forEach(f => { formData.value[f.name] = ''; });
+      } catch (e) { error.value = e.message; }
+    }
+    async function submit() {
+      submitting.value = true; error.value = '';
+      try {
+        const res = await fetch(`/api/public/forms/${props.formKey}`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(formData.value),
+        });
+        const r = await res.json();
+        if (!res.ok) throw new Error(r.error || '提交失败');
+        submitted.value = true;
+      } catch (e) { error.value = e.message; }
+      finally { submitting.value = false; }
+    }
+    onMounted(loadForm);
+    return { formDef, formData, submitting, submitted, error, submit };
+  },
+  template: `
+    <div style="max-width:600px;margin:60px auto;padding:0 20px;font-family:system-ui,-apple-system,sans-serif">
+      <div v-if="error" style="text-align:center;padding:40px">
+        <div style="font-size:48px;margin-bottom:16px">⛔</div>
+        <h2 style="color:#333;margin-bottom:8px">表单不存在</h2>
+        <p style="color:#666">{{ error }}</p>
+      </div>
+      <div v-else-if="submitted" style="text-align:center;padding:60px 20px;background:white;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08)">
+        <div style="font-size:64px;margin-bottom:20px">🎉</div>
+        <h2 style="color:#333;margin-bottom:12px">提交成功！</h2>
+        <p style="color:#666">感谢您的填写，数据已收到</p>
+      </div>
+      <div v-else-if="!formDef" style="text-align:center;padding:60px;color:#666">加载中...</div>
+      <div v-else style="background:white;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);overflow:hidden">
+        <div style="background:linear-gradient(135deg,#4F46E5,#7C3AED);padding:28px 32px">
+          <h1 style="color:white;font-size:22px;margin:0 0 8px">{{ formDef.name }}</h1>
+          <p style="color:rgba(255,255,255,0.8);margin:0;font-size:14px">{{ formDef.description }}</p>
+        </div>
+        <form @submit.prevent="submit" style="padding:28px 32px">
+          <div v-for="f in formDef.fields" :key="f.name" style="margin-bottom:20px">
+            <label style="display:block;margin-bottom:8px;font-weight:600;font-size:15px;color:#333">
+              {{ f.name }}<span v-if="f.required" style="color:#DC2626">*</span>
+            </label>
+            <textarea v-if="f.type==='textarea'" v-model="formData[f.name]" rows="3"
+              style="width:100%;padding:12px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:15px;resize:none;box-sizing:border-box"></textarea>
+            <input v-else-if="f.type==='checkbox'" type="checkbox" v-model="formData[f.name]" style="width:18px;height:18px">
+            <input v-else-if="f.type==='number' || f.type==='currency'" type="number" v-model="formData[f.name]"
+              style="width:100%;padding:12px 14px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:15px;box-sizing:border-box">
+            <input v-else-if="f.type==='date'" type="date" v-model="formData[f.name]"
+              style="width:100%;padding:12px 14px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:15px;box-sizing:border-box">
+            <select v-else-if="f.type==='select'" v-model="formData[f.name]"
+              style="width:100%;padding:12px 14px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:15px;box-sizing:border-box;background:white">
+              <option value="">请选择</option>
+              <option v-for="opt in (f.options||[])" :key="opt" :value="opt">{{ opt }}</option>
+            </select>
+            <input v-else type="text" v-model="formData[f.name]"
+              style="width:100%;padding:12px 14px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:15px;box-sizing:border-box">
+          </div>
+          <p v-if="error" style="color:#DC2626;font-size:14px;margin-bottom:12px">{{ error }}</p>
+          <button type="submit" :disabled="submitting"
+            style="width:100%;padding:14px;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:white;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer">
+            {{ submitting ? '提交中...' : '提交' }}
+          </button>
+        </form>
+      </div>
+    </div>
+  `,
 };
 
 // ============ 主应用 ============
@@ -874,6 +1075,7 @@ const App = {
     function parseRoute(h) {
       const parts = h.split('/').filter(Boolean);
       if (parts[0] === 'login') return 'login';
+      if (parts[0] === 'public' && parts[1] === 'form') return { view: 'public_form', formKey: parts[2] };
       if (parts[0] === 'app') {
         if (parts[2] === 'table') return { view: 'table', appId: parts[1], tableId: parts[3] };
         return { view: 'app', appId: parts[1] };
@@ -898,6 +1100,7 @@ const App = {
   },
   template: `
     <auth-page v-if="view==='login'" />
+    <public-form v-else-if="view==='public_form'" :formKey="routeParams?.formKey" />
     <div v-else class="admin-layout">
       <div class="sidebar">
         <div class="sidebar-logo">
@@ -944,7 +1147,7 @@ const App = {
       </nav>
     </div>
   `,
-  components: { AuthPage, AppList, AppDetail, TableDetail }
+  components: { AuthPage, AppList, AppDetail, TableDetail, PublicForm }
 };
 
 const app = createApp(App);

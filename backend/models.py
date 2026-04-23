@@ -56,11 +56,10 @@ class Table(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     app_id = db.Column(db.Integer, db.ForeignKey('apps.id'), nullable=False)
     name = db.Column(db.String(120), nullable=False)
-    slug = db.Column(db.String(80), nullable=False)  # 用于API路径
+    slug = db.Column(db.String(80), nullable=False)
     description = db.Column(db.Text, default='')
     # fields: [{"name":"标题","type":"text"},{"name":"状态","type":"select","options":["进行中","已完成"]}]
     fields = db.Column(db.Text, default='[]')
-    # views: [{"id":"v1","type":"grid","name":"默认视图"}]
     views = db.Column(db.Text, default='[]')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -87,7 +86,6 @@ class Record(db.Model):
     __tablename__ = 'records'
     id = db.Column(db.Integer, primary_key=True)
     table_id = db.Column(db.Integer, db.ForeignKey('tables.id'), nullable=False)
-    # data: {"标题":"任务1","状态":"进行中","金额":100}
     data = db.Column(db.Text, default='{}')
     sort_order = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -101,4 +99,33 @@ class Record(db.Model):
             'sort_order': self.sort_order,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+        }
+
+
+class Form(db.Model):
+    __tablename__ = 'forms'
+    id = db.Column(db.Integer, primary_key=True)
+    table_id = db.Column(db.Integer, db.ForeignKey('tables.id'), nullable=False)
+    name = db.Column(db.String(120), nullable=False)
+    description = db.Column(db.Text, default='')
+    form_key = db.Column(db.String(32), unique=True, nullable=False, index=True)
+    enabled = db.Column(db.Boolean, default=True)
+    allowed_fields = db.Column(db.Text, default='[]')
+    config = db.Column(db.Text, default='{}')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    table = db.relationship('Table', backref='forms')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'table_id': self.table_id,
+            'name': self.name,
+            'description': self.description,
+            'form_key': self.form_key,
+            'enabled': self.enabled,
+            'allowed_fields': json.loads(self.allowed_fields) if self.allowed_fields else [],
+            'config': json.loads(self.config) if self.config else {},
+            'created_at': self.created_at.isoformat() if self.created_at else None,
         }
