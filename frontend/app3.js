@@ -36,18 +36,18 @@ function showToast(msg, type = 'info') {
 
 // ============ 图标选项（清晰表意的Unicode符号） ============
 const ICON_OPTIONS = [
-  { icon: '▤', label: '文档', bg: '#EEF2FF', color: '#4F46E5' },
-  { icon: '⊕', label: '客户', bg: '#E0F2FE', color: '#0891B2' },
-  { icon: '≡', label: '数据', bg: '#D1FAE5', color: '#059669' },
-  { icon: '◫', label: '项目', bg: '#FEF3C7', color: '#D97706' },
+  { icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>', label: '文档', bg: '#EEF2FF', color: '#4F46E5' },
+  { icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg>', label: '客户', bg: '#E0F2FE', color: '#0891B2' },
+  { icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>', label: '数据', bg: '#D1FAE5', color: '#059669' },
+  { icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>', label: '项目', bg: '#FEF3C7', color: '#D97706' },
   { icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>', label: '日程', bg: '#F3E8FF', color: '#7C3AED' },
-  { icon: '¥', label: '财务', bg: '#FEE2E2', color: '#DC2626' },
-  { icon: '◫', label: '库存', bg: '#FFEDD5', color: '#EA580C' },
+  { icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>', label: '财务', bg: '#FEE2E2', color: '#DC2626' },
+  { icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>', label: '库存', bg: '#FFEDD5', color: '#EA580C' },
   { icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>', label: '行政', bg: '#F1F5F9', color: '#64748B' },
   { icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>', label: '客服', bg: '#FCE7F3', color: '#DB2777' },
   { icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>', label: '培训', bg: '#CCFBF1', color: '#0D9488' },
-  { icon: '◁', label: '物流', bg: '#EDE9FE', color: '#9333EA' },
-  { icon: '◧', label: '工具', bg: '#E2E8F0', color: '#475569' },
+  { icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>', label: '物流', bg: '#EDE9FE', color: '#9333EA' },
+  { icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>', label: '工具', bg: '#E2E8F0', color: '#475569' },
 ];
 
 // ============ 认证页面 ============
@@ -304,7 +304,7 @@ const AppList = {
       <div class="app-grid">
         <div v-for="app in apps" :key="app.id" style="position:relative">
           <div class="app-card" @click="goApp(app)">
-            <div class="app-card-icon" :style="{background:ICON_OPTIONS.find(o=>o.icon===app.icon)?.bg||'#EEF2FF',color:ICON_OPTIONS.find(o=>o.icon===app.icon)?.color||'#4F46E5'}">{{ app.icon||'▤' }}</div>
+            <div class="app-card-icon" :style="{background:ICON_OPTIONS.find(o=>o.icon===app.icon)?.bg||'#EEF2FF',color:ICON_OPTIONS.find(o=>o.icon===app.icon)?.color||'#4F46E5'}">app.icon}}</div>
             <div class="app-card-name">{{ app.name }}</div>
             <div class="app-card-desc">{{ app.description||'暂无描述' }}</div>
             <div class="app-card-meta">{{ app.table_count }} 个数据表</div>
@@ -334,14 +334,14 @@ const AppList = {
                 @click="newApp.icon = opt.icon"
                 :style="newApp.icon===opt.icon?'border-color:'+opt.color+';background:'+opt.bg:'border-color:var(--border)'"
                 style="padding:10px 4px;border-radius:10px;border:2px solid var(--border);cursor:pointer;text-align:center;transition:all 0.15s">
-                <div style="font-size:22px;margin-bottom:2px;color:#333">{{ opt.icon }}</div>
+                <div style="font-size:22px;margin-bottom:2px;color:#333" v-html="opt.icon"></div>
                 <div style="font-size:10px;color:var(--text-secondary)">{{ opt.label }}</div>
               </div>
             </div>
             <div style="display:flex;align-items:center;gap:8px">
               <span style="font-size:13px;color:var(--text-secondary)">自定义：</span>
               <button @click="showPicker = true" style="padding:6px 14px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px">选择更多</button>
-              <span style="display:inline-block;padding:4px 12px;background:#EEF2FF;border-radius:8px;font-size:18px">{{ newApp.icon }}</span>
+              <span style="display:inline-flex;align-items:center;justify-content:center;padding:4px 12px;background:#EEF2FF;border-radius:8px;font-size:18px" v-html="newApp.icon"></span>
             </div>
           </div>
           <div class="form-group">
@@ -359,21 +359,17 @@ const AppList = {
       <div class="modal-overlay" v-if="showPicker" @click.self="showPicker=false">
         <div class="modal" style="max-width:360px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-            <h3 style="font-size:16px;font-weight:700">选择更多图标</h3>
+            <h3 style="font-size:16px;font-weight:700">选择图标</h3>
             <button @click="showPicker=false" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px">×</button>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-height:36vh;overflow-y:auto;margin-bottom:10px">
-            <div v-for="ic in extraIcons" :key="ic"
-              @click="newApp.icon=ic;showPicker=false"
-              :style="newApp.icon===ic?'border-color:var(--primary);background:var(--primary-light)':''"
-              style="padding:10px 6px;text-align:center;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;font-size:22px;transition:all 0.15s">
-              {{ ic }}
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-height:50vh;overflow-y:auto;padding:0 4px 8px">
+            <div v-for="opt in ICON_OPTIONS" :key="opt.icon"
+              @click="newApp.icon=opt.icon;showPicker=false"
+              :style="newApp.icon===opt.icon?'border-color:'+opt.color+';background:'+opt.bg:'border-color:var(--border)'"
+              style="padding:12px 4px;text-align:center;border-radius:10px;border:2px solid var(--border);cursor:pointer;transition:all 0.15s">
+              <div style="font-size:20px;margin-bottom:4px" v-html="opt.icon"></div>
+              <div style="font-size:11px;color:var(--text-secondary)">{{ opt.label }}</div>
             </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:13px;color:var(--text-secondary);flex-shrink:0">自定义：</span>
-            <input v-model="newApp.icon" maxlength="4" placeholder="图标" style="flex:1;min-width:0;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:18px;outline:none;text-align:center;letter-spacing:2px">
-            <button @click="newApp.icon = newApp.icon.trim() || '▤';showPicker=false" style="padding:7px 14px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0">确定</button>
           </div>
         </div>
       </div>
@@ -383,25 +379,25 @@ const AppList = {
     const apps = ref([]);
     const showCreate = ref(false);
     const showPicker = ref(false);
-    const newApp = ref({ name: '', icon: '▤', description: '' });
+    const newApp = ref({ name: '', icon: '<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><polyline points=\"14 2 14 8 20 8\"/><line x1=\"16\" y1=\"13\" x2=\"8\" y2=\"13\"/><line x1=\"16\" y1=\"17\" x2=\"8\" y2=\"17\"/></svg>', description: '' });
     const isCustomIcon = computed(() => !ICON_OPTIONS.find(o => o.icon === newApp.value.icon));
-    const extraIcons = computed(() => ICON_LIST.filter(ic => !ICON_OPTIONS.find(o => o.icon === ic)));
+    
     const creating = ref(false);
     const ICON_OPTIONS = [
-      {icon:'▤',label:'文档',bg:'#EEF2FF',color:'#4F46E5'},
-      {icon:'⊕',label:'客户',bg:'#E0F2FE',color:'#0891B2'},
-      {icon:'≡',label:'数据',bg:'#D1FAE5',color:'#059669'},
-      {icon:'◫',label:'项目',bg:'#FEF3C7',color:'#D97706'},
-      {icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>',label:'日程',bg:'#F3E8FF',color:'#7C3AED'},
-      {icon:'¥',label:'财务',bg:'#FEE2E2',color:'#DC2626'},
-      {icon:'▣',label:'库存',bg:'#FFEDD5',color:'#EA580C'},
-      {icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',label:'行政',bg:'#F1F5F9',color:'#64748B'},
-      {icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',label:'客服',bg:'#FCE7F3',color:'#DB2777'},
-      {icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',label:'培训',bg:'#CCFBF1',color:'#0D9488'},
-      {icon:'◁',label:'物流',bg:'#EDE9FE',color:'#9333EA'},
-      {icon:'◧',label:'工具',bg:'#E2E8F0',color:'#475569'},
+      {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',label:'文档',bg:'#EEF2FF',color:'#4F46E5'},
+      {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg>',label:'客户',bg:'#E0F2FE',color:'#0891B2'},
+      {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>',label:'数据',bg:'#D1FAE5',color:'#059669'},
+      {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',label:'项目',bg:'#FEF3C7',color:'#D97706'},
+      {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>',label:'日程',bg:'#F3E8FF',color:'#7C3AED'},
+      {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',label:'财务',bg:'#FEE2E2',color:'#DC2626'},
+      {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>',label:'库存',bg:'#FFEDD5',color:'#EA580C'},
+      {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',label:'行政',bg:'#F1F5F9',color:'#64748B'},
+      {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',label:'客服',bg:'#FCE7F3',color:'#DB2777'},
+      {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',label:'培训',bg:'#CCFBF1',color:'#0D9488'},
+      {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',label:'物流',bg:'#EDE9FE',color:'#9333EA'},
+      {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',label:'工具',bg:'#E2E8F0',color:'#475569'},
     ];
-    const ICON_LIST = '▤⊕▊◫<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>¥<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>◁<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>◈⬡<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>◎⬢<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>◆▣'.split('');
+
 
     async function load() {
       try { const r = await api.get('/apps'); apps.value = r.data; }
@@ -417,17 +413,17 @@ const AppList = {
       if (!newApp.value.name.trim()) { showToast('请输入名称','error'); return; }
       creating.value = true;
       try {
-        const r = await api.post('/apps', {name:newApp.value.name, icon:newApp.value.icon||'▤', description:newApp.value.description});
+        const r = await api.post('/apps', {name:newApp.value.name, icon:newApp.value.icon||'<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><polyline points=\"14 2 14 8 20 8\"/><line x1=\"16\" y1=\"13\" x2=\"8\" y2=\"13\"/><line x1=\"16\" y1=\"17\" x2=\"8\" y2=\"17\"/></svg>', description:newApp.value.description});
         apps.value.unshift(r.data);
         showCreate.value = false;
-        newApp.value = {name:'',icon:'▤',description:''};
+        newApp.value = {name:'',icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',description:''};
         showToast('创建成功','success');
         goApp(r.data);
       } catch (e) { showToast(e.response?.data?.error||'创建失败','error'); }
       finally { creating.value = false; }
     }
     onMounted(load);
-    return { apps, showCreate, showPicker, newApp, creating, ICON_OPTIONS, ICON_LIST, extraIcons, goApp, delApp, doCreate, isCustomIcon };
+    return { apps, showCreate, showPicker, newApp, creating, ICON_OPTIONS, goApp, delApp, doCreate, isCustomIcon };
   }
 };
 
@@ -597,7 +593,7 @@ const AppDetail = {
       { value: 'phone', label: '电话', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 10.5 19.79 19.79 0 0 1 1.61 1.9 2 2 0 0 1 3.6 0h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.1a16 16 0 0 0 6 6l.97-.97a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>' },
       { value: 'email', label: '邮箱', icon: '@' },
       { value: 'url', label: '链接', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>' },
-      { value: 'currency', label: '金额', icon: '¥' },
+      { value: 'currency', label: '金额', icon: '<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"12\" y1=\"1\" x2=\"12\" y2=\"23\"/><path d=\"M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6\"/></svg>' },
     ];
     async function load() {
       try {
@@ -917,7 +913,7 @@ const TableDetail = {
                     <span style="font-size:12px;color:var(--text);font-weight:600;flex-shrink:0;width:50px">{{ f.name }}</span>
                     <template v-if="f.type==='checkbox'"><span :style="r.data[f.name]?'color:var(--accent)':'color:var(--text-secondary)'">{{ r.data[f.name]?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>' }}</span></template>
                     <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:1px 8px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:11px;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.data[f.name] }}</span></template>
-                    <template v-else-if="f.type==='number'||f.type==='currency'"><span style="font-weight:700;font-size:13px">{{ f.type==='currency'?'¥':'' }}{{ r.data[f.name] }}</span></template>
+                    <template v-else-if="f.type==='number'||f.type==='currency'"><span style="font-weight:700;font-size:13px">{{ r.data[f.name] }}</span></template>
                     <template v-else><span style="font-size:13px;font-weight:500;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">{{ r.data[f.name] }}</span></template>
                   </div>
                 </div>
@@ -1703,7 +1699,7 @@ const ProfileView = {
       <div style="flex:1"></div>
       <div class="profile-section">
         <div class="profile-item danger" @click="logout">
-          <span>⏻ 退出登录</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> 退出登录
         </div>
       </div>
     </div>
@@ -1895,14 +1891,14 @@ const App = {
         </div>
         <div class="sidebar-nav">
           <div class="sidebar-item" :class="{active: currentView==='dashboard'}" @click="goDashboard">
-            <i class="□"></i> 我的应用
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> 我的应用
           </div>
           <div v-if="currentUser?.is_admin" class="sidebar-item" :class="{active: currentView==='admin'}" @click="goAdmin">
-            <i class="□"></i> 控制台
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> 控制台
           </div>
           <div style="margin-top:auto;padding-top:16px;border-top:1px solid var(--border)">
             <div class="sidebar-item" @click="logout" style="color:var(--danger)">
-              <i class="⏻"></i> 退出登录
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> 退出登录
             </div>
           </div>
         </div>
@@ -1924,11 +1920,10 @@ const App = {
       <!-- 手机底部导航 -->
       <nav class="mobile-nav">
         <div class="mobile-nav-item" :class="{active: currentView==='dashboard'}" @click="goDashboard">
-          <i class="□"></i>
-          <span>应用</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> 应用
         </div>
         <div class="mobile-nav-item" v-if="currentView!=='dashboard' && currentView!=='profile'" @click="goAppFromMobile">
-          <i class="⊕"></i>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
           <span>数据表</span>
         </div>
         <div class="mobile-nav-item" @click="goProfile">
