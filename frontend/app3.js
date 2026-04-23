@@ -1076,7 +1076,7 @@ const PublicForm = {
     const error = ref('');
     async function loadForm() {
       try {
-        const res = await fetch(`/api/public/forms/${props.formKey}`);
+        const res = await fetch(`http://localhost:5000/api/public/forms/${props.formKey}`);
         if (!res.ok) throw new Error('表单不存在或已停用');
         const data = await res.json();
         formDef.value = data;
@@ -1086,7 +1086,7 @@ const PublicForm = {
     async function submit() {
       submitting.value = true; error.value = '';
       try {
-        const res = await fetch(`/api/public/forms/${props.formKey}`, {
+        const res = await fetch(`http://localhost:5000/api/public/forms/${props.formKey}`, {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(formData.value),
@@ -1211,12 +1211,16 @@ const App = {
     }
     const currentUser = ref(null);
     async function checkAuth() {
+      const hash = location.hash.slice(1) || 'dashboard';
+      const initialRoute = parseRoute(hash);
+      // 公开表单无需登录
+      if (initialRoute.view === 'public_form') { route.value = initialRoute; return; }
       const token = localStorage.getItem('lingda_token');
       if (!token) { route.value = 'login'; return; }
       try {
         const res = await api.get('/auth/me');
         currentUser.value = res.data;
-        route.value = parseRoute(location.hash.slice(1) || 'dashboard');
+        route.value = initialRoute;
         if (route.value === 'login') route.value = 'dashboard';
       } catch { localStorage.removeItem('lingda_token'); route.value = 'login'; }
     }
