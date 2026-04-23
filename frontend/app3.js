@@ -14,13 +14,12 @@ api.interceptors.request.use(cfg => {
 api.interceptors.response.use(r => r, err => {
   if (err.response?.status === 401) {
     localStorage.removeItem('lingda_token');
-    if (loc().hash !== '#login') loc().hash = '#login';
+    if (window.location.hash !== '#login') window.location.hash = '#login';
   }
   return Promise.reject(err);
 });
 
 // 全局 location 辅助函数（兼容所有环境）
-const loc = () => (typeof location !== 'undefined') ? location : { hash: { slice: () => 'dashboard', set: () => {} }, origin: '', reload: () => {} };
 
 // Toast
 let toastTimeout;
@@ -217,8 +216,8 @@ const AuthPage = {
       try {
         const res = await api.post('/auth/login', { email: email.value, password: password.value });
         localStorage.setItem('lingda_token', res.data.token);
-        loc().hash = '#dashboard';
-        loc().reload();
+        window.location.hash = '#dashboard';
+        window.location.reload();
       } catch (e) {
         const d = e.response?.data;
         if (d?.need_verify) { pendingEmail.value = email.value; step.value = 'verify'; startCd(); }
@@ -244,7 +243,7 @@ const AuthPage = {
         const res = await api.post('/auth/verify-email', { email: pendingEmail.value, code: verifyCode.value });
         localStorage.setItem('lingda_token', res.data.token);
         showOk('验证成功，欢迎加入零搭！'); step.value = 'done';
-        setTimeout(() => { loc().hash = '#dashboard'; loc().reload(); }, 1500);
+        setTimeout(() => { window.location.hash = '#dashboard'; window.location.reload(); }, 1500);
       } catch (e) { showErr(e.response?.data?.error || '验证失败'); }
       finally { loading.value = false; }
     }
@@ -408,7 +407,7 @@ const AppList = {
       try { const r = await api.get('/apps'); apps.value = r.data; }
       catch (e) { showToast('加载失败','error'); }
     }
-    function goApp(app) { loc().hash = '#app/'+app.id; }
+    function goApp(app) { window.location.hash = '#app/'+app.id; }
     async function delApp(app) {
       if (!confirm('确定删除应用"'+app.name+'"？所有数据将被永久删除！')) return;
       try { await api.delete('/apps/'+app.id); apps.value = apps.value.filter(x=>x.id!==app.id); showToast('已删除','success'); }
@@ -608,7 +607,7 @@ const AppDetail = {
       } catch (e) { showToast('加载失败', 'error'); }
     }
     function goBack() { history.back(); }
-    function openTable(t) { loc().hash = `#app/${props.appId}/table/${t.id}`; }
+    function openTable(t) { window.location.hash = `#app/${props.appId}/table/${t.id}`; }
     function openBuilder() { editingTable.value = null; tableForm.value = { name: '', fields: [{ name: '标题', type: 'text', required: true }] }; showBuilder.value = true; }
     function editTable(t) {
       editingTable.value = t;
@@ -1486,7 +1485,7 @@ const TableDetail = {
     }
 
     function formPublicUrl(key) {
-      return `${(loc().origin || "")}/#/public/form/${key}`;
+      return `${(window.location.origin || "")}/#/public/form/${key}`;
     }
 
     function copyFormUrl(key) {
@@ -1555,7 +1554,7 @@ const PublicForm = {
     const error = ref('');
     async function loadForm() {
       try {
-        const res = await fetch(`${(loc().origin || "")}/api/public/forms/${props.formKey}`);
+        const res = await fetch(`${(window.location.origin || "")}/api/public/forms/${props.formKey}`);
         if (!res.ok) throw new Error('表单不存在或已停用');
         const data = await res.json();
         formDef.value = data;
@@ -1565,7 +1564,7 @@ const PublicForm = {
     async function submit() {
       submitting.value = true; error.value = '';
       try {
-        const res = await fetch(`${(loc().origin || "")}/api/public/forms/${props.formKey}`, {
+        const res = await fetch(`${(window.location.origin || "")}/api/public/forms/${props.formKey}`, {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(formData.value),
@@ -1642,8 +1641,8 @@ const ProfileView = {
     }
     function logout() {
       localStorage.removeItem('lingda_token');
-      loc().hash = '#login';
-      loc().reload();
+      window.location.hash = '#login';
+      window.location.reload();
     }
     const initials = computed(() => {
       if (!props.user?.name) return '?';
@@ -1791,7 +1790,7 @@ const AdminPanel = {
       } catch (e) { showToast(e.response && e.response.data && e.response.data.error || '操作失败', 'error'); }
     }
 
-    function goBack() { loc().hash = '#dashboard'; }
+    function goBack() { window.location.hash = '#dashboard'; }
 
     onMounted(async () => {
       try {
@@ -1808,7 +1807,7 @@ const AdminPanel = {
 
 const App = {
   setup() {
-    const route = ref(loc().hash.slice(1) || 'dashboard');
+    const route = ref(window.location.hash.slice(1) || 'dashboard');
     function parseRoute(h) {
       const parts = h.split('/').filter(Boolean);
       if (parts[0] === 'login') return 'login';
@@ -1823,7 +1822,7 @@ const App = {
     const currentUser = ref(null);
     function loc() { return (typeof location !== 'undefined') ? location : { hash: { slice: () => 'dashboard' }, reload: () => {} }; }
     async function checkAuth() {
-      const hash = loc().hash.slice(1) || 'dashboard';
+      const hash = window.location.hash.slice(1) || 'dashboard';
       const initialRoute = parseRoute(hash);
       // 公开表单无需登录
       if (initialRoute.view === 'public_form') { route.value = initialRoute; return; }
@@ -1836,12 +1835,12 @@ const App = {
         if (route.value === 'login') route.value = 'dashboard';
       } catch { localStorage.removeItem('lingda_token'); route.value = 'login'; }
     }
-    function goProfile() { loc().hash = '#profile'; }
-    function goAdmin() { loc().hash = '#admin'; }
-    function navigate() { route.value = parseRoute(loc().hash.slice(1) || 'dashboard'); }
-    function logout() { localStorage.removeItem('lingda_token'); loc().hash = '#login'; loc().reload(); }
-    function goDashboard() { loc().hash = '#dashboard'; }
-    function goAppFromMobile() { if (routeParams.value?.appId) loc().hash = '#app/' + routeParams.value.appId; }
+    function goProfile() { window.location.hash = '#profile'; }
+    function goAdmin() { window.location.hash = '#admin'; }
+    function navigate() { route.value = parseRoute(window.location.hash.slice(1) || 'dashboard'); }
+    function logout() { localStorage.removeItem('lingda_token'); window.location.hash = '#login'; window.location.reload(); }
+    function goDashboard() { window.location.hash = '#dashboard'; }
+    function goAppFromMobile() { if (routeParams.value?.appId) window.location.hash = '#app/' + routeParams.value.appId; }
     function confirmLogout() { if (confirm('确定退出登录？')) logout(); }
     onMounted(async () => { await checkAuth(); window.addEventListener('hashchange', navigate); });
     const currentView = computed(() => typeof route.value === 'string' ? route.value : (route.value?.view || null));
