@@ -1143,6 +1143,52 @@ const PublicForm = {
 };
 
 // ============ 主应用 ============
+
+// ============ 个人中心 ============
+const ProfileView = {
+  props: ['user'],
+  setup(props) {
+    const darkMode = ref(localStorage.getItem('lingda_dark') === '1');
+    function toggleDark() {
+      darkMode.value = !darkMode.value;
+      localStorage.setItem('lingda_dark', darkMode.value ? '1' : '0');
+      document.body.classList.toggle('dark-mode', darkMode.value);
+    }
+    function logout() {
+      localStorage.removeItem('lingda_token');
+      location.hash = '#login';
+      location.reload();
+    }
+    const initials = computed(() => {
+      if (!props.user?.name) return '?';
+      return props.user.name.slice(0, 2);
+    });
+    return { darkMode, toggleDark, logout, initials };
+  },
+  template: `
+    <div class="profile-view">
+      <div class="profile-card">
+        <div class="profile-avatar">{{ initials }}</div>
+        <div class="profile-name">{{ user?.name || '未设置昵称' }}</div>
+        <div class="profile-email">{{ user?.email || '' }}</div>
+      </div>
+      <div class="profile-section">
+        <div class="profile-section-title">设置</div>
+        <div class="profile-item" @click="toggleDark">
+          <span>{{ darkMode ? '☀️ 切换亮色模式' : '🌙 切换暗色模式' }}</span>
+        </div>
+      </div>
+      <div style="flex:1"></div>
+      <div class="profile-section">
+        <div class="profile-item danger" @click="logout">
+          <span>⏻ 退出登录</span>
+        </div>
+      </div>
+    </div>
+  `
+};
+
+
 const App = {
   setup() {
     const route = ref(location.hash.slice(1) || 'dashboard');
@@ -1232,49 +1278,7 @@ const App = {
 };
 
 
-// ============ 个人中心 ============
-const ProfileView = {
-  props: ['user'],
-  setup(props) {
-    const darkMode = ref(localStorage.getItem('lingda_dark') === '1');
-    function toggleDark() {
-      darkMode.value = !darkMode.value;
-      localStorage.setItem('lingda_dark', darkMode.value ? '1' : '0');
-      document.body.classList.toggle('dark-mode', darkMode.value);
-    }
-    function logout() {
-      localStorage.removeItem('lingda_token');
-      location.hash = '#login';
-      location.reload();
-    }
-    const initials = computed(() => {
-      if (!props.user?.name) return '?';
-      return props.user.name.slice(0, 2);
-    });
-    return { darkMode, toggleDark, logout, initials };
-  },
-  template: `
-    <div class="profile-view">
-      <div class="profile-card">
-        <div class="profile-avatar">{{ initials }}</div>
-        <div class="profile-name">{{ user?.name || '未设置昵称' }}</div>
-        <div class="profile-email">{{ user?.email || '' }}</div>
-      </div>
-      <div class="profile-section">
-        <div class="profile-section-title">设置</div>
-        <div class="profile-item" @click="toggleDark">
-          <span>{{ darkMode ? '☀️ 切换亮色模式' : '🌙 切换暗色模式' }}</span>
-        </div>
-      </div>
-      <div style="flex:1"></div>
-      <div class="profile-section">
-        <div class="profile-item danger" @click="logout">
-          <span>⏻ 退出登录</span>
-        </div>
-      </div>
-    </div>
-  `
-};
 
 const app = createApp(App);
+
 app.mount('#app');
