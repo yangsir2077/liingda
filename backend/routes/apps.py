@@ -69,6 +69,13 @@ def update_app(app_id):
 def delete_app(app_id):
     user_id = get_jwt_identity()
     app = App.query.filter_by(id=app_id, user_id=user_id).first_or_404()
+    # Manually delete children to avoid SQLAlchemy cascade UPDATE issues
+    from models import Form, Record, Table, AppMember
+    for table in app.tables.all():
+        Form.query.filter_by(table_id=table.id).delete()
+        Record.query.filter_by(table_id=table.id).delete()
+        Table.query.filter_by(id=table.id).delete()
+    AppMember.query.filter_by(app_id=app_id).delete()
     db.session.delete(app)
     db.session.commit()
     return jsonify({'message': '删除成功'})

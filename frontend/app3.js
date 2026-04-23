@@ -85,6 +85,7 @@ const AuthPage = {
           <button type="submit" class="btn btn-primary btn-block" :disabled="loading">
             {{ loading ? '登录中...' : '登录' }}
           </button>
+          <p v-if="error" style="color:var(--danger);font-size:13px;text-align:center;margin-top:10px">{{ error }}</p>
           <p style="text-align:center;margin-top:16px;font-size:14px;color:var(--text-secondary)">
             还没有账号？<a href="#" @click.prevent="step='register';error=''" style="color:var(--primary);text-decoration:none;font-weight:600">立即注册</a>
           </p>

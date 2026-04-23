@@ -122,7 +122,7 @@ class AppMember(db.Model):
 
     user = db.relationship('User', foreign_keys=[user_id], backref='memberships')
     inviter = db.relationship('User', foreign_keys=[invited_by])
-    app = db.relationship('App', backref='members')
+    app = db.relationship('App', backref=db.backref('members', cascade='all,delete-orphan'))
 
     __table_args__ = (db.UniqueConstraint('app_id', 'user_id', name='uq_app_member'),)
 
@@ -152,7 +152,7 @@ class Form(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    table = db.relationship('Table', backref='forms')
+    table = db.relationship('Table', backref=db.backref('forms', cascade='all,delete-orphan'))
 
     def to_dict(self):
         return {
