@@ -734,10 +734,16 @@ const TableDetail = {
                 </select>
                 <button @click="removeField(i)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:16px;padding:4px">×</button>
               </div>
-              <div v-if="f.type==='select'" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
-                <input v-for="(opt, oi) in (f.options||[])" :key="oi" v-model="f.options[oi]"
-                  style="padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;width:80px;outline:none">
-                <button @click="f.options.push('选项'+(f.options.length+1))" style="padding:4px 8px;border:1px dashed var(--border);border-radius:4px;background:none;cursor:pointer;font-size:12px;color:var(--text-secondary)">+ 选项</button>
+              <div v-if="f.type==='select'" style="margin-top:8px">
+                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px">下拉选项（点击输入框修改）：</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+                  <div v-for="(opt, oi) in (f.options||[])" :key="oi" style="display:flex;align-items:center;gap:4px">
+                    <input v-model="f.options[oi]" :placeholder="'选项'+(oi+1)"
+                      style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;width:100px;outline:none">
+                    <button @click="f.options.splice(oi,1)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:14px;padding:2px">×</button>
+                  </div>
+                  <button @click="f.options.push('选项'+(f.options.length+1))" style="padding:6px 12px;border:1.5px dashed var(--primary);border-radius:6px;background:var(--primary-light);cursor:pointer;font-size:13px;color:var(--primary);font-weight:600">+ 添加选项</button>
+                </div>
               </div>
             </div>
             <div v-if="editingFields.length === 0" style="text-align:center;padding:40px;color:var(--text-secondary)">
