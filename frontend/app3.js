@@ -715,10 +715,90 @@ const TableDetail = {
           </div>
           <button class="btn btn-secondary" @click="showFormsPanel=!showFormsPanel">📝 表单</button>
           <button class="btn btn-secondary" @click="showFieldEditor=!showFieldEditor">⚙️ 编辑字段</button>
+          <button class="btn btn-secondary" @click="triggerImport">📥 导入</button>
           <button class="btn btn-secondary" @click="exportCSV">📤 导出</button>
           <button class="btn btn-primary" @click="openAdd" style="font-size:14px;padding:10px 18px">
             <span style="font-size:18px;line-height:1;font-weight:700">+</span> 添加记录
           </button>
+        </div>
+      </div>
+
+      <!-- CSV导入弹窗 -->
+      <div class="modal-overlay" v-if="showImport" @click.self="showImport=false">
+        <div class="modal" style="max-width:640px">
+          <div class="modal-header">
+            <div class="modal-title">📥 导入 CSV 数据</div>
+            <button class="modal-close" @click="showImport=false">×</button>
+          </div>
+          <div v-if="!importStep || importStep==='upload'">
+            <p style="color:var(--text-secondary);font-size:13px;margin:0 0 16px">请上传 CSV 文件（第一行应为字段名，建议用 UTF-8 编码）</p>
+            <div style="border:2px dashed var(--border);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all 0.15s" :style="dragOver?'border-color:var(--primary);background:var(--primary-light)':'" @click="$refs.fileInput.click()" @dragover.prevent="dragOver=true" @dragleave="dragOver=false" @drop.prevent="handleFileDrop">
+              <div style="font-size:40px;margin-bottom:12px">📂</div>
+              <p style="font-weight:600;color:var(--text);margin:0 0 4px">点击选择 CSV 文件</p>
+              <p style="font-size:13px;color:var(--text-secondary);margin:0">或将文件拖到此处</p>
+            </div>
+            <input ref="fileInput" type="file" accept=".csv,.txt" style="display:none" @change="handleFileSelect">
+            <p v-if="importError" style="color:var(--danger);font-size:13px;margin-top:8px;text-align:center">{{ importError }}</p>
+            <div style="display:flex;gap:12px;margin-top:16px">
+              <button class="btn btn-secondary" @click="showImport=false">取消</button>
+              <button class="btn btn-secondary" @click="downloadTemplate" style="flex:1">📥 下载字段模板</button>
+            </div>
+          </div>
+          <div v-else-if="importStep==='preview'">
+            <p style="font-size:14px;margin:0 0 12px">
+              共 <strong style="color:var(--primary)">{{ importData.length }}</strong> 条数据，待导入到「{{ table.name }}」
+            </p>
+            <div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;margin-bottom:12px">
+              <table style="width:100%;border-collapse:collapse;font-size:13px">
+                <thead>
+                  <tr style="background:var(--bg)">
+                    <th v-for="h in importHeaders" :key="h" style="padding:8px 12px;text-align:left;font-weight:600;border-bottom:1px solid var(--border);white-space:nowrap">{{ h }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(row,i) in importData.slice(0,20)" :key="i">
+                    <td v-for="h in importHeaders" :key="h" style="padding:8px 12px;border-bottom:1px solid var(--border);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ row[h] }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div v-if="importData.length>20" style="padding:12px;text-align:center;color:var(--text-secondary);font-size:13px">
+                还有 {{ importData.length-20 }} 条数据...
+              </div>
+            </div>
+            <!-- 字段映射 -->
+            <div style="margin-bottom:12px">
+              <label style="font-weight:600;font-size:13px;display:block;margin-bottom:8px">字段映射（CSV列 → 数据表字段）</label>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <div v-for="h in importHeaders" :key="h" style="display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px">
+                  <span style="font-weight:600;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ h }}</span>
+                  <span style="color:var(--text-secondary)">→</span>
+                  <select v-model="fieldMap[h]" style="border:none;background:transparent;font-size:12px;outline:none;color:var(--primary);font-weight:600;cursor:pointer">
+                    <option value="">忽略</option>
+                    <option v-for="f in table.fields" :key="f.name" :value="f.name">{{ f.name }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px">
+              <button class="btn btn-secondary" @click="importStep='upload';importData=[];importHeaders=[];fieldMap={}">← 重新选择</button>
+              <button class="btn btn-primary" @click="doImport" :disabled="importing" style="flex:1">
+                {{ importing ? '导入中...' : '确认导入 '+importData.length+' 条' }}
+              </button>
+            </div>
+            <p v-if="importError" style="color:var(--danger);font-size:13px;margin-top:8px;text-align:center">{{ importError }}</p>
+          </div>
+          <div v-else-if="importStep==='done'">
+            <div style="text-align:center;padding:20px 0">
+              <div style="font-size:56px;margin-bottom:16px">✅</div>
+              <h3 style="margin:0 0 8px">导入完成！</h3>
+              <p style="color:var(--text-secondary);margin:0">成功导入 <strong style="color:var(--primary)">{{ importedCount }}</strong> 条数据</p>
+              <p v-if="importFailed>0" style="color:var(--danger);margin:8px 0 0">失败 {{ importFailed }} 条（格式错误）</p>
+            </div>
+            <div style="display:flex;gap:12px">
+              <button class="btn btn-secondary" @click="showImport=false;importStep='upload'">继续导入</button>
+              <button class="btn btn-primary" @click="showImport=false;loadRecords()" style="flex:1">好的，查看数据</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1242,6 +1322,128 @@ const TableDetail = {
     const editingFields = ref([]);
     const savingFields = ref(false);
 
+    // ========== CSV导入 ==========
+    const showImport = ref(false);
+    const importStep = ref('upload');
+    const importData = ref([]);
+    const importHeaders = ref([]);
+    const fieldMap = ref({});   // csv列名 → 表字段名
+    const importError = ref('');
+    const importing = ref(false);
+    const importedCount = ref(0);
+    const importFailed = ref(0);
+    const dragOver = ref(false);
+
+    function triggerImport() {
+      showImport.value = true;
+      importStep.value = 'upload';
+      importData.value = [];
+      importHeaders.value = [];
+      fieldMap.value = {};
+      importError.value = '';
+    }
+
+    function handleFileDrop(e) {
+      dragOver.value = false;
+      const file = e.dataTransfer.files[0];
+      if (file) parseFile(file);
+    }
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (file) parseFile(file);
+    }
+
+    function parseFile(file) {
+      importError.value = '';
+      if (!file.name.match(/\.(csv|txt)$/i)) {
+        importError.value = '请选择 CSV 或 TXT 文件'; return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const text = e.target.result;
+          const lines = text.split(/\r?\n/).filter(l => l.trim());
+          if (lines.length < 2) { importError.value = '文件数据不足，至少需要1行表头+1行数据'; return; }
+          // 简单CSV解析（逗号分隔，支持引号包裹）
+          function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuote = false;
+            for (let i = 0; i < line.length; i++) {
+              const c = line[i];
+              if (c === '"') {
+                if (inQuote && line[i+1] === '"') { current += '"'; i++; }
+                else inQuote = !inQuote;
+              } else if (c === ',' && !inQuote) {
+                result.push(current.trim()); current = '';
+              } else current += c;
+            }
+            result.push(current.trim());
+            return result;
+          }
+          const headers = parseCSVLine(lines[0]);
+          const rows = [];
+          for (let i = 1; i < lines.length; i++) {
+            const vals = parseCSVLine(lines[i]);
+            if (vals.length === 1 && !vals[0]) continue;
+            const row = {};
+            headers.forEach((h, idx) => { row[h] = vals[idx] || ''; });
+            rows.push(row);
+          }
+          importHeaders.value = headers;
+          importData.value = rows;
+          // 自动建立映射：CSV列名匹配字段名
+          const map = {};
+          headers.forEach(h => {
+            const matched = table.value.fields?.find(f => f.name === h);
+            map[h] = matched ? h : '';
+          });
+          fieldMap.value = map;
+          importStep.value = 'preview';
+        } catch (err) {
+          importError.value = '文件解析失败：' + err.message;
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    async function doImport() {
+      // 过滤出有映射的列
+      const mappedCols = Object.entries(fieldMap.value).filter(([,v]) => v);
+      if (!mappedCols.length) { importError.value = '请至少选择一个字段映射'; return; }
+      importing.value = true;
+      importError.value = '';
+      let success = 0, failed = 0;
+      try {
+        for (const row of importData.value) {
+          const recordData = {};
+          for (const [csvCol, fieldName] of mappedCols) {
+            recordData[fieldName] = row[csvCol] || '';
+          }
+          try {
+            await api.post(`/tables/${props.tableId}/records`, { data: recordData });
+            success++;
+          } catch { failed++; }
+        }
+        importedCount.value = success;
+        importFailed.value = failed;
+        importStep.value = 'done';
+      } finally {
+        importing.value = false;
+      }
+    }
+
+    function downloadTemplate() {
+      const headers = table.value.fields?.map(f => f.name) || [];
+      const csv = '\uFEFF' + headers.join(',') + '\n' + headers.map(() => '').join(',');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `${table.value.name || '数据'}_导入模板.csv`; a.click();
+      URL.revokeObjectURL(url);
+    }
+
     async function loadForms() {
       try {
         const res = await api.get(`/tables/${props.tableId}/forms`);
@@ -1333,6 +1535,8 @@ const TableDetail = {
       calDateField, calYear, calMonth, calCells, calDateFields, calPrevMonth, calNextMonth, calToday, loadCalendar, openAddForDate,
       showFormsPanel, forms, savingForm, newForm, createForm, deleteForm, toggleFormField, formPublicUrl, copyFormUrl,
       showFieldEditor, editingFields, savingFields, addNewField, removeField, saveFields, exportCSV, debugAddOpt,
+      showImport, importStep, importData, importHeaders, fieldMap, importError, importing, importedCount, importFailed, dragOver,
+      triggerImport, handleFileDrop, handleFileSelect, doImport, downloadTemplate,
     };
   }
 };

@@ -2,7 +2,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db, App, AppMember, User
-from werkzeug.security import generate_password_hash
+from utils.email import send_email
 
 members_bp = Blueprint('members', __name__)
 
@@ -79,6 +79,33 @@ def invite_member(app_id):
     app = App.query.get(app_id)
     if invitee.id == app.user_id:
         return jsonify({'error': '应用所有者无需邀请'}), 400
+
+    # 发送邀请邮件通知
+    try:
+        inviter_user = User.query.get(user_id)
+        inviter_name = inviter_user.name or inviter_user.email
+        html = f"""
+        <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#fff">
+          <div style="text-align:center;margin-bottom:32px">
+            <h1 style="font-size:24px;color:#4F46E5;margin:0 0 8px">零搭 NoCode 平台</h1>
+            <p style="color:#64748B;font-size:14px;margin:0">您被邀请加入应用</p>
+          </div>
+          <div style="background:#F8FAFC;border-radius:16px;padding:32px;border:1px solid #E2E8F0">
+            <p style="color:#64748B;font-size:14px;margin:0 0 8px">{inviter_name} 邀请您加入应用：</p>
+            <p style="font-size:20px;font-weight:700;color:#1E293B;margin:0 0 8px">{app.name}</p>
+            <p style="color:#64748B;font-size:13px;margin:0">您的角色：<strong style="color:#4F46E5">{('编辑者' if role=='editor' else '查看者')}</strong></p>
+          </div>
+          <div style="text-align:center;margin-top:24px">
+            <a href="http://localhost:5000" style="display:inline-block;padding:12px 32px;background:#4F46E5;color:#fff;text-decoration:none;border-radius:10px;font-weight:600">打开零搭</a>
+          </div>
+          <div style="text-align:center;margin-top:24px;color:#94A3B8;font-size:12px">
+            如果您没有授权此次操作，请忽略此邮件。
+          </div>
+        </div>
+        """
+        send_email(invitee.email, f'【零搭】您被邀请加入应用「{app.name}」', html)
+    except Exception as e:
+        print(f'[邀请邮件发送失败] {e}')
 
     existing = AppMember.query.filter_by(app_id=app_id, user_id=invitee.id).first()
     if existing:
