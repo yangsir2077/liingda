@@ -1882,6 +1882,7 @@ const App = {
         <app-detail v-else-if="currentView==='app'" :appId="routeParams?.appId" :key="'app-'+routeParams?.appId" />
         <table-detail v-else-if="currentView==='table'" :appId="routeParams?.appId" :tableId="routeParams?.tableId" :key="'table-'+routeParams?.tableId" />
         <profile-view v-else-if="currentView==='profile'" :user="currentUser" />
+        <admin-panel v-else-if="currentView==='admin'" />
       </div>
       <!-- 手机底部导航 -->
       <nav class="mobile-nav">
