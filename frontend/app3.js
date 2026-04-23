@@ -19,6 +19,9 @@ api.interceptors.response.use(r => r, err => {
   return Promise.reject(err);
 });
 
+// 全局 location 辅助函数（兼容所有环境）
+const loc = () => (typeof location !== 'undefined') ? location : { hash: { slice: () => 'dashboard', set: () => {} }, origin: '', reload: () => {} };
+
 // Toast
 let toastTimeout;
 function showToast(msg, type = 'info') {
