@@ -742,7 +742,7 @@ const TableDetail = {
                       style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;width:100px;outline:none">
                     <button @click="f.options.splice(oi,1)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:14px;padding:2px">×</button>
                   </div>
-                  <button @click="f.options.push('选项'+(f.options.length+1))" style="padding:6px 12px;border:1.5px dashed var(--primary);border-radius:6px;background:var(--primary-light);cursor:pointer;font-size:13px;color:var(--primary);font-weight:600">+ 添加选项</button>
+                  <button @click="debugAddOpt(f)" style="padding:6px 12px;border:1.5px dashed var(--primary);border-radius:6px;background:var(--primary-light);cursor:pointer;font-size:13px;color:var(--primary);font-weight:600">+ 添加选项</button>
                 </div>
               </div>
             </div>
@@ -1052,6 +1052,7 @@ const TableDetail = {
     }, { immediate: true });
 
     watch(() => props.tableId, () => { loadTable(); loadRecords(); }, { immediate: true });
+    function debugAddOpt(f) { f.options = f.options || []; f.options.push('选项'+(f.options.length+1)); }
     return {
       table, records, total, pages, page, search, showModal, editingRecord, formData, saving,
       viewMode, kanbanGroupBy, kanbanColumns, kanbanFields, draggingId, dragOverColumn,
@@ -1059,7 +1060,7 @@ const TableDetail = {
       switchView, loadKanban, kanbanDragStart, kanbanDragOver, kanbanDragLeave, kanbanDrop, openAddForColumn,
       calDateField, calYear, calMonth, calCells, calDateFields, calPrevMonth, calNextMonth, calToday, loadCalendar, openAddForDate,
       showFormsPanel, forms, savingForm, newForm, createForm, deleteForm, toggleFormField, formPublicUrl, copyFormUrl,
-      showFieldEditor, editingFields, savingFields, addNewField, removeField, saveFields, exportCSV,
+      showFieldEditor, editingFields, savingFields, addNewField, removeField, saveFields, exportCSV, debugAddOpt,
     };
   }
 };
