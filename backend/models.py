@@ -108,6 +108,35 @@ class Record(db.Model):
         }
 
 
+class AppMember(db.Model):
+    """应用成员（协作权限）"""
+    __tablename__ = 'app_members'
+    id = db.Column(db.Integer, primary_key=True)
+    app_id = db.Column(db.Integer, db.ForeignKey('apps.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    role = db.Column(db.String(20), default='viewer')   # owner / editor / viewer
+    invited_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', foreign_keys=[user_id], backref='memberships')
+    inviter = db.relationship('User', foreign_keys=[invited_by])
+    app = db.relationship('App', backref='members')
+
+    __table_args__ = (db.UniqueConstraint('app_id', 'user_id', name='uq_app_member'),)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'app_id': self.app_id,
+            'user_id': self.user_id,
+            'role': self.role,
+            'user_name': self.user.name if self.user else None,
+            'user_email': self.user.email if self.user else None,
+            'invited_by': self.invited_by,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+        }
+
+
 class Form(db.Model):
     __tablename__ = 'forms'
     id = db.Column(db.Integer, primary_key=True)

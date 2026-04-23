@@ -448,6 +448,47 @@ const AppDetail = {
           <button class="btn btn-primary" @click="openBuilder" style="font-size:14px;padding:10px 18px;">
             <span style="font-size:18px;line-height:1;font-weight:700">+</span> 添加数据表
           </button>
+          <button class="btn btn-secondary" @click="showMembers=true" style="font-size:14px;padding:10px 18px;">
+            👥 成员
+          </button>
+        </div>
+      </div>
+
+      <!-- 成员管理弹窗 -->
+      <div class="modal-overlay" v-if="showMembers" @click.self="showMembers=false">
+        <div class="modal" style="max-width:560px">
+          <div class="modal-header">
+            <div class="modal-title">👥 应用成员</div>
+            <button class="modal-close" @click="showMembers=false">×</button>
+          </div>
+          <!-- 邀请新成员 -->
+          <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+            <input v-model="inviteEmail" placeholder="输入邮箱邀请成员" style="flex:1;min-width:180px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none">
+            <select v-model="inviteRole" style="padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none;background:var(--surface)">
+              <option value="viewer">查看者</option>
+              <option value="editor">编辑者</option>
+            </select>
+            <button @click="inviteMember" :disabled="inviting || !inviteEmail" class="btn btn-primary" style="padding:10px 18px">
+              {{ inviting ? '邀请中...' : '邀请' }}
+            </button>
+          </div>
+          <p v-if="inviteMsg" :style="inviteError ? 'color:var(--danger)' : 'color:var(--accent)'" style="font-size:13px;margin-bottom:16px;text-align:center">{{ inviteMsg }}</p>
+          <!-- 成员列表 -->
+          <div style="max-height:360px;overflow-y:auto">
+            <div v-for="m in members" :key="m.id || 'owner'" style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg);border-radius:12px;margin-bottom:8px;border:1.5px solid var(--border)">
+              <div :style="m.role==='owner' ? 'width:40px;height:40px;background:linear-gradient(135deg,#4F46E5,#7C3AED);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:16px' : 'width:40px;height:40px;background:var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:var(--text-secondary)'">{{ (m.user_name || m.user_email || '?')[0].toUpperCase() }}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:600;font-size:14px">{{ m.user_name || '未知用户' }}</div>
+                <div style="font-size:12px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m.user_email }}</div>
+              </div>
+              <div v-if="m.role==='owner'" style="padding:4px 12px;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:white;border-radius:20px;font-size:12px;font-weight:600">所有者</div>
+              <select v-else v-model="m.role" @change="updateRole(m)" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;outline:none;background:var(--surface)">
+                <option value="editor">编辑者</option>
+                <option value="viewer">查看者</option>
+              </select>
+              <button v-if="m.role!=='owner'" @click="removeMember(m)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:18px;padding:4px">×</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -536,6 +577,14 @@ const AppDetail = {
     const tableForm = ref({ name: '', fields: [] });
     const saving = ref(false);
     const hoverStyle = ref('');
+    // 成员管理
+    const showMembers = ref(false);
+    const members = ref([]);
+    const inviteEmail = ref('');
+    const inviteRole = ref('viewer');
+    const inviting = ref(false);
+    const inviteMsg = ref('');
+    const inviteError = ref(false);
     const fieldTypes = [
       { value: 'text', label: '文本', icon: 'T' },
       { value: 'number', label: '数字', icon: '#' },
@@ -602,7 +651,45 @@ const AppDetail = {
       finally { saving.value = false; }
     }
     onMounted(load);
-    return { app, tables, showBuilder, editingTable, tableForm, saving, fieldTypes, hoverStyle, openTable, openBuilder, editTable, deleteTable, addField, removeField, toggleRequired, fieldTypeLabel, addOption, ensureOption, syncSlug, saveTable, goBack };
+
+    // 成员管理
+    async function loadMembers() {
+      try {
+        const res = await api.get(`/apps/${props.appId}/members`);
+        members.value = res.data;
+      } catch (e) { showToast('加载成员失败', 'error'); }
+    }
+    async function inviteMember() {
+      if (!inviteEmail.value) return;
+      inviting.value = true; inviteMsg.value = '';
+      try {
+        await api.post(`/apps/${props.appId}/members`, { email: inviteEmail.value, role: inviteRole.value });
+        inviteMsg.value = '邀请成功'; inviteError.value = false;
+        inviteEmail.value = '';
+        await loadMembers();
+      } catch (e) {
+        inviteMsg.value = e.response?.data?.error || '邀请失败'; inviteError.value = true;
+      } finally { inviting.value = false; }
+    }
+    async function updateRole(m) {
+      if (m.role === 'owner') return;
+      try {
+        await api.put(`/apps/${props.appId}/members/${m.id}`, { role: m.role });
+        showToast('权限已更新', 'success');
+      } catch (e) { showToast('更新失败', 'error'); loadMembers(); }
+    }
+    async function removeMember(m) {
+      if (!confirm(`移除成员 ${m.user_name || m.user_email}？`)) return;
+      try {
+        await api.delete(`/apps/${props.appId}/members/${m.id}`);
+        members.value = members.value.filter(x => x.id !== m.id);
+        showToast('已移除', 'success');
+      } catch (e) { showToast('移除失败', 'error'); }
+    }
+    // 点击成员按钮时加载成员列表
+    watch(showMembers, (val) => { if (val) loadMembers(); });
+
+    return { app, tables, showBuilder, editingTable, tableForm, saving, fieldTypes, hoverStyle, openTable, openBuilder, editTable, deleteTable, addField, removeField, toggleRequired, fieldTypeLabel, addOption, ensureOption, syncSlug, saveTable, goBack, showMembers, members, inviteEmail, inviteRole, inviting, inviteMsg, inviteError, inviteMember, updateRole, removeMember };
   }
 };
 
