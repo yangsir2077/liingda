@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>零搭 - 可视化管理系统构建平台</title>
   <link rel="manifest" href="manifest.json">
@@ -199,6 +200,17 @@
       .auth-card { border-radius: 24px 24px 0 0; padding: 32px 24px; max-width: 100%; margin-top: auto; }
       .auth-page { height: 100vh; flex-direction: column; justify-content: flex-end; }
     }
+    /* 搜索框 */
+    .search-wrap { position: relative; flex: 1; max-width: 300px; }
+    .search-wrap input { width: 100%; padding: 10px 14px 10px 40px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; outline: none; transition: border-color 0.2s; background: var(--surface); }
+    .search-wrap input:focus { border-color: var(--primary); }
+    .search-wrap::before { content: '🔍'; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; pointer-events: none; }
+    .record-count-badge { background: var(--primary-light); color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+    .desktop-table { box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .desktop-table tbody tr:hover { background: var(--primary-light) !important; }
+    .desktop-table tbody tr { cursor: pointer; }
+    .record-cards > div { background: var(--surface); border-radius: 14px; padding: 16px; border: 1px solid var(--border); transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .record-cards > div:hover { border-color: var(--primary); box-shadow: 0 4px 16px rgba(79,70,229,0.1); transform: translateY(-1px); }
   </style>
 </head>
 <body>

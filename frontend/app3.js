@@ -170,22 +170,22 @@ const AppList = {
 
       <!-- 图标选择器 -->
       <div class="modal-overlay" v-if="showPicker" @click.self="showPicker=false">
-        <div class="modal" style="max-width:360px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h3 style="font-size:17px;font-weight:700">选择图标</h3>
-            <button @click="showPicker=false" style="background:none;border:none;font-size:22px;cursor:pointer">×</button>
+        <div class="modal" style="max-width:320px;max-height:80vh">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <h3 style="font-size:16px;font-weight:700">选择更多图标</h3>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-height:50vh;overflow-y:auto">
-            <div v-for="ic in ICON_LIST" :key="ic"
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-height:40vh;overflow-y:auto;margin-bottom:10px">
+            <div v-for="ic in extraIcons" :key="ic"
               @click="newApp.icon=ic;showPicker=false"
               :style="newApp.icon===ic?'border-color:var(--primary);background:var(--primary-light)':''"
-              style="padding:12px 8px;text-align:center;border-radius:10px;border:1.5px solid var(--border);cursor:pointer;font-size:24px;transition:all 0.15s">
+              style="padding:10px 6px;text-align:center;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;font-size:22px;transition:all 0.15s">
               {{ ic }}
             </div>
           </div>
-          <div class="form-group" style="margin-top:12px">
-            <label style="font-weight:600;margin-bottom:6px;display:block">输入任意字符</label>
-            <input v-model="newApp.icon" maxlength="4" placeholder="输入字符" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:20px;outline:none;text-align:center;letter-spacing:6px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:13px;color:var(--text-secondary);flex-shrink:0">自定义：</span>
+            <input v-model="newApp.icon" maxlength="4" placeholder="图标" style="flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:18px;outline:none;text-align:center;letter-spacing:2px">
+            <button @click="newApp.icon = newApp.icon.trim() || '▤';showPicker=false" style="padding:7px 14px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">确定</button>
           </div>
         </div>
       </div>
@@ -196,6 +196,8 @@ const AppList = {
     const showCreate = ref(false);
     const showPicker = ref(false);
     const newApp = ref({ name: '', icon: '▤', description: '' });
+    const isCustomIcon = computed(() => !ICON_OPTIONS.find(o => o.icon === newApp.value.icon));
+    const extraIcons = computed(() => ICON_LIST.filter(ic => !ICON_OPTIONS.find(o => o.icon === ic)));
     const creating = ref(false);
     const ICON_OPTIONS = [
       {icon:'▤',label:'文档',bg:'#EEF2FF',color:'#4F46E5'},
@@ -237,7 +239,7 @@ const AppList = {
       finally { creating.value = false; }
     }
     onMounted(load);
-    return { apps, showCreate, showPicker, newApp, creating, ICON_OPTIONS, ICON_LIST, goApp, delApp, doCreate };
+    return { apps, showCreate, showPicker, newApp, creating, ICON_OPTIONS, ICON_LIST, extraIcons, goApp, delApp, doCreate, isCustomIcon };
   }
 };
 
@@ -434,9 +436,9 @@ const TableDetail = {
         <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <!-- 视图切换 -->
           <div style="display:flex;background:var(--bg);border-radius:10px;padding:3px;border:1.5px solid var(--border);gap:2px">
-            <button @click="switchView('table')" :style="viewMode==='table'?'background:var(--primary);color:white;border-radius:8px':''" style="padding:6px 14px;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s;background:transparent">📋 表格</button>
-            <button @click="switchView('kanban')" :style="viewMode==='kanban'?'background:var(--primary);color:white;border-radius:8px':''" style="padding:6px 14px;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s;background:transparent">📑 看板</button>
-            <button @click="switchView('calendar')" :style="viewMode==='calendar'?'background:var(--primary);color:white;border-radius:8px':''" style="padding:6px 14px;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s;background:transparent">📅 日历</button>
+            <button @click="switchView('table')" :style="viewMode==='table'?'background:var(--primary);color:white;border-radius:8px':'color:var(--primary);background:var(--primary-light);border-radius:8px'" style="padding:6px 14px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s">📋 表格</button>
+            <button @click="switchView('kanban')" :style="viewMode==='kanban'?'background:var(--primary);color:white;border-radius:8px':'color:var(--primary);background:var(--primary-light);border-radius:8px'" style="padding:6px 14px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s">📑 看板</button>
+            <button @click="switchView('calendar')" :style="viewMode==='calendar'?'background:var(--primary);color:white;border-radius:8px':'color:var(--primary);background:var(--primary-light);border-radius:8px'" style="padding:6px 14px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s">📅 日历</button>
           </div>
           <button class="btn btn-secondary" @click="showFormsPanel=!showFormsPanel" style="position:relative">📝 表单</button>
           <button class="btn btn-secondary" @click="location.hash='#app/'+appId">
@@ -452,15 +454,17 @@ const TableDetail = {
       <template v-if="viewMode === 'table'">
         <!-- 搜索 -->
         <div style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-          <input v-model="search" @input="debounceSearch" placeholder="搜索..." style="max-width:280px;flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none">
-          <span style="font-size:13px;color:var(--text-secondary)">共 {{ total }} 条</span>
+          <div class="search-wrap">
+            <input v-model="search" @input="debounceSearch" placeholder="搜索记录...">
+          </div>
+          <span class="record-count-badge">共 {{ total }} 条</span>
         </div>
         <!-- 表格（桌面） -->
         <div style="background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--border);display:none" class="desktop-table">
           <table style="width:100%;border-collapse:collapse;min-width:600px">
             <thead>
               <tr>
-                <th v-for="f in table.fields" :key="f.name" style="padding:12px 16px;text-align:left;font-weight:700;font-size:13px;color:var(--text-secondary);border-bottom:1px solid var(--border);white-space:nowrap;background:var(--bg)">{{ f.name }}<span v-if="f.required" style="color:var(--danger)">*</span></th>
+                <th v-for="f in table.fields" :key="f.name" style="padding:12px 16px;text-align:left;font-weight:700;font-size:13px;color:var(--text);border-bottom:1px solid var(--border);white-space:nowrap;background:var(--bg)">{{ f.name }}<span v-if="f.required" style="color:var(--danger)">*</span></th>
                 <th style="padding:12px 16px;width:100px;background:var(--bg);border-bottom:1px solid var(--border)">操作</th>
               </tr>
             </thead>
@@ -538,12 +542,12 @@ const TableDetail = {
             @dragleave="kanbanDragLeave()"
             @drop="kanbanDrop(col.value)">
             <!-- 列头 -->
-            <div style="padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+            <div :style="'padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:'+(col.color||'var(--primary)')+';border-radius:12px 12px 0 0'">
               <div style="display:flex;align-items:center;gap:8px">
-                <div :style="'width:10px;height:10px;border-radius:50%;background:'+(col.color||'var(--primary)')"></div>
-                <span style="font-weight:700;font-size:14px">{{ col.value }}</span>
+                <div style="width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.3)"></div>
+                <span :style="'font-weight:800;font-size:15px;color:'+((col.color==='#FEF08A'||col.color==='#FDE68A'||col.color==='#D9F99D'||col.color==='#A7F3D0'||col.color==='#FBCFE8'||col.color==='#FCA5A5')?'#1E293B':'white')">{{ col.value }}</span>
               </div>
-              <span style="background:var(--border);color:var(--text-secondary);padding:2px 8px;border-radius:20px;font-size:12px;font-weight:600">{{ col.records.length }}</span>
+              <span :style="'padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700;backdrop-filter:blur(4px);background:rgba(0,0,0,0.2);color:'+((col.color==='#FEF08A'||col.color==='#FDE68A'||col.color==='#D9F99D'||col.color==='#A7F3D0'||col.color==='#FBCFE8'||col.color==='#FCA5A5')?'#1E293B':'white')">{{ col.records.length }}</span>
             </div>
             <!-- 卡片列表 -->
             <div style="padding:4px 12px 12px;flex:1;display:flex;flex-direction:column;gap:10px;min-height:80px;overflow-y:auto;max-height:calc(100vh - 320px)">
@@ -556,7 +560,7 @@ const TableDetail = {
                 <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px">#{{ r.id }}</div>
                 <div v-for="f in table.fields.filter(x=>x.name!==kanbanGroupBy)" :key="f.name" style="margin-bottom:4px">
                   <div v-if="r.data[f.name]" style="display:flex;align-items:center;gap:6px;min-width:0">
-                    <span style="font-size:11px;color:var(--text-secondary);flex-shrink:0;width:50px">{{ f.name }}</span>
+                    <span style="font-size:12px;color:var(--text);font-weight:600;flex-shrink:0;width:50px">{{ f.name }}</span>
                     <template v-if="f.type==='checkbox'"><span :style="r.data[f.name]?'color:var(--accent)':'color:var(--text-secondary)'">{{ r.data[f.name]?'☑':'☐' }}</span></template>
                     <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:1px 8px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:11px;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.data[f.name] }}</span></template>
                     <template v-else-if="f.type==='number'||f.type==='currency'"><span style="font-weight:700;font-size:13px">{{ f.type==='currency'?'¥':'' }}{{ r.data[f.name] }}</span></template>
@@ -781,7 +785,7 @@ const TableDetail = {
         const res = await api.get(`/tables/${props.tableId}/kanban`, { params: { group_by: kanbanGroupBy.value } });
         const cols = res.data.columns || [];
         const recordsByCol = res.data.records_by_column || {};
-        const colors = ['#4F46E5', '#7C3AED', '#059669', '#D97706', '#DC2626', '#0891B2', '#7C3AED', '#DB2777'];
+        const colors = ['#4F46E5', '#7C3AED', '#059669', '#D97706', '#DC2626', '#0891B2', '#9333EA', '#DB2777'];
         kanbanColumns.value = cols.map((c, i) => ({
           value: c,
           color: colors[i % colors.length],
