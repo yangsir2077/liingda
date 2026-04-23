@@ -331,7 +331,7 @@ const AppList = {
           <div class="form-group">
             <label style="font-weight:600;margin-bottom:8px;display:block">选择图标</label>
             <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:8px">
-              <div v-for="opt in ICON_OPTIONS" :key="opt.icon"
+              <div v-for="opt in MORE_ICON_OPTIONS" :key="opt.icon"
                 @click="newApp.icon = opt.icon"
                 :style="newApp.icon===opt.icon?'border-color:'+opt.color+';background:'+opt.bg:'border-color:var(--border)'"
                 style="padding:10px 4px;border-radius:10px;border:2px solid var(--border);cursor:pointer;text-align:center;transition:all 0.15s">
@@ -339,10 +339,10 @@ const AppList = {
                 <div style="font-size:10px;color:var(--text-secondary)">{{ opt.label }}</div>
               </div>
             </div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <span style="font-size:13px;color:var(--text-secondary)">自定义：</span>
-              <button @click="showPicker = true" style="padding:6px 14px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px">选择更多</button>
-              <span style="display:inline-flex;align-items:center;justify-content:center;padding:4px 12px;background:#EEF2FF;border-radius:8px;font-size:18px" v-html="newApp.icon"></span>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+              <span style="font-size:12px;color:var(--text-secondary);flex-shrink:0">自定义SVG：</span>
+              <input v-model="newApp.icon" placeholder="<svg..." style="flex:1;min-width:0;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;outline:none;font-family:monospace" @input="newApp.icon = newApp.icon.trim()">
+              <button @click="showPicker = true" style="padding:6px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;color:var(--text-secondary);flex-shrink:0">预设图标</button>
             </div>
           </div>
           <div class="form-group">
@@ -360,7 +360,7 @@ const AppList = {
       <div class="modal-overlay" v-if="showPicker" @click.self="showPicker=false">
         <div class="modal" style="max-width:360px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-            <h3 style="font-size:16px;font-weight:700">选择图标</h3>
+            <h3 style="font-size:16px;font-weight:700">更多图标</h3>
             <button @click="showPicker=false" style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;color:var(--text-secondary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
           </div>
           <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-height:50vh;overflow-y:auto;padding:0 4px 8px">
@@ -400,6 +400,25 @@ const AppList = {
     ];
 
 
+
+const MORE_ICON_OPTIONS = [
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',label:'消息',bg:'#F0F9FF',color:'#0284C7'},
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',label:'完成',bg:'#F0FDF4',color:'#16A34A'},
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',label:'时间',bg:'#FFF7ED',color:'#EA580C'},
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',label:'位置',bg:'#FDF4FF',color:'#9333EA'},
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',label:'图片',bg:'#FEF2F2',color:'#DC2626'},
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',label:'标签',bg:'#FEF9C3',color:'#CA8A04'},
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>',label:'关联',bg:'#F0FDF4',color:'#059669'},
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a-2 2 0 0 1-3.46 0"/></svg>',label:'通知',bg:'#FEF3C7',color:'#D97706'},
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',label:'喜欢',bg:'#FFF1F2',color:'#E11D48'},
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',label:'层级',bg:'#F1F5F9',color:'#475569'},
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',label:'密码',bg:'#F5F3FF',color:'#7C3AED'},
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',label:'支付',bg:'#FEFCE8',color:'#CA8A04'},
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',label:'帮助',bg:'#F0F9FF',color:'#0284C7'},
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',label:'安全',bg:'#F0FDF4',color:'#16A34A'},
+  {icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',label:'同步',bg:'#FEF3C7',color:'#D97706'},
+];
+
     async function load() {
       try { const r = await api.get('/apps'); apps.value = r.data; }
       catch (e) { showToast('加载失败','error'); }
@@ -424,7 +443,7 @@ const AppList = {
       finally { creating.value = false; }
     }
     onMounted(load);
-    return { apps, showCreate, showPicker, newApp, creating, ICON_OPTIONS, goApp, delApp, doCreate, isCustomIcon };
+    return { apps, showCreate, showPicker, newApp, creating, ICON_OPTIONS, MORE_ICON_OPTIONS, goApp, delApp, doCreate, isCustomIcon };
   }
 };
 
