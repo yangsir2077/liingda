@@ -170,11 +170,12 @@ const AppList = {
 
       <!-- 图标选择器 -->
       <div class="modal-overlay" v-if="showPicker" @click.self="showPicker=false">
-        <div class="modal" style="max-width:320px;max-height:80vh">
+        <div class="modal" style="max-width:360px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
             <h3 style="font-size:16px;font-weight:700">选择更多图标</h3>
+            <button @click="showPicker=false" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px">×</button>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-height:40vh;overflow-y:auto;margin-bottom:10px">
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-height:36vh;overflow-y:auto;margin-bottom:10px">
             <div v-for="ic in extraIcons" :key="ic"
               @click="newApp.icon=ic;showPicker=false"
               :style="newApp.icon===ic?'border-color:var(--primary);background:var(--primary-light)':''"
@@ -184,8 +185,8 @@ const AppList = {
           </div>
           <div style="display:flex;align-items:center;gap:8px">
             <span style="font-size:13px;color:var(--text-secondary);flex-shrink:0">自定义：</span>
-            <input v-model="newApp.icon" maxlength="4" placeholder="图标" style="flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:18px;outline:none;text-align:center;letter-spacing:2px">
-            <button @click="newApp.icon = newApp.icon.trim() || '▤';showPicker=false" style="padding:7px 14px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">确定</button>
+            <input v-model="newApp.icon" maxlength="4" placeholder="图标" style="flex:1;min-width:0;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:18px;outline:none;text-align:center;letter-spacing:2px">
+            <button @click="newApp.icon = newApp.icon.trim() || '▤';showPicker=false" style="padding:7px 14px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0">确定</button>
           </div>
         </div>
       </div>
@@ -440,10 +441,9 @@ const TableDetail = {
             <button @click="switchView('kanban')" :style="viewMode==='kanban'?'background:var(--primary);color:white;border-radius:8px':'color:var(--primary);background:var(--primary-light);border-radius:8px'" style="padding:6px 14px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s">📑 看板</button>
             <button @click="switchView('calendar')" :style="viewMode==='calendar'?'background:var(--primary);color:white;border-radius:8px':'color:var(--primary);background:var(--primary-light);border-radius:8px'" style="padding:6px 14px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s">📅 日历</button>
           </div>
-          <button class="btn btn-secondary" @click="showFormsPanel=!showFormsPanel" style="position:relative">📝 表单</button>
-          <button class="btn btn-secondary" @click="location.hash='#app/'+appId">
-            <i class="⚙"></i> 设计表结构
-          </button>
+          <button class="btn btn-secondary" @click="showFormsPanel=!showFormsPanel">📝 表单</button>
+          <button class="btn btn-secondary" @click="showFieldEditor=!showFieldEditor">⚙️ 编辑字段</button>
+          <button class="btn btn-secondary" @click="exportCSV">📤 导出</button>
           <button class="btn btn-primary" @click="openAdd" style="font-size:14px;padding:10px 18px">
             <span style="font-size:18px;line-height:1;font-weight:700">+</span> 添加记录
           </button>
@@ -705,6 +705,54 @@ const TableDetail = {
         </div>
       </div>
 
+      <!-- 字段编辑器弹窗 -->
+      <div class="modal-overlay" v-if="showFieldEditor" @click.self="showFieldEditor=false">
+        <div class="modal" style="max-width:600px">
+          <div class="modal-header">
+            <div class="modal-title">⚙️ 编辑字段 - {{ table.name }}</div>
+            <button class="modal-close" @click="showFieldEditor=false">×</button>
+          </div>
+          <div style="max-height:60vh;overflow-y:auto;padding:4px 0">
+            <div style="padding:12px 0 8px;border-bottom:1.5px solid var(--border);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:13px;color:var(--text-secondary)">共 {{ editingFields.length }} 个字段</span>
+              <button @click="addNewField" style="padding:6px 14px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">+ 添加字段</button>
+            </div>
+            <div v-for="(f, i) in editingFields" :key="i" style="padding:12px 14px;background:var(--bg);border-radius:10px;margin-bottom:8px;border:1.5px solid var(--border)">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                <input v-model="f.name" placeholder="字段名称" style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:14px;outline:none">
+                <select v-model="f.type" style="padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;outline:none;background:white">
+                  <option value="text">文本</option>
+                  <option value="number">数字</option>
+                  <option value="select">下拉</option>
+                  <option value="checkbox">复选</option>
+                  <option value="date">日期</option>
+                  <option value="textarea">多行文本</option>
+                  <option value="currency">金额</option>
+                  <option value="email">邮箱</option>
+                  <option value="phone">电话</option>
+                  <option value="url">链接</option>
+                </select>
+                <button @click="removeField(i)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:16px;padding:4px">×</button>
+              </div>
+              <div v-if="f.type==='select'" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+                <input v-for="(opt, oi) in (f.options||[])" :key="oi" v-model="f.options[oi]"
+                  style="padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;width:80px;outline:none">
+                <button @click="f.options.push('选项'+(f.options.length+1))" style="padding:4px 8px;border:1px dashed var(--border);border-radius:4px;background:none;cursor:pointer;font-size:12px;color:var(--text-secondary)">+ 选项</button>
+              </div>
+            </div>
+            <div v-if="editingFields.length === 0" style="text-align:center;padding:40px;color:var(--text-secondary)">
+              暂无字段，点击上方「添加字段」开始
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:16px">
+            <button class="btn btn-secondary" @click="showFieldEditor=false">取消</button>
+            <button class="btn btn-primary" @click="saveFields" :disabled="savingFields">
+              {{ savingFields ? '保存中...' : '保存字段' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
   `,
   props: ['appId', 'tableId'],
@@ -742,7 +790,7 @@ const TableDetail = {
           await api.post(`/tables/${props.tableId}/records`, { data: formData.value });
           showToast('添加成功', 'success');
         }
-        closeModal(); loadRecords();
+        closeModal(); loadRecords(); if (viewMode.value === 'kanban') loadKanban(); if (viewMode.value === 'calendar') loadCalendar();
       } catch (e) { showToast(e.response?.data?.error || '保存失败', 'error'); }
       finally { saving.value = false; }
     }
@@ -907,19 +955,14 @@ const TableDetail = {
       showModal.value = true;
     }
 
-    // 保存记录后刷新看板/日历
-    const origSaveRecord = saveRecord;
-    async function saveRecord(...args) {
-      await origSaveRecord(...args);
-      if (viewMode.value === 'kanban') loadKanban();
-      if (viewMode.value === 'calendar') loadCalendar();
-    }
-
     // ========== 表单管理 ==========
     const showFormsPanel = ref(false);
     const forms = ref([]);
     const savingForm = ref(false);
     const newForm = ref({ name: '', description: '', allowed_fields: [] });
+    const showFieldEditor = ref(false);
+    const editingFields = ref([]);
+    const savingFields = ref(false);
 
     async function loadForms() {
       try {
@@ -966,10 +1009,36 @@ const TableDetail = {
     function copyFormUrl(key) {
       navigator.clipboard.writeText(formPublicUrl(key)).then(() => showToast('链接已复制', 'success'));
     }
+    function addNewField() { editingFields.value.push({ name: '', type: 'text', required: false, options: [] }); }
+    function removeField(i) { editingFields.value.splice(i, 1); }
+    async function saveFields() {
+      savingFields.value = true;
+      try {
+        await api.put(`/tables/${props.tableId}`, { fields: editingFields.value });
+        showToast('字段已保存', 'success');
+        showFieldEditor.value = false;
+        await loadTable();
+      } catch (e) { showToast('保存失败', 'error'); }
+      finally { savingFields.value = false; }
+    }
+    function exportCSV() {
+      const fields = table.value.fields || [];
+      const rows = [[...fields.map(f => f.name), 'ID', '创建时间']];
+      records.value.forEach(r => {
+        rows.push([...fields.map(f => r.data[f.name] || ''), r.id, r.created_at || '']);
+      });
+      const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${table.value.name || '导出数据'}.csv`;
+      a.click();
+      showToast('已导出 CSV', 'success');
+    }
 
     watch(showFormsPanel, (v) => { if (v) loadForms(); });
-
-    watch(() => props.tableId, () => { showFormsPanel.value = false; });
+    watch(showFieldEditor, (v) => { if (v) editingFields.value = JSON.parse(JSON.stringify(table.value.fields || [])); });
+    watch(() => props.tableId, () => { showFormsPanel.value = false; showFieldEditor.value = false; });
 
     watch(() => table.value.fields, (fields) => {
       // 默认全选所有字段
@@ -984,6 +1053,7 @@ const TableDetail = {
       switchView, loadKanban, kanbanDragStart, kanbanDragOver, kanbanDragLeave, kanbanDrop, openAddForColumn,
       calDateField, calYear, calMonth, calCells, calDateFields, calPrevMonth, calNextMonth, calToday, loadCalendar, openAddForDate,
       showFormsPanel, forms, savingForm, newForm, createForm, deleteForm, toggleFormField, formPublicUrl, copyFormUrl,
+      showFieldEditor, editingFields, savingFields, addNewField, removeField, saveFields, exportCSV,
     };
   }
 };
@@ -1097,10 +1167,13 @@ const App = {
     }
     function navigate() { route.value = parseRoute(location.hash.slice(1) || 'dashboard'); }
     function logout() { localStorage.removeItem('lingda_token'); location.hash = '#login'; location.reload(); }
+    function goDashboard() { location.hash = '#dashboard'; }
+    function goAppFromMobile() { if (routeParams.value?.appId) location.hash = '#app/' + routeParams.value.appId; }
+    function confirmLogout() { if (confirm('确定退出登录？')) logout(); }
     onMounted(async () => { await checkAuth(); window.addEventListener('hashchange', navigate); });
     const currentView = computed(() => typeof route.value === 'string' ? route.value : (route.value?.view || null));
     const routeParams = computed(() => typeof route.value === 'object' ? route.value : null);
-    return { view: route, currentView, routeParams, logout };
+    return { view: route, currentView, routeParams, logout, goDashboard, goAppFromMobile, confirmLogout };
   },
   template: `
     <auth-page v-if="view==='login'" />
@@ -1112,7 +1185,7 @@ const App = {
           <span>NoCode 平台</span>
         </div>
         <div class="sidebar-nav">
-          <div class="sidebar-item" :class="{active: currentView==='dashboard'}" @click="location.hash='#dashboard'">
+          <div class="sidebar-item" :class="{active: currentView==='dashboard'}" @click="goDashboard">
             <i class="□"></i> 我的应用
           </div>
           <div style="margin-top:auto;padding-top:16px;border-top:1px solid var(--border)">
@@ -1136,15 +1209,15 @@ const App = {
       </div>
       <!-- 手机底部导航 -->
       <nav class="mobile-nav">
-        <div class="mobile-nav-item" :class="{active: currentView==='dashboard'}" @click="location.hash='#dashboard'">
+        <div class="mobile-nav-item" :class="{active: currentView==='dashboard'}" @click="goDashboard">
           <i class="□"></i>
           <span>应用</span>
         </div>
-        <div class="mobile-nav-item" v-if="currentView!=='dashboard'" @click="location.hash='#app/'+(routeParams?.appId||'')">
+        <div class="mobile-nav-item" v-if="currentView!=='dashboard'" @click="goAppFromMobile">
           <i class="⊕"></i>
           <span>数据表</span>
         </div>
-        <div class="mobile-nav-item" @click="confirm('确定退出登录？')&&logout()">
+        <div class="mobile-nav-item" @click="confirmLogout">
           <i class="👤"></i>
           <span>我的</span>
         </div>
