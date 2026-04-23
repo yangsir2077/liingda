@@ -1869,6 +1869,7 @@ const App = {
       } catch { localStorage.removeItem('lingda_token'); route.value = 'login'; }
     }
     function goProfile() { loc().hash = '#profile'; }
+    function goAdmin() { loc().hash = '#admin'; }
     function navigate() { route.value = parseRoute(loc().hash.slice(1) || 'dashboard'); }
     function logout() { localStorage.removeItem('lingda_token'); loc().hash = '#login'; loc().reload(); }
     function goDashboard() { loc().hash = '#dashboard'; }
@@ -1877,7 +1878,7 @@ const App = {
     onMounted(async () => { await checkAuth(); window.addEventListener('hashchange', navigate); });
     const currentView = computed(() => typeof route.value === 'string' ? route.value : (route.value?.view || null));
     const routeParams = computed(() => typeof route.value === 'object' ? route.value : null);
-    return { view: route, currentView, routeParams, logout, goDashboard, goAppFromMobile, confirmLogout, goProfile, currentUser };
+    return { view: route, currentView, routeParams, logout, goDashboard, goAppFromMobile, confirmLogout, goProfile, goAdmin, currentUser };
   },
   template: `
     <auth-page v-if="view==='login'" />
@@ -1892,7 +1893,7 @@ const App = {
           <div class="sidebar-item" :class="{active: currentView==='dashboard'}" @click="goDashboard">
             <i class="□"></i> 我的应用
           </div>
-          <div v-if="currentUser?.is_admin" class="sidebar-item" :class="{active: currentView==='admin'}" @click="loc().hash='#admin'">
+          <div v-if="currentUser?.is_admin" class="sidebar-item" :class="{active: currentView==='admin'}" @click="goAdmin">
             <i class="□"></i> 控制台
           </div>
           <div style="margin-top:auto;padding-top:16px;border-top:1px solid var(--border)">
