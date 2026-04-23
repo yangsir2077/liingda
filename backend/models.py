@@ -27,6 +27,7 @@ class User(db.Model):
             'email': self.email,
             'name': self.name,
             'email_verified': self.email_verified,
+            'is_admin': self.is_admin,
             'created_at': self.created_at.isoformat() if self.created_at else None,
         }
 
