@@ -1675,104 +1675,71 @@ const ProfileView = {
 const AdminPanel = {
   template: `
     <div class="page-content">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
         <div>
-          <h2 style="font-size:22px;font-weight:800;margin:0">控制台</h2>
+          <h2 style="font-size:20px;font-weight:800;margin:0">控制台</h2>
           <p style="color:var(--text-secondary);font-size:13px;margin:4px 0 0">平台运营数据总览</p>
         </div>
-        <button class="btn btn-secondary" @click="goBack" style="padding:8px 16px;border-radius:10px">← 返回</button>
+        <button class="btn btn-secondary" @click="goBack">← 返回</button>
       </div>
 
       <!-- 统计卡片 -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;margin-bottom:28px">
-        <div class="stat-card">
-          <div style="font-size:32px;margin-bottom:8px">👥</div>
-          <div style="font-size:28px;font-weight:800;color:var(--primary)">{{ stats.users?.total || 0 }}</div>
-          <div style="font-size:13px;color:var(--text-secondary);margin-top:4px">总用户数</div>
-          <div style="font-size:12px;color:var(--accent);margin-top:4px">今日 +{{ stats.users?.new_today || 0 }}</div>
-        </div>
-        <div class="stat-card">
-          <div style="font-size:32px;margin-bottom:8px">📋</div>
-          <div style="font-size:28px;font-weight:800;color:var(--primary)">{{ stats.apps?.total || 0 }}</div>
-          <div style="font-size:13px;color:var(--text-secondary);margin-top:4px">应用总数</div>
-        </div>
-        <div class="stat-card">
-          <div style="font-size:32px;margin-bottom:8px">🗄️</div>
-          <div style="font-size:28px;font-weight:800;color:var(--primary)">{{ stats.tables?.total || 0 }}</div>
-          <div style="font-size:13px;color:var(--text-secondary);margin-top:4px">数据表</div>
-        </div>
-        <div class="stat-card">
-          <div style="font-size:32px;margin-bottom:8px">📝</div>
-          <div style="font-size:28px;font-weight:800;color:var(--primary)">{{ stats.records?.total || 0 }}</div>
-          <div style="font-size:13px;color:var(--text-secondary);margin-top:4px">数据记录</div>
-        </div>
-        <div class="stat-card">
-          <div style="font-size:32px;margin-bottom:8px">📤</div>
-          <div style="font-size:28px;font-weight:800;color:var(--primary)">{{ stats.forms?.total || 0 }}</div>
-          <div style="font-size:13px;color:var(--text-secondary);margin-top:4px">公开表单</div>
-        </div>
-      </div>
-
-      <!-- 用户趋势图 -->
-      <div style="background:var(--surface);border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:28px">
-        <div style="font-weight:700;font-size:15px;margin-bottom:16px">📈 近7天用户增长</div>
-        <div style="display:flex;align-items:flex-end;gap:12px;height:100px">
-          <div v-for="day in stats.user_chart" :key="day.date" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
-            <div style="width:100%;background:var(--primary);border-radius:6px 6px 0 0;min-height:4px" :style="{height: Math.max(8, (day.count / maxChartVal) * 80) + 'px'}"></div>
-            <span style="font-size:11px;color:var(--text-secondary)">{{ day.date.slice(5) }}</span>
-            <span style="font-size:12px;font-weight:700;color:var(--primary)">{{ day.count }}</span>
-          </div>
-        </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;margin-bottom:24px">
+        <div class="stat-card"><div style="font-size:28px">👥</div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.users ? stats.users.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">总用户</div></div>
+        <div class="stat-card"><div style="font-size:28px">📋</div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.apps ? stats.apps.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">应用</div></div>
+        <div class="stat-card"><div style="font-size:28px">🗄️</div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.tables ? stats.tables.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">数据表</div></div>
+        <div class="stat-card"><div style="font-size:28px">📝</div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.records ? stats.records.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">记录</div></div>
+        <div class="stat-card"><div style="font-size:28px">📤</div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.forms ? stats.forms.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">公开表单</div></div>
       </div>
 
       <!-- 用户列表 -->
-      <div style="background:var(--surface);border-radius:16px;padding:24px;border:1px solid var(--border)">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
-          <div style="font-weight:700;font-size:15px">👥 用户列表</div>
-          <div style="display:flex;gap:10px;align-items:center">
-            <input v-model="search" @input="debounceSearch" placeholder="搜索用户..." style="padding:8px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none;width:180px">
-          </div>
+      <div style="background:var(--surface);border-radius:16px;padding:20px;border:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+          <div style="font-weight:700">用户列表</div>
+          <input v-model="searchKw" @input="doSearch" placeholder="搜索用户..." style="padding:7px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;outline:none">
         </div>
         <div style="overflow-x:auto">
-          <table style="width:100%;border-collapse:collapse;min-width:600px">
+          <table style="width:100%;border-collapse:collapse;min-width:500px">
             <thead>
               <tr style="background:var(--bg)">
-                <th style="padding:10px 14px;text-align:left;font-size:13px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border)">用户</th>
-                <th style="padding:10px 14px;text-align:left;font-size:13px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border)">应用数</th>
-                <th style="padding:10px 14px;text-align:left;font-size:13px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border)">状态</th>
-                <th style="padding:10px 14px;text-align:left;font-size:13px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border)">注册时间</th>
-                <th style="padding:10px 14px;text-align:left;font-size:13px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border)">操作</th>
+                <th style="padding:9px 12px;text-align:left;font-size:12px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border)">用户</th>
+                <th style="padding:9px 12px;text-align:left;font-size:12px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border)">应用</th>
+                <th style="padding:9px 12px;text-align:left;font-size:12px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border)">状态</th>
+                <th style="padding:9px 12px;text-align:left;font-size:12px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border)">注册时间</th>
+                <th style="padding:9px 12px;text-align:left;font-size:12px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border)">操作</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="u in users" :key="u.id" style="border-bottom:1px solid var(--border)">
-                <td style="padding:12px 14px">
+                <td style="padding:10px 12px">
                   <div style="font-weight:600;font-size:14px">{{ u.name || '未命名' }}</div>
                   <div style="font-size:12px;color:var(--text-secondary)">{{ u.email }}</div>
                 </td>
-                <td style="padding:12px 14px;font-weight:600;color:var(--primary)">{{ u.app_count }}</td>
-                <td style="padding:12px 14px">
-                  <span v-if="u.email_verified" style="padding:3px 10px;background:#D1FAE5;color:#065F46;border-radius:20px;font-size:12px;font-weight:600">已验证</span>
-                  <span v-else style="padding:3px 10px;background:#FEF3C7;color:#92400E;border-radius:20px;font-size:12px;font-weight:600">未验证</span>
-                  <span v-if="u.is_admin" style="padding:3px 8px;background:var(--primary);color:white;border-radius:20px;font-size:11px;font-weight:600;margin-left:4px">管理员</span>
+                <td style="padding:10px 12px;font-weight:600;color:var(--primary)">{{ u.app_count }}</td>
+                <td style="padding:10px 12px">
+                  <span v-if="u.email_verified" style="padding:2px 8px;background:#D1FAE5;color:#065F46;border-radius:12px;font-size:11px;font-weight:600">已验证</span>
+                  <span v-else style="padding:2px 8px;background:#FEF3C7;color:#92400E;border-radius:12px;font-size:11px;font-weight:600">未验证</span>
+                  <span v-if="u.is_admin" style="padding:2px 6px;background:var(--primary);color:white;border-radius:12px;font-size:11px;font-weight:600;margin-left:3px">管理员</span>
                 </td>
-                <td style="padding:12px 14px;font-size:13px;color:var(--text-secondary)">{{ u.created_at ? u.created_at.slice(0,10) : '—' }}</td>
-                <td style="padding:12px 14px">
-                  <button @click="toggleAdmin(u)" :disabled="u.id===currentUserId" style="padding:4px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;font-weight:600" :style="u.is_admin ? 'color:var(--danger);border-color:var(--danger)' : 'color:var(--primary);border-color:var(--primary)'" :title="u.is_admin ? '撤销管理员' : '设为管理员'">
-                    {{ u.is_admin ? '撤销admin' : '设为admin' }}
+                <td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">{{ u.created_at ? u.created_at.slice(0,10) : '—' }}</td>
+                <td style="padding:10px 12px">
+                  <button v-if="u.id !== myId" @click="toggleAdmin(u)" style="padding:3px 10px;background:var(--bg);border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:12px" :style="u.is_admin ? 'color:var(--danger);border-color:var(--danger)' : 'color:var(--primary);border-color:var(--primary)'">
+                    {{ u.is_admin ? '撤销' : '设为管理员' }}
                   </button>
                 </td>
+              </tr>
+              <tr v-if="!users.length">
+                <td colspan="5" style="padding:32px;text-align:center;color:var(--text-secondary)">暂无用户</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <!-- 分页 -->
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;flex-wrap:wrap;gap:12px">
-          <span style="font-size:13px;color:var(--text-secondary)">共 {{ totalUsers }} 位用户</span>
-          <div style="display:flex;gap:8px">
-            <button @click="page--;loadUsers()" :disabled="page<=1" style="padding:6px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px" :disabled="page<=1">上一页</button>
-            <span style="padding:6px 12px;font-size:13px;font-weight:600">第 {{ page }} / {{ totalPages }} 页</span>
-            <button @click="page++;loadUsers()" :disabled="page>=totalPages" style="padding:6px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px">下一页</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;flex-wrap:wrap;gap:10px">
+          <span style="font-size:12px;color:var(--text-secondary)">共 {{ totalUsers }} 位用户</span>
+          <div style="display:flex;gap:6px">
+            <button @click="prevPage" :disabled="page <= 1" style="padding:5px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:12px">上一页</button>
+            <span style="padding:5px 10px;font-size:12px;font-weight:600">{{ page }} / {{ totalPages }}</span>
+            <button @click="nextPage" :disabled="page >= totalPages" style="padding:5px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:12px">下一页</button>
           </div>
         </div>
       </div>
@@ -1784,57 +1751,55 @@ const AdminPanel = {
     const totalUsers = ref(0);
     const totalPages = ref(1);
     const page = ref(1);
-    const search = ref('');
-    const currentUserId = ref(null);
+    const searchKw = ref('');
+    const myId = ref(null);
     let searchTimer = null;
 
-    function maxChartVal() {
-      const vals = stats.value.user_chart?.map(d => d.count) || [0];
-      return Math.max(...vals, 1);
-    }
+    function loc() { return (typeof location !== 'undefined') ? location : { hash: { slice: () => 'dashboard' }, reload: () => {} }; }
 
     async function loadStats() {
       try {
         const res = await api.get('/admin/stats');
         stats.value = res.data;
-      } catch (e) { showToast('加载统计失败', 'error'); }
+      } catch (e) { console.error('加载统计失败', e); }
     }
 
     async function loadUsers() {
       try {
-        const res = await api.get('/admin/users', { params: { page: page.value, search: search.value } });
+        const res = await api.get('/admin/users', { params: { page: page.value, search: searchKw.value } });
         users.value = res.data.users;
         totalUsers.value = res.data.total;
         totalPages.value = res.data.pages;
-      } catch (e) { showToast('加载用户列表失败', 'error'); }
+      } catch (e) { console.error('加载用户失败', e); }
     }
 
-    function debounceSearch() {
+    function doSearch() {
       clearTimeout(searchTimer);
       searchTimer = setTimeout(() => { page.value = 1; loadUsers(); }, 400);
     }
 
+    function prevPage() { if (page.value > 1) { page.value--; loadUsers(); } }
+    function nextPage() { if (page.value < totalPages.value) { page.value++; loadUsers(); } }
+
     async function toggleAdmin(u) {
-      if (u.id === currentUserId.value) return;
       try {
-        await api.post(`/admin/users/${u.id}/toggle-admin`);
+        await api.post('/admin/users/' + u.id + '/toggle-admin');
         u.is_admin = !u.is_admin;
-        showToast(u.is_admin ? '已设为管理员' : '已撤销管理员权限', 'success');
-      } catch (e) { showToast(e.response?.data?.error || '操作失败', 'error'); }
+      } catch (e) { showToast(e.response && e.response.data && e.response.data.error || '操作失败', 'error'); }
     }
 
-    function goBack() { history.back(); }
+    function goBack() { loc().hash = '#dashboard'; }
 
     onMounted(async () => {
       try {
         const me = await api.get('/auth/me');
-        currentUserId.value = me.data.id;
+        myId.value = me.data.id;
       } catch {}
       loadStats();
       loadUsers();
     });
 
-    return { stats, users, totalUsers, totalPages, page, search, currentUserId, loadStats, loadUsers, debounceSearch, toggleAdmin, goBack, maxChartVal };
+    return { stats, users, totalUsers, totalPages, page, searchKw, myId, doSearch, prevPage, nextPage, toggleAdmin, goBack };
   }
 };
 
