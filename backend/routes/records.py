@@ -139,6 +139,42 @@ def kanban_move(record_id):
     return jsonify(record.to_dict())
 
 
+@records_bp.route('/tables/<int:table_id>/calendar', methods=['GET'])
+@jwt_required()
+def calendar_view(table_id):
+    """获取日历数据，按日期字段聚合记录"""
+    user_id = get_jwt_identity()
+    table = Table.query.get_or_404(table_id)
+    App.query.filter_by(id=table.app_id, user_id=user_id).first_or_404()
+
+    date_field = request.args.get('date_field', None)
+    year = request.args.get('year', type=int)
+    month = request.args.get('month', type=int)
+
+    records = Record.query.filter_by(table_id=table_id).order_by(Record.created_at.desc()).all()
+
+    fields = json.loads(table.fields) if table.fields else []
+    field_meta = next((f for f in fields if f['name'] == date_field), None) if date_field else None
+
+    if not date_field:
+        return jsonify({'events': [], 'date_field': None, 'field_meta': None})
+
+    # 按日期分组
+    from collections import defaultdict
+    events_map = defaultdict(list)
+    for r in records:
+        rd = json.loads(r.data) if r.data else {}
+        d = rd.get(date_field, None)
+        if d:
+            events_map[d].append(r.to_dict())
+
+    return jsonify({
+        'events': [{'date': k, 'records': v} for k, v in events_map.items()],
+        'date_field': date_field,
+        'field_meta': field_meta,
+    })
+
+
 @records_bp.route('/records/<int:record_id>', methods=['DELETE'])
 @jwt_required()
 def delete_record(record_id):

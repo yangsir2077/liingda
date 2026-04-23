@@ -574,11 +574,45 @@ const TableDetail = {
 
       <!-- 日历视图 -->
       <template v-else-if="viewMode === 'calendar'">
-        <div style="text-align:center;padding:80px 20px;color:var(--text-secondary);border:2px dashed var(--border);border-radius:16px;">
+        <div style="margin-bottom:16px">
+          <select v-model="calDateField" @change="loadCalendar" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;background:white;max-width:200px;margin-right:12px">
+            <option value="">选择日期字段</option>
+            <option v-for="f in calDateFields" :key="f.name" :value="f.name">{{ f.name }}</option>
+          </select>
+          <button @click="calPrevMonth" style="padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:white;cursor:pointer;font-size:16px">‹</button>
+          <span style="margin:0 16px;font-weight:700;font-size:16px;min-width:120px;display:inline-block;text-align:center">{{ calYear }}年 {{ calMonth+1 }}月</span>
+          <button @click="calNextMonth" style="padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:white;cursor:pointer;font-size:16px">›</button>
+          <button @click="calToday" style="padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:white;cursor:pointer;font-size:13px;margin-left:8px">今天</button>
+        </div>
+        <div v-if="!calDateField" style="text-align:center;padding:60px 20px;color:var(--text-secondary);border:2px dashed var(--border);border-radius:16px;">
           <div style="font-size:56px;margin-bottom:16px">📅</div>
-          <h3 style="margin-bottom:8px;color:var(--text);font-size:18px;font-weight:700">日历视图</h3>
-          <p>支持按日期字段分组展示记录<br>适合日程、会议、里程碑等场景</p>
-          <p style="margin-top:12px;font-size:13px">需要数据表包含「日期」类型的字段才能启用</p>
+          <p>请选择上方下拉框中的日期字段来开启日历视图</p>
+        </div>
+        <div v-else style="border:1.5px solid var(--border);border-radius:12px;overflow:hidden">
+          <!-- 星期头 -->
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg-secondary);border-bottom:1.5px solid var(--border)">
+            <div v-for="d in ['一','二','三','四','五','六','日']" :key="d" style="padding:10px 4px;text-align:center;font-weight:700;font-size:13px;color:var(--text-secondary)">{{ d }}</div>
+          </div>
+          <!-- 日期格子 -->
+          <div style="display:grid;grid-template-columns:repeat(7,1fr)">
+            <div v-for="(cell,ci) in calCells" :key="ci"
+              :style="{
+                'min-height':'90px','border-right':'1px solid var(--border)','border-bottom':'1px solid var(--border)',
+                'padding':'6px','background': cell.isToday?'rgba(79,70,229,0.05)': cell.isOtherMonth?'var(--bg-secondary)':'white',
+                'opacity': cell.isOtherMonth ? 0.5 : 1
+              }"
+              :class="'cell' + (ci%7===6?' cell-sun':'') + (ci%7===5?' cell-sat':'')">
+              <div style="font-size:13px;font-weight:600;margin-bottom:4px"
+                :style="{'color': ci%7===6?'#DC2626': ci%7===5?'#059669':'var(--text-secondary)'}">{{ cell.day }}</div>
+              <div v-for="ev in cell.events.slice(0,3)" :key="ev.id"
+                @click="editRecord(ev)"
+                style="font-size:11px;padding:2px 5px;border-radius:4px;margin-bottom:2px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
+                :style="{'background':ev._color||'#4F46E5','color':'white'}">{{ ev._label||'记录' }}</div>
+              <div v-if="cell.events.length > 3" style="font-size:11px;color:var(--text-secondary);padding:2px 5px">+{{ cell.events.length-3 }} 更多</div>
+              <button v-if="cell.dateStr" @click="openAddForDate(cell.dateStr)"
+                style="margin-top:4px;width:100%;padding:3px;border:1px dashed var(--border);border-radius:6px;background:transparent;cursor:pointer;font-size:12px;opacity:0.6;color:var(--text-secondary)">+</button>
+            </div>
+          </div>
         </div>
       </template>
 
@@ -678,6 +712,11 @@ const TableDetail = {
           kanbanGroupBy.value = kanbanFields.value[0].name;
         }
         loadKanban();
+      } else if (mode === 'calendar') {
+        if (!calDateField.value && calDateFields.value.length > 0) {
+          calDateField.value = calDateFields.value[0].name;
+        }
+        loadCalendar();
       }
     }
 
@@ -725,11 +764,96 @@ const TableDetail = {
       showModal.value = true;
     }
 
-    // 保存记录后刷新看板
+    // ========== 日历视图 ==========
+    const calDateField = ref('');
+    const calYear = ref(new Date().getFullYear());
+    const calMonth = ref(new Date().getMonth());
+    const calCells = ref([]);
+    const calEventsMap = ref({});
+    const calEventColors = ['#4F46E5','#059669','#D97706','#DC2626','#0891B2','#7C3AED','#DB2777','#0D9488'];
+
+    const calDateFields = computed(() => (table.value.fields || []).filter(f => f.type === 'date'));
+
+    function buildCalCells() {
+      const y = calYear.value, m = calMonth.value;
+      const firstDay = new Date(y, m, 1);
+      const lastDay = new Date(y, m + 1, 0);
+      // 星期几 (0=Sun..6=Sat)，转换为周一=0
+      let startDow = firstDay.getDay();
+      startDow = startDow === 0 ? 6 : startDow - 1;
+      const cells = [];
+      // 上月补齐
+      for (let i = startDow - 1; i >= 0; i--) {
+        const d = new Date(y, m, -i);
+        const ds = fmtDate(d);
+        cells.push({ day: d.getDate(), dateStr: null, isOtherMonth: true, isToday: false, events: calEventsMap.value[ds] || [] });
+      }
+      // 当月
+      const today = new Date();
+      for (let d = 1; d <= lastDay.getDate(); d++) {
+        const dd = new Date(y, m, d);
+        const ds = fmtDate(dd);
+        const isToday = dd.getFullYear() === today.getFullYear() && dd.getMonth() === today.getMonth() && dd.getDate() === today.getDate();
+        cells.push({ day: d, dateStr: ds, isOtherMonth: false, isToday, events: calEventsMap.value[ds] || [] });
+      }
+      // 下月补齐到42格
+      while (cells.length < 42) {
+        const d = new Date(y, m + 1, cells.length - startDow - lastDay.getDate() + 1);
+        const ds = fmtDate(d);
+        cells.push({ day: d.getDate(), dateStr: null, isOtherMonth: true, isToday: false, events: calEventsMap.value[ds] || [] });
+      }
+      calCells.value = cells;
+    }
+
+    function fmtDate(d) {
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    async function loadCalendar() {
+      if (!calDateField.value) return;
+      try {
+        const res = await api.get(`/tables/${props.tableId}/calendar`, { params: { date_field: calDateField.value } });
+        const em = {};
+        (res.data.events || []).forEach((ev, ei) => {
+          em[ev.date] = (ev.records || []).map(r => ({
+            ...r,
+            _label: r.data[calDateField.value] ? r.data[calDateField.value] : '记录',
+            _color: calEventColors[ei % calEventColors.length],
+          }));
+        });
+        calEventsMap.value = em;
+        buildCalCells();
+      } catch (e) { showToast('加载日历失败', 'error'); }
+    }
+
+    function calPrevMonth() {
+      if (calMonth.value === 0) { calMonth.value = 11; calYear.value--; }
+      else calMonth.value--;
+      buildCalCells();
+    }
+    function calNextMonth() {
+      if (calMonth.value === 11) { calMonth.value = 0; calYear.value++; }
+      else calMonth.value++;
+      buildCalCells();
+    }
+    function calToday() {
+      const t = new Date();
+      calYear.value = t.getFullYear();
+      calMonth.value = t.getMonth();
+      buildCalCells();
+    }
+    function openAddForDate(dateStr) {
+      editingRecord.value = null;
+      formData.value = { [calDateField.value]: dateStr };
+      showModal.value = true;
+    }
+
+    // 保存记录后刷新看板/日历
     const origSaveRecord = saveRecord;
     async function saveRecord(...args) {
       await origSaveRecord(...args);
       if (viewMode.value === 'kanban') loadKanban();
+      if (viewMode.value === 'calendar') loadCalendar();
     }
 
     watch(() => props.tableId, () => { loadTable(); loadRecords(); }, { immediate: true });
@@ -738,6 +862,7 @@ const TableDetail = {
       viewMode, kanbanGroupBy, kanbanColumns, kanbanFields, draggingId, dragOverColumn,
       debounceSearch, openAdd, editRecord, saveRecord, deleteRecord, closeModal, loadRecords, goBack,
       switchView, loadKanban, kanbanDragStart, kanbanDragOver, kanbanDragLeave, kanbanDrop, openAddForColumn,
+      calDateField, calYear, calMonth, calCells, calDateFields, calPrevMonth, calNextMonth, calToday, loadCalendar, openAddForDate,
     };
   }
 };
