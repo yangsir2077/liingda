@@ -12,6 +12,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(256), nullable=False)
     name = db.Column(db.String(80), nullable=True)
     email_verified = db.Column(db.Boolean, default=False)          # 邮箱是否已验证
+    is_admin = db.Column(db.Boolean, default=False)                   # 是否为管理员
     verification_code = db.Column(db.String(6), nullable=True)       # 邮箱验证码
     verification_expires = db.Column(db.DateTime, nullable=True)     # 验证码过期时间
     reset_code = db.Column(db.String(6), nullable=True)              # 密码重置验证码

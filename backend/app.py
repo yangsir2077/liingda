@@ -12,6 +12,7 @@ from models import db
 from routes.apps import apps_bp
 from routes.tables import tables_bp
 from routes.records import records_bp
+from routes.admin import admin_bp
 from routes.forms import forms_bp
 from routes.members import members_bp
 
@@ -254,6 +255,7 @@ def create_app():
     app.register_blueprint(records_bp, url_prefix='/api')
     app.register_blueprint(forms_bp, url_prefix='/api')
     app.register_blueprint(members_bp, url_prefix='/api')
+    app.register_blueprint(admin_bp, url_prefix='/api')
 
     # 健康检查
     @app.route('/api/health')
