@@ -40,12 +40,12 @@ const ICON_OPTIONS = [
   { icon: '⊕', label: '客户', bg: '#E0F2FE', color: '#0891B2' },
   { icon: '≡', label: '数据', bg: '#D1FAE5', color: '#059669' },
   { icon: '◫', label: '项目', bg: '#FEF3C7', color: '#D97706' },
-  { icon: '☑', label: '日程', bg: '#F3E8FF', color: '#7C3AED' },
+  { icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>', label: '日程', bg: '#F3E8FF', color: '#7C3AED' },
   { icon: '¥', label: '财务', bg: '#FEE2E2', color: '#DC2626' },
   { icon: '◫', label: '库存', bg: '#FFEDD5', color: '#EA580C' },
-  { icon: '⚙', label: '行政', bg: '#F1F5F9', color: '#64748B' },
-  { icon: '✉', label: '客服', bg: '#FCE7F3', color: '#DB2777' },
-  { icon: '✎', label: '培训', bg: '#CCFBF1', color: '#0D9488' },
+  { icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>', label: '行政', bg: '#F1F5F9', color: '#64748B' },
+  { icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>', label: '客服', bg: '#FCE7F3', color: '#DB2777' },
+  { icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>', label: '培训', bg: '#CCFBF1', color: '#0D9488' },
   { icon: '◁', label: '物流', bg: '#EDE9FE', color: '#9333EA' },
   { icon: '◧', label: '工具', bg: '#E2E8F0', color: '#475569' },
 ];
@@ -116,7 +116,7 @@ const AuthPage = {
         <!-- ===== 验证邮箱 ===== -->
         <form v-else-if="step==='verify'" @submit.prevent="doVerify">
           <div style="text-align:center;margin-bottom:20px">
-            <div style="font-size:40px;margin-bottom:12px">📧</div>
+            <div style="font-size:40px;margin-bottom:12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
             <p style="color:var(--text);font-size:15px;font-weight:600;margin:0 0 8px">验证您的邮箱</p>
             <p style="color:var(--text-secondary);font-size:13px;margin:0">验证码已发送至</p>
             <p style="color:var(--primary);font-weight:700;font-size:15px;margin:4px 0 0">{{ pendingEmail }}</p>
@@ -144,7 +144,7 @@ const AuthPage = {
         <form v-else-if="step==='reset'" @submit.prevent="doReset">
           <div v-if="!resetSent">
             <div style="text-align:center;margin-bottom:20px">
-              <div style="font-size:40px;margin-bottom:12px">🔑</div>
+              <div style="font-size:40px;margin-bottom:12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></div>
               <p style="color:var(--text);font-size:15px;font-weight:600;margin:0 0 8px">重置密码</p>
               <p style="color:var(--text-secondary);font-size:13px;margin:0">输入您注册的邮箱，我们会发送验证码</p>
             </div>
@@ -158,7 +158,7 @@ const AuthPage = {
           </div>
           <div v-else>
             <div style="text-align:center;margin-bottom:20px">
-              <div style="font-size:40px;margin-bottom:12px">📧</div>
+              <div style="font-size:40px;margin-bottom:12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
               <p style="color:var(--text);font-size:15px;font-weight:600;margin:0 0 8px">输入验证码</p>
               <p style="color:var(--text-secondary);font-size:13px;margin:0">验证码已发送至 {{ resetEmail }}</p>
             </div>
@@ -183,7 +183,7 @@ const AuthPage = {
 
         <!-- ===== 成功 ===== -->
         <div v-else-if="step==='done'" style="text-align:center;padding:20px 0">
-          <div style="font-size:56px;margin-bottom:16px">🎉</div>
+          <div style="font-size:56px;margin-bottom:16px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.8 11.3 2 22l10.7-3.79M4 3h.01M8 7h4m4 0h.01M11 11h.01M20.7 3a9 9 0 0 1 0 13.3"/><path d="M14 3a9 9 0 0 1-2.6 5.5L20 22"/></svg></div>
           <h3 style="color:var(--text);margin:0 0 8px">{{ successMsg }}</h3>
           <p style="color:var(--text-secondary);font-size:14px;margin:0 0 24px">即将跳转...</p>
         </div>
@@ -392,16 +392,16 @@ const AppList = {
       {icon:'⊕',label:'客户',bg:'#E0F2FE',color:'#0891B2'},
       {icon:'≡',label:'数据',bg:'#D1FAE5',color:'#059669'},
       {icon:'◫',label:'项目',bg:'#FEF3C7',color:'#D97706'},
-      {icon:'☑',label:'日程',bg:'#F3E8FF',color:'#7C3AED'},
+      {icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>',label:'日程',bg:'#F3E8FF',color:'#7C3AED'},
       {icon:'¥',label:'财务',bg:'#FEE2E2',color:'#DC2626'},
       {icon:'▣',label:'库存',bg:'#FFEDD5',color:'#EA580C'},
-      {icon:'⚙',label:'行政',bg:'#F1F5F9',color:'#64748B'},
-      {icon:'✉',label:'客服',bg:'#FCE7F3',color:'#DB2777'},
-      {icon:'✎',label:'培训',bg:'#CCFBF1',color:'#0D9488'},
+      {icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',label:'行政',bg:'#F1F5F9',color:'#64748B'},
+      {icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',label:'客服',bg:'#FCE7F3',color:'#DB2777'},
+      {icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',label:'培训',bg:'#CCFBF1',color:'#0D9488'},
       {icon:'◁',label:'物流',bg:'#EDE9FE',color:'#9333EA'},
       {icon:'◧',label:'工具',bg:'#E2E8F0',color:'#475569'},
     ];
-    const ICON_LIST = '▤⊕▊◫☑¥⚙✉✎◁⚡◈⬡✧◎⬢✶☰◆▣'.split('');
+    const ICON_LIST = '▤⊕▊◫<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>¥<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>◁<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>◈⬡<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>◎⬢<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>◆▣'.split('');
 
     async function load() {
       try { const r = await api.get('/apps'); apps.value = r.data; }
@@ -451,7 +451,7 @@ const AppDetail = {
             <span style="font-size:18px;line-height:1;font-weight:700">+</span> 添加数据表
           </button>
           <button class="btn btn-secondary" @click="showMembers=true" style="font-size:14px;padding:10px 18px;">
-            👥 成员
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> 成员
           </button>
         </div>
       </div>
@@ -460,7 +460,7 @@ const AppDetail = {
       <div class="modal-overlay" v-if="showMembers" @click.self="showMembers=false">
         <div class="modal" style="max-width:560px">
           <div class="modal-header">
-            <div class="modal-title">👥 应用成员</div>
+            <div class="modal-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> 应用成员</div>
             <button class="modal-close" @click="showMembers=false">×</button>
           </div>
           <!-- 邀请新成员 -->
@@ -498,24 +498,24 @@ const AppDetail = {
       <div v-if="tables.length">
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
           <div class="table-item" v-for="t in tables" :key="t.id" @click="openTable(t)" style="cursor:pointer">
-            <div style="width:48px;height:48px;background:linear-gradient(135deg,#4F46E5,#7C3AED);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;flex-shrink:0;box-shadow:0 2px 8px rgba(79,70,229,0.3)">📊</div>
+            <div style="width:48px;height:48px;background:linear-gradient(135deg,#4F46E5,#7C3AED);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;flex-shrink:0;box-shadow:0 2px 8px rgba(79,70,229,0.3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
             <div style="flex:1;min-width:0">
               <div style="font-weight:700;font-size:15px;margin-bottom:4px">{{ t.name }}</div>
               <div style="font-size:12px;color:var(--text-secondary)">{{ t.record_count }} 条记录 · {{ t.fields?.length || 0 }} 个字段</div>
             </div>
             <div style="display:flex;gap:6px;flex-shrink:0">
-              <button @click.stop="editTable(t)" style="background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px;transition:all 0.15s" onmouseover="this.style.borderColor='var(--primary)',this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--border)',this.style.color='var(--text)'">✏️ 编辑</button>
-              <button @click.stop="deleteTable(t)" style="background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px;color:var(--danger);transition:all 0.15s" onmouseover="this.style.borderColor='var(--danger)',this.style.background='#FEF2F2'" onmouseout="this.style.borderColor='var(--border)',this.style.background='var(--bg)'">🗑️ 删除</button>
+              <button @click.stop="editTable(t)" style="background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px;transition:all 0.15s" onmouseover="this.style.borderColor='var(--primary)',this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--border)',this.style.color='var(--text)'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>️ 编辑</button>
+              <button @click.stop="deleteTable(t)" style="background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px;color:var(--danger);transition:all 0.15s" onmouseover="this.style.borderColor='var(--danger)',this.style.background='#FEF2F2'" onmouseout="this.style.borderColor='var(--border)',this.style.background='var(--bg)'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>️ 删除</button>
             </div>
           </div>
         </div>
       </div>
       <div class="empty-state" v-else>
-        <div style="font-size:56px;margin-bottom:16px;">🗄️</div>
+        <div style="font-size:56px;margin-bottom:16px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>️</div>
         <h3>还没有数据表</h3>
         <p>点击上方按钮添加第一个数据表<br>或使用下方的可视化构建器</p>
         <button class="btn btn-primary" @click="openBuilder" style="margin-top:16px">
-          <i class="⚙"></i> 可视化构建器
+          <i class="<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>"></i> 可视化构建器
         </button>
       </div>
 
@@ -591,12 +591,12 @@ const AppDetail = {
       { value: 'text', label: '文本', icon: 'T' },
       { value: 'number', label: '数字', icon: '#' },
       { value: 'select', label: '下拉', icon: '▼' },
-      { value: 'checkbox', label: '复选', icon: '☑' },
-      { value: 'date', label: '日期', icon: '📅' },
-      { value: 'textarea', label: '多行', icon: '☰' },
-      { value: 'phone', label: '电话', icon: '☎' },
+      { value: 'checkbox', label: '复选', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>' },
+      { value: 'date', label: '日期', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' },
+      { value: 'textarea', label: '多行', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>' },
+      { value: 'phone', label: '电话', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 10.5 19.79 19.79 0 0 1 1.61 1.9 2 2 0 0 1 3.6 0h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.1a16 16 0 0 0 6 6l.97-.97a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>' },
       { value: 'email', label: '邮箱', icon: '@' },
-      { value: 'url', label: '链接', icon: '🔗' },
+      { value: 'url', label: '链接', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>' },
       { value: 'currency', label: '金额', icon: '¥' },
     ];
     async function load() {
@@ -711,14 +711,14 @@ const TableDetail = {
         <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <!-- 视图切换 -->
           <div style="display:flex;background:var(--bg);border-radius:10px;padding:3px;border:1.5px solid var(--border);gap:2px">
-            <button @click="switchView('table')" :style="viewMode==='table'?'background:var(--primary);color:white;border-radius:8px':'color:var(--primary);background:var(--primary-light);border-radius:8px'" style="padding:6px 14px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s">📋 表格</button>
-            <button @click="switchView('kanban')" :style="viewMode==='kanban'?'background:var(--primary);color:white;border-radius:8px':'color:var(--primary);background:var(--primary-light);border-radius:8px'" style="padding:6px 14px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s">📑 看板</button>
-            <button @click="switchView('calendar')" :style="viewMode==='calendar'?'background:var(--primary);color:white;border-radius:8px':'color:var(--primary);background:var(--primary-light);border-radius:8px'" style="padding:6px 14px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s">📅 日历</button>
+            <button @click="switchView('table')" :style="viewMode==='table'?'background:var(--primary);color:white;border-radius:8px':'color:var(--primary);background:var(--primary-light);border-radius:8px'" style="padding:6px 14px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> 表格</button>
+            <button @click="switchView('kanban')" :style="viewMode==='kanban'?'background:var(--primary);color:white;border-radius:8px':'color:var(--primary);background:var(--primary-light);border-radius:8px'" style="padding:6px 14px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg> 看板</button>
+            <button @click="switchView('calendar')" :style="viewMode==='calendar'?'background:var(--primary);color:white;border-radius:8px':'color:var(--primary);background:var(--primary-light);border-radius:8px'" style="padding:6px 14px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 日历</button>
           </div>
-          <button class="btn btn-secondary" @click="showFormsPanel=!showFormsPanel">📝 表单</button>
-          <button class="btn btn-secondary" @click="showFieldEditor=!showFieldEditor">⚙️ 编辑字段</button>
-          <button class="btn btn-secondary" @click="triggerImport">📥 导入</button>
-          <button class="btn btn-secondary" @click="exportCSV">📤 导出</button>
+          <button class="btn btn-secondary" @click="showFormsPanel=!showFormsPanel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> 表单</button>
+          <button class="btn btn-secondary" @click="showFieldEditor=!showFieldEditor"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>️ 编辑字段</button>
+          <button class="btn btn-secondary" @click="triggerImport"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg> 导入</button>
+          <button class="btn btn-secondary" @click="exportCSV"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> 导出</button>
           <button class="btn btn-primary" @click="openAdd" style="font-size:14px;padding:10px 18px">
             <span style="font-size:18px;line-height:1;font-weight:700">+</span> 添加记录
           </button>
@@ -729,13 +729,13 @@ const TableDetail = {
       <div class="modal-overlay" v-if="showImport" @click.self="showImport=false">
         <div class="modal" style="max-width:640px">
           <div class="modal-header">
-            <div class="modal-title">📥 导入 CSV 数据</div>
+            <div class="modal-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg> 导入 CSV 数据</div>
             <button class="modal-close" @click="showImport=false">×</button>
           </div>
           <div v-if="!importStep || importStep==='upload'">
             <p style="color:var(--text-secondary);font-size:13px;margin:0 0 16px">请上传 CSV 文件（第一行应为字段名，建议用 UTF-8 编码）</p>
             <div style="border:2px dashed var(--border);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all 0.15s" :style="dragOver?{borderColor:'var(--primary)',background:'var(--primary-light)'}:{borderColor:'var(--border)'}" @click="$refs.fileInput.click()" @dragover.prevent="dragOver=true" @dragleave="dragOver=false" @drop.prevent="handleFileDrop">
-              <div style="font-size:40px;margin-bottom:12px">📂</div>
+              <div style="font-size:40px;margin-bottom:12px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
               <p style="font-weight:600;color:var(--text);margin:0 0 4px">点击选择 CSV 文件</p>
               <p style="font-size:13px;color:var(--text-secondary);margin:0">或将文件拖到此处</p>
             </div>
@@ -743,7 +743,7 @@ const TableDetail = {
             <p v-if="importError" style="color:var(--danger);font-size:13px;margin-top:8px;text-align:center">{{ importError }}</p>
             <div style="display:flex;gap:12px;margin-top:16px">
               <button class="btn btn-secondary" @click="showImport=false">取消</button>
-              <button class="btn btn-secondary" @click="downloadTemplate" style="flex:1">📥 下载字段模板</button>
+              <button class="btn btn-secondary" @click="downloadTemplate" style="flex:1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg> 下载字段模板</button>
             </div>
           </div>
           <div v-else-if="importStep==='preview'">
@@ -791,7 +791,7 @@ const TableDetail = {
           </div>
           <div v-else-if="importStep==='done'">
             <div style="text-align:center;padding:20px 0">
-              <div style="font-size:56px;margin-bottom:16px">✅</div>
+              <div style="font-size:56px;margin-bottom:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
               <h3 style="margin:0 0 8px">导入完成！</h3>
               <p style="color:var(--text-secondary);margin:0">成功导入 <strong style="color:var(--primary)">{{ importedCount }}</strong> 条数据</p>
               <p v-if="importFailed>0" style="color:var(--danger);margin:8px 0 0">失败 {{ importFailed }} 条（格式错误）</p>
@@ -825,7 +825,7 @@ const TableDetail = {
             <tbody>
               <tr v-for="r in records" :key="r.id" style="transition:background 0.1s">
                 <td v-for="f in table.fields" :key="f.name" style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px">
-                  <template v-if="f.type==='checkbox'"><span :style="r.data[f.name] ? 'color:var(--accent)' : 'color:var(--text-secondary)'">{{ r.data[f.name] ? '☑ 是' : '☐ 否' }}</span></template>
+                  <template v-if="f.type==='checkbox'"><span :style="r.data[f.name] ? 'color:var(--accent)' : 'color:var(--text-secondary)'">{{ r.data[f.name] ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg> 是' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> 否' }}</span></template>
                   <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:2px 10px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:12px;font-weight:600">{{ r.data[f.name] || '—' }}</span></template>
                   <template v-else><span style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">{{ r.data[f.name] || '—' }}</span></template>
                 </td>
@@ -834,7 +834,7 @@ const TableDetail = {
                   <button @click="deleteRecord(r)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:13px">删除</button>
                 </td>
               </tr>
-              <tr v-if="!records.length"><td :colspan="(table.fields?.length||1)+1" style="text-align:center;padding:48px;color:var(--text-secondary)"><div style="font-size:40px;margin-bottom:8px">📭</div>暂无数据</td></tr>
+              <tr v-if="!records.length"><td :colspan="(table.fields?.length||1)+1" style="text-align:center;padding:48px;color:var(--text-secondary)"><div style="font-size:40px;margin-bottom:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12 12 20l-10-8V6c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v6z"/><line x1="12" y1="20" x2="12" y2="12"/></svg></div>暂无数据</td></tr>
             </tbody>
           </table>
         </div>
@@ -851,13 +851,13 @@ const TableDetail = {
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
               <div v-for="f in table.fields" :key="f.name">
                 <div style="font-size:11px;color:var(--text-secondary);margin-bottom:2px">{{ f.name }}</div>
-                <template v-if="f.type==='checkbox'"><span :style="r.data[f.name] ? 'color:var(--accent)' : 'color:var(--text-secondary)'">{{ r.data[f.name] ? '☑' : '☐' }} {{ r.data[f.name] ? '是' : '否' }}</span></template>
+                <template v-if="f.type==='checkbox'"><span :style="r.data[f.name] ? 'color:var(--accent)' : 'color:var(--text-secondary)'">{{ r.data[f.name] ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>' }} {{ r.data[f.name] ? '是' : '否' }}</span></template>
                 <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:2px 8px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:12px;font-weight:600">{{ r.data[f.name] || '—' }}</span></template>
                 <template v-else><span style="font-size:14px;font-weight:500">{{ r.data[f.name] || '—' }}</span></template>
               </div>
             </div>
           </div>
-          <div v-if="!records.length" style="text-align:center;padding:40px;color:var(--text-secondary)"><div style="font-size:40px;margin-bottom:8px">📭</div>暂无数据，点击添加记录开始</div>
+          <div v-if="!records.length" style="text-align:center;padding:40px;color:var(--text-secondary)"><div style="font-size:40px;margin-bottom:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12 12 20l-10-8V6c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v6z"/><line x1="12" y1="20" x2="12" y2="12"/></svg></div>暂无数据，点击添加记录开始</div>
         </div>
         <!-- 分页 -->
         <div v-if="pages > 1" style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:20px;">
@@ -878,12 +878,12 @@ const TableDetail = {
           <span style="font-size:13px;color:var(--text-secondary)">{{ total }} 条记录</span>
         </div>
         <div v-if="!kanbanGroupBy" style="text-align:center;padding:60px 20px;color:var(--text-secondary);border:2px dashed var(--border);border-radius:16px;">
-          <div style="font-size:48px;margin-bottom:12px">📑</div>
+          <div style="font-size:48px;margin-bottom:12px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg></div>
           <h3 style="margin-bottom:8px;color:var(--text)">选择分组字段</h3>
           <p>请选择上方下拉框中的字段（如下拉/状态）来开启看板视图</p>
         </div>
         <div v-else-if="kanbanColumns.length === 0" style="text-align:center;padding:60px 20px;color:var(--text-secondary);border:2px dashed var(--border);border-radius:16px;">
-          <div style="font-size:48px;margin-bottom:12px">📭</div>
+          <div style="font-size:48px;margin-bottom:12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12 12 20l-10-8V6c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v6z"/><line x1="12" y1="20" x2="12" y2="12"/></svg></div>
           <h3 style="margin-bottom:8px;color:var(--text)">暂无数据</h3>
           <p>添加记录后即可在看板中查看</p>
           <button class="btn btn-primary" @click="openAdd" style="margin-top:12px">添加第一条记录</button>
@@ -915,7 +915,7 @@ const TableDetail = {
                 <div v-for="f in table.fields.filter(x=>x.name!==kanbanGroupBy)" :key="f.name" style="margin-bottom:4px">
                   <div v-if="r.data[f.name]" style="display:flex;align-items:center;gap:6px;min-width:0">
                     <span style="font-size:12px;color:var(--text);font-weight:600;flex-shrink:0;width:50px">{{ f.name }}</span>
-                    <template v-if="f.type==='checkbox'"><span :style="r.data[f.name]?'color:var(--accent)':'color:var(--text-secondary)'">{{ r.data[f.name]?'☑':'☐' }}</span></template>
+                    <template v-if="f.type==='checkbox'"><span :style="r.data[f.name]?'color:var(--accent)':'color:var(--text-secondary)'">{{ r.data[f.name]?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>' }}</span></template>
                     <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:1px 8px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:11px;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.data[f.name] }}</span></template>
                     <template v-else-if="f.type==='number'||f.type==='currency'"><span style="font-weight:700;font-size:13px">{{ f.type==='currency'?'¥':'' }}{{ r.data[f.name] }}</span></template>
                     <template v-else><span style="font-size:13px;font-weight:500;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">{{ r.data[f.name] }}</span></template>
@@ -944,7 +944,7 @@ const TableDetail = {
           <button @click="calToday" style="padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:white;cursor:pointer;font-size:13px;margin-left:8px">今天</button>
         </div>
         <div v-if="!calDateField" style="text-align:center;padding:60px 20px;color:var(--text-secondary);border:2px dashed var(--border);border-radius:16px;">
-          <div style="font-size:56px;margin-bottom:16px">📅</div>
+          <div style="font-size:56px;margin-bottom:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
           <p>请选择上方下拉框中的日期字段来开启日历视图</p>
         </div>
         <div v-else style="border:1.5px solid var(--border);border-radius:12px;overflow:hidden">
@@ -1009,7 +1009,7 @@ const TableDetail = {
       <div class="modal-overlay" v-if="showFormsPanel" @click.self="showFormsPanel=false">
         <div class="modal" style="max-width:640px">
           <div class="modal-header">
-            <div class="modal-title">📝 表单管理</div>
+            <div class="modal-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> 表单管理</div>
             <button class="modal-close" @click="showFormsPanel=false">×</button>
           </div>
           <div style="max-height:60vh;overflow-y:auto;padding:4px 0">
@@ -1019,8 +1019,8 @@ const TableDetail = {
             <div v-for="f in forms" :key="f.id" style="padding:14px;border-bottom:1px solid var(--border)">
               <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
                 <span style="font-weight:700;font-size:15px;flex:1">{{ f.name }}</span>
-                <span :style="{'color':f.enabled?'var(--success)':'var(--text-secondary)','font-size':'12px'}">{{ f.enabled?'✅ 启用':'⛔ 停用' }}</span>
-                <button @click="deleteForm(f)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:14px">🗑</button>
+                <span :style="{'color':f.enabled?'var(--success)':'var(--text-secondary)','font-size':'12px'}">{{ f.enabled?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 启用':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> 停用' }}</span>
+                <button @click="deleteForm(f)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:14px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
               </div>
               <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">{{ f.description || '无描述' }}</div>
               <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
@@ -1063,7 +1063,7 @@ const TableDetail = {
       <div class="modal-overlay" v-if="showFieldEditor" @click.self="showFieldEditor=false">
         <div class="modal" style="max-width:600px">
           <div class="modal-header">
-            <div class="modal-title">⚙️ 编辑字段 - {{ table.name }}</div>
+            <div class="modal-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>️ 编辑字段 - {{ table.name }}</div>
             <button class="modal-close" @click="showFieldEditor=false">×</button>
           </div>
           <div style="max-height:60vh;overflow-y:auto;padding:4px 0">
@@ -1581,12 +1581,12 @@ const PublicForm = {
   template: `
     <div style="max-width:600px;margin:60px auto;padding:0 20px;font-family:system-ui,-apple-system,sans-serif">
       <div v-if="error" style="text-align:center;padding:40px">
-        <div style="font-size:48px;margin-bottom:16px">⛔</div>
+        <div style="font-size:48px;margin-bottom:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
         <h2 style="color:#333;margin-bottom:8px">表单不存在</h2>
         <p style="color:#666">{{ error }}</p>
       </div>
       <div v-else-if="submitted" style="text-align:center;padding:60px 20px;background:white;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08)">
-        <div style="font-size:64px;margin-bottom:20px">🎉</div>
+        <div style="font-size:64px;margin-bottom:20px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.8 11.3 2 22l10.7-3.79M4 3h.01M8 7h4m4 0h.01M11 11h.01M20.7 3a9 9 0 0 1 0 13.3"/><path d="M14 3a9 9 0 0 1-2.6 5.5L20 22"/></svg></div>
         <h2 style="color:#333;margin-bottom:12px">提交成功！</h2>
         <p style="color:#666">感谢您的填写，数据已收到</p>
       </div>
@@ -1688,16 +1688,16 @@ const ProfileView = {
       <div class="profile-section">
         <div class="profile-section-title">设置</div>
         <div class="profile-item" @click="toggleDark">
-          <span>{{ darkMode ? '☀️ 切换亮色模式' : '🌙 切换暗色模式' }}</span>
+          <span>{{ darkMode ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>️ 切换亮色模式' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> 切换暗色模式' }}</span>
         </div>
       </div>
       <div class="profile-section">
         <div class="profile-section-title">数据管理</div>
         <div class="profile-item" @click="exportData">
-          <span>📥 导出我的数据</span>
+          <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg> 导出我的数据</span>
         </div>
         <div class="profile-item danger" @click="deleteAccount">
-          <span>⚠️ 注销账号</span>
+          <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>️ 注销账号</span>
         </div>
       </div>
       <div style="flex:1"></div>
@@ -1724,11 +1724,11 @@ const AdminPanel = {
 
       <!-- 统计卡片 -->
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;margin-bottom:24px">
-        <div class="stat-card"><div style="font-size:28px">👥</div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.users ? stats.users.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">总用户</div></div>
-        <div class="stat-card"><div style="font-size:28px">📋</div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.apps ? stats.apps.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">应用</div></div>
-        <div class="stat-card"><div style="font-size:28px">🗄️</div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.tables ? stats.tables.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">数据表</div></div>
-        <div class="stat-card"><div style="font-size:28px">📝</div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.records ? stats.records.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">记录</div></div>
-        <div class="stat-card"><div style="font-size:28px">📤</div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.forms ? stats.forms.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">公开表单</div></div>
+        <div class="stat-card"><div style="font-size:28px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.users ? stats.users.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">总用户</div></div>
+        <div class="stat-card"><div style="font-size:28px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.apps ? stats.apps.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">应用</div></div>
+        <div class="stat-card"><div style="font-size:28px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>️</div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.tables ? stats.tables.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">数据表</div></div>
+        <div class="stat-card"><div style="font-size:28px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.records ? stats.records.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">记录</div></div>
+        <div class="stat-card"><div style="font-size:28px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg></div><div style="font-size:24px;font-weight:800;color:var(--primary)">{{ stats.forms ? stats.forms.total : 0 }}</div><div style="font-size:12px;color:var(--text-secondary)">公开表单</div></div>
       </div>
 
       <!-- 用户列表 -->
@@ -1932,7 +1932,7 @@ const App = {
           <span>数据表</span>
         </div>
         <div class="mobile-nav-item" @click="goProfile">
-          <i class="👤"></i>
+          <i class="<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>"></i>
           <span>我的</span>
         </div>
       </nav>
