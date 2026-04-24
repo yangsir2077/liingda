@@ -788,7 +788,7 @@ const TableDetail = {
               <label style="font-weight:600;font-size:13px;display:block;margin-bottom:8px">字段映射（CSV列 → 数据表字段）</label>
               <div style="display:flex;flex-wrap:wrap;gap:8px">
                 <div v-for="h in importHeaders" :key="h" style="display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px">
-                  <span style="font-weight:600;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ h }}</span>
+                  <span style="font-weight:600;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ h</span>
                   <span style="color:var(--text-secondary)">→</span>
                   <select v-model="fieldMap[h]" style="border:none;background:transparent;font-size:12px;outline:none;color:var(--primary);font-weight:600;cursor:pointer">
                     <option value="">忽略</option>
@@ -841,9 +841,9 @@ const TableDetail = {
             <tbody>
               <tr v-for="r in records" :key="r.id" style="transition:background 0.1s">
                 <td v-for="f in table.fields" :key="f.name" style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px">
-                  <template v-if="f.type==='checkbox'"><span :style="r.data[f.name] ? 'color:var(--accent)' : 'color:var(--text-secondary)'">{{ r.data[f.name] ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg> 是' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> 否' }}</span></template>
-                  <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:2px 10px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:12px;font-weight:600">{{ r.data[f.name] || '—' }}</span></template>
-                  <template v-else><span style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">{{ r.data[f.name] || '—' }}</span></template>
+                  <template v-if="f.type==='checkbox'"><span :style="r.data[f.name] ? 'color:var(--accent)' : 'color:var(--text-secondary)'">{{ r.data[f.name] ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg> 是' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> 否'</span></template>
+                  <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:2px 10px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:12px;font-weight:600">{{ r.data[f.name] || '—'</span></template>
+                  <template v-else><span style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">{{ r.data[f.name] || '—'</span></template>
                 </td>
                 <td style="padding:12px 16px;border-bottom:1px solid var(--border)">
                   <button @click="editRecord(r)" style="background:none;border:none;cursor:pointer;color:var(--primary);font-size:13px;margin-right:8px">编辑</button>
@@ -867,9 +867,9 @@ const TableDetail = {
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
               <div v-for="f in table.fields" :key="f.name">
                 <div style="font-size:11px;color:var(--text-secondary);margin-bottom:2px">{{ f.name }}</div>
-                <template v-if="f.type==='checkbox'"><span :style="r.data[f.name] ? 'color:var(--accent)' : 'color:var(--text-secondary)'">{{ r.data[f.name] ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>' }} {{ r.data[f.name] ? '是' : '否' }}</span></template>
-                <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:2px 8px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:12px;font-weight:600">{{ r.data[f.name] || '—' }}</span></template>
-                <template v-else><span style="font-size:14px;font-weight:500">{{ r.data[f.name] || '—' }}</span></template>
+                <template v-if="f.type==='checkbox'"><span :style="r.data[f.name] ? 'color:var(--accent)' : 'color:var(--text-secondary)'">{{ r.data[f.name] ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>' }} {{ r.data[f.name] ? '是' : '否'</span></template>
+                <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:2px 8px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:12px;font-weight:600">{{ r.data[f.name] || '—'</span></template>
+                <template v-else><span style="font-size:14px;font-weight:500">{{ r.data[f.name] || '—'</span></template>
               </div>
             </div>
           </div>
@@ -915,9 +915,9 @@ const TableDetail = {
             <div :style="'padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:'+(col.color||'var(--primary)')+';border-radius:12px 12px 0 0'">
               <div style="display:flex;align-items:center;gap:8px">
                 <div style="width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.3)"></div>
-                <span :style="'font-weight:800;font-size:15px;color:'+((col.color==='#FEF08A'||col.color==='#FDE68A'||col.color==='#D9F99D'||col.color==='#A7F3D0'||col.color==='#FBCFE8'||col.color==='#FCA5A5')?'#1E293B':'white')">{{ col.value }}</span>
+                <span :style="'font-weight:800;font-size:15px;color:'+((col.color==='#FEF08A'||col.color==='#FDE68A'||col.color==='#D9F99D'||col.color==='#A7F3D0'||col.color==='#FBCFE8'||col.color==='#FCA5A5')?'#1E293B':'white')">{{ col.value</span>
               </div>
-              <span :style="'padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700;backdrop-filter:blur(4px);background:rgba(0,0,0,0.2);color:'+((col.color==='#FEF08A'||col.color==='#FDE68A'||col.color==='#D9F99D'||col.color==='#A7F3D0'||col.color==='#FBCFE8'||col.color==='#FCA5A5')?'#1E293B':'white')">{{ col.records.length }}</span>
+              <span :style="'padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700;backdrop-filter:blur(4px);background:rgba(0,0,0,0.2);color:'+((col.color==='#FEF08A'||col.color==='#FDE68A'||col.color==='#D9F99D'||col.color==='#A7F3D0'||col.color==='#FBCFE8'||col.color==='#FCA5A5')?'#1E293B':'white')">{{ col.records.length</span>
             </div>
             <!-- 卡片列表 -->
             <div style="padding:4px 12px 12px;flex:1;display:flex;flex-direction:column;gap:10px;min-height:80px;overflow-y:auto;max-height:calc(100vh - 320px)">
@@ -930,11 +930,11 @@ const TableDetail = {
                 <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px">#{{ r.id }}</div>
                 <div v-for="f in table.fields.filter(x=>x.name!==kanbanGroupBy)" :key="f.name" style="margin-bottom:4px">
                   <div v-if="r.data[f.name]" style="display:flex;align-items:center;gap:6px;min-width:0">
-                    <span style="font-size:12px;color:var(--text);font-weight:600;flex-shrink:0;width:50px">{{ f.name }}</span>
-                    <template v-if="f.type==='checkbox'"><span :style="r.data[f.name]?'color:var(--accent)':'color:var(--text-secondary)'">{{ r.data[f.name]?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>' }}</span></template>
-                    <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:1px 8px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:11px;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.data[f.name] }}</span></template>
-                    <template v-else-if="f.type==='number'||f.type==='currency'"><span style="font-weight:700;font-size:13px">{{ r.data[f.name] }}</span></template>
-                    <template v-else><span style="font-size:13px;font-weight:500;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">{{ r.data[f.name] }}</span></template>
+                    <span style="font-size:12px;color:var(--text);font-weight:600;flex-shrink:0;width:50px">{{ f.name</span>
+                    <template v-if="f.type==='checkbox'"><span :style="r.data[f.name]?'color:var(--accent)':'color:var(--text-secondary)'">{{ r.data[f.name]?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>'</span></template>
+                    <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:1px 8px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:11px;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.data[f.name]</span></template>
+                    <template v-else-if="f.type==='number'||f.type==='currency'"><span style="font-weight:700;font-size:13px">{{ r.data[f.name]</span></template>
+                    <template v-else><span style="font-size:13px;font-weight:500;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">{{ r.data[f.name]</span></template>
                   </div>
                 </div>
               </div>
@@ -1034,13 +1034,13 @@ const TableDetail = {
             </div>
             <div v-for="f in forms" :key="f.id" style="padding:14px;border-bottom:1px solid var(--border)">
               <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-                <span style="font-weight:700;font-size:15px;flex:1">{{ f.name }}</span>
-                <span :style="{'color':f.enabled?'var(--success)':'var(--text-secondary)','font-size':'12px'}">{{ f.enabled?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 启用':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> 停用' }}</span>
+                <span style="font-weight:700;font-size:15px;flex:1">{{ f.name</span>
+                <span :style="{'color':f.enabled?'var(--success)':'var(--text-secondary)','font-size':'12px'}">{{ f.enabled?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 启用':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> 停用'</span>
                 <button @click="deleteForm(f)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:14px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
               </div>
               <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">{{ f.description || '无描述' }}</div>
               <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
-                <span v-for="fn in f.allowed_fields" :key="fn" style="font-size:12px;padding:2px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">{{ fn }}</span>
+                <span v-for="fn in f.allowed_fields" :key="fn" style="font-size:12px;padding:2px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">{{ fn</span>
               </div>
               <div style="display:flex;gap:8px;align-items:center">
                 <input :value="formPublicUrl(f.form_key)" readonly onclick="this.select()"
@@ -1704,7 +1704,7 @@ const ProfileView = {
       <div class="profile-section">
         <div class="profile-section-title">设置</div>
         <div class="profile-item" @click="toggleDark">
-          <span>{{ darkMode ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>️ 切换亮色模式' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> 切换暗色模式' }}</span>
+          <span v-html="darkMode ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>️ 切换亮色模式' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> 切换暗色模式'</span>
         </div>
       </div>
       <div class="profile-section">
@@ -1793,7 +1793,7 @@ const AdminPanel = {
           <span style="font-size:12px;color:var(--text-secondary)">共 {{ totalUsers }} 位用户</span>
           <div style="display:flex;gap:6px">
             <button @click="prevPage" :disabled="page <= 1" style="padding:5px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:12px">上一页</button>
-            <span style="padding:5px 10px;font-size:12px;font-weight:600">{{ page }} / {{ totalPages }}</span>
+            <span style="padding:5px 10px;font-size:12px;font-weight:600">{{ page }} / {{ totalPages</span>
             <button @click="nextPage" :disabled="page >= totalPages" style="padding:5px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:12px">下一页</button>
           </div>
         </div>
