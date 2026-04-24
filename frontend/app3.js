@@ -2,7 +2,7 @@
 const { createApp, ref, computed, onMounted, watch, nextTick } = Vue;
 
 // API 基础 URL
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'http://106.15.193.241:5000/api';
 
 // Axios 实例
 const api = axios.create({ baseURL: API_BASE, timeout: 10000 });
