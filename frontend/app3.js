@@ -1,8 +1,8 @@
 // 零搭 NoCode Platform - Frontend App
-const { createApp, ref, computed, onMounted, watch, nextTick } = Vue;
+const { createApp, ref, computed, onMounted, watch, nextTick, defineComponent } = Vue;
 
 // API 基础 URL
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = '/api';
 
 // Axios 实例
 const api = axios.create({ baseURL: API_BASE, timeout: 10000 });
@@ -92,7 +92,7 @@ const AuthPage = {
         </form>
 
         <!-- ===== 注册 ===== -->
-        <form v-else-if="step==='register'" @submit.prevent="doRegister">
+        <form v-if="step==='register'" @submit.prevent="doRegister">
           <div class="form-group">
             <label>邮箱</label>
             <input type="email" v-model="email" placeholder="your@email.com" required>
@@ -115,7 +115,7 @@ const AuthPage = {
         </form>
 
         <!-- ===== 验证邮箱 ===== -->
-        <form v-else-if="step==='verify'" @submit.prevent="doVerify">
+        <form v-if="step==='verify'" @submit.prevent="doVerify">
           <div style="text-align:center;margin-bottom:20px">
             <div style="font-size:40px;margin-bottom:12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
             <p style="color:var(--text);font-size:15px;font-weight:600;margin:0 0 8px">验证您的邮箱</p>
@@ -142,7 +142,7 @@ const AuthPage = {
         </form>
 
         <!-- ===== 密码重置 ===== -->
-        <form v-else-if="step==='reset'" @submit.prevent="doReset">
+        <form v-if="step==='reset'" @submit.prevent="doReset">
           <div v-if="!resetSent">
             <div style="text-align:center;margin-bottom:20px">
               <div style="font-size:40px;margin-bottom:12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></div>
@@ -183,7 +183,7 @@ const AuthPage = {
         </form>
 
         <!-- ===== 成功 ===== -->
-        <div v-else-if="step==='done'" style="text-align:center;padding:20px 0">
+        <div v-if="step==='done'" style="text-align:center;padding:20px 0">
           <div style="font-size:56px;margin-bottom:16px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.8 11.3 2 22l10.7-3.79M4 3h.01M8 7h4m4 0h.01M11 11h.01M20.7 3a9 9 0 0 1 0 13.3"/><path d="M14 3a9 9 0 0 1-2.6 5.5L20 22"/></svg></div>
           <h3 style="color:var(--text);margin:0 0 8px">{{ successMsg }}</h3>
           <p style="color:var(--text-secondary);font-size:14px;margin:0 0 24px">即将跳转...</p>
@@ -341,7 +341,7 @@ const AppList = {
             </div>
             <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
               <span style="font-size:12px;color:var(--text-secondary);flex-shrink:0">自定义SVG：</span>
-              <input v-model="newApp.icon" placeholder="<svg..." style="flex:1;min-width:0;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;outline:none;font-family:monospace" @input="newApp.icon = newApp.icon.trim()">
+              <input v-model="newApp.iconLabel" placeholder="输入图标名称" style="flex:1;min-width:0;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;outline:none">
               <button @click="showPicker = true" style="padding:6px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;color:var(--text-secondary);flex-shrink:0">预设图标</button>
             </div>
           </div>
@@ -380,7 +380,7 @@ const AppList = {
     const apps = ref([]);
     const showCreate = ref(false);
     const showPicker = ref(false);
-    const newApp = ref({ name: '', icon: '<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><polyline points=\"14 2 14 8 20 8\"/><line x1=\"16\" y1=\"13\" x2=\"8\" y2=\"13\"/><line x1=\"16\" y1=\"17\" x2=\"8\" y2=\"17\"/></svg>', description: '' });
+    const newApp = ref({ name: '', icon: '<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><polyline points=\"14 2 14 8 20 8\"/><line x1=\"16\" y1=\"13\" x2=\"8\" y2=\"13\"/><line x1=\"16\" y1=\"17\" x2=\"8\" y2=\"17\"/></svg>', iconLabel: '', description: '' });
     const isCustomIcon = computed(() => !ICON_OPTIONS.find(o => o.icon === newApp.value.icon));
     
     const creating = ref(false);
@@ -433,10 +433,13 @@ const MORE_ICON_OPTIONS = [
       if (!newApp.value.name.trim()) { showToast('请输入名称','error'); return; }
       creating.value = true;
       try {
-        const r = await api.post('/apps', {name:newApp.value.name, icon:newApp.value.icon||'<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><polyline points=\"14 2 14 8 20 8\"/><line x1=\"16\" y1=\"13\" x2=\"8\" y2=\"13\"/><line x1=\"16\" y1=\"17\" x2=\"8\" y2=\"17\"/></svg>', description:newApp.value.description});
+        const iconSvg = newApp.value.iconLabel.trim()
+          ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><text x="12" y="16" text-anchor="middle" font-size="14">' + newApp.value.iconLabel.trim().charAt(0) + '</text></svg>'
+          : newApp.value.icon;
+        const r = await api.post('/apps', {name:newApp.value.name, icon:iconSvg, description:newApp.value.description});
         apps.value.unshift(r.data);
         showCreate.value = false;
-        newApp.value = {name:'',icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',description:''};
+        newApp.value = {name:'',icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',iconLabel:'',description:''};
         showToast('创建成功','success');
         goApp(r.data);
       } catch (e) { showToast(e.response?.data?.error||'创建失败','error'); }
@@ -531,7 +534,7 @@ const AppDetail = {
         <h3>还没有数据表</h3>
         <p>点击上方按钮添加第一个数据表<br>或使用下方的可视化构建器</p>
         <button class="btn btn-primary" @click="openBuilder" style="margin-top:16px">
-          <i class="<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>"></i> 可视化构建器
+          <i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></i> 可视化构建器
         </button>
       </div>
 
@@ -717,418 +720,68 @@ const TableDetail = {
   template: `
     <div class="page-content">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
-        <button class="btn btn-secondary" @click="goBack" style="padding:8px 14px;border-radius:10px">
-          ←
-        </button>
+        <button class="btn btn-secondary" @click="goBack" style="padding:8px 14px;border-radius:10px">←</button>
         <div>
-          <h2 style="font-size:18px;font-weight:800;">{{ table.name }}</h2>
-          <div style="font-size:13px;color:var(--text-secondary);">{{ table.fields?.length || 0 }} 个字段 · {{ total }} 条记录</div>
+          <h2 style="font-size:18px;font-weight:800;">{{ table.name || '加载中...' }}</h2>
+          <div style="font-size:13px;color:var(--text-secondary);">{{ table.fields ? table.fields.length + ' 个字段' : '' }}</div>
         </div>
-        <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <!-- 视图切换 -->
-          <div style="display:flex;background:var(--bg);border-radius:10px;padding:3px;border:1.5px solid var(--border);gap:2px">
-            <button @click="switchView('table')" :style="viewMode==='table'?'background:var(--primary);color:white;border-radius:8px':'color:var(--primary);background:var(--primary-light);border-radius:8px'" style="padding:6px 14px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> 表格</button>
-            <button @click="switchView('kanban')" :style="viewMode==='kanban'?'background:var(--primary);color:white;border-radius:8px':'color:var(--primary);background:var(--primary-light);border-radius:8px'" style="padding:6px 14px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg> 看板</button>
-            <button @click="switchView('calendar')" :style="viewMode==='calendar'?'background:var(--primary);color:white;border-radius:8px':'color:var(--primary);background:var(--primary-light);border-radius:8px'" style="padding:6px 14px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 日历</button>
-          </div>
-          <button class="btn btn-secondary" @click="showFormsPanel=!showFormsPanel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> 表单</button>
-          <button class="btn btn-secondary" @click="showFieldEditor=!showFieldEditor"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>️ 编辑字段</button>
-          <button class="btn btn-secondary" @click="triggerImport"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg> 导入</button>
-          <button class="btn btn-secondary" @click="exportCSV"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> 导出</button>
-          <button class="btn btn-primary" @click="openAdd" style="font-size:14px;padding:10px 18px">
+        <div style="margin-left:auto;display:flex;gap:8px;">
+          <button class="btn btn-primary" @click="openAdd" style="font-size:14px;border-radius:10px">
             <span style="font-size:18px;line-height:1;font-weight:700">+</span> 添加记录
           </button>
         </div>
       </div>
 
-      <!-- CSV导入弹窗 -->
-      <div class="modal-overlay" v-if="showImport" @click.self="showImport=false">
-        <div class="modal" style="max-width:640px">
-          <div class="modal-header">
-            <div class="modal-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg> 导入 CSV 数据</div>
-            <button class="modal-close" @click="showImport=false" style="background:none;border:none;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-secondary)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <!-- 搜索 -->
+      <div style="margin-bottom:16px;">
+        <input v-model="search" @input="debounceSearch" placeholder="搜索记录..." style="width:100%;max-width:400px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none">
+      </div>
+
+      <!-- 表格 -->
+      <div v-if="table.fields && table.fields.length" style="background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--border);">
+        <table style="width:100%;border-collapse:collapse;min-width:600px;">
+          <thead>
+            <tr>
+              <th v-for="f in table.fields" :key="f.name" style="padding:12px 16px;text-align:left;font-size:13px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border);background:var(--bg);">{{ f.name }}</th>
+              <th style="padding:12px 16px;width:120px;background:var(--bg);border-bottom:1px solid var(--border);"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="records.length === 0">
+              <td :colspan="table.fields.length + 1" style="padding:40px;text-align:center;color:var(--text-secondary);">暂无数据</td>
+            </tr>
+            <tr v-for="r in records" :key="r.id" style="transition:background 0.1s">
+              <td v-for="f in table.fields" :key="f.name" style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px;">{{ r.data[f.name] || '—' }}</td>
+              <td style="padding:12px 16px;border-bottom:1px solid var(--border);">
+                <button @click="editRecord(r)" style="background:none;border:none;cursor:pointer;color:var(--primary);font-size:13px;padding:4px 8px;">编辑</button>
+                <button @click="deleteRecord(r)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:13px;padding:4px 8px;">删除</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 分页 -->
+      <div v-if="pages > 1" style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:20px;">
+        <button @click="page--;loadRecords()" :disabled="page<=1" class="btn btn-secondary" style="padding:8px 16px;">上一页</button>
+        <span style="font-size:14px;color:var(--text-secondary);">第 {{ page }} / {{ pages }} 页，共 {{ total }} 条</span>
+        <button @click="page++;loadRecords()" :disabled="page>=pages" class="btn btn-secondary" style="padding:8px 16px;">下一页</button>
+      </div>
+
+      <!-- 添加/编辑弹窗 -->
+      <div v-if="showModal" class="modal-overlay" @click.self="closeModal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;">
+        <div style="background:var(--surface);border-radius:16px;padding:24px;width:90%;max-width:600px;max-height:80vh;overflow-y:auto;">
+          <h3 style="margin:0 0 20px;font-size:16px;font-weight:700;">{{ editingRecord ? '编辑记录' : '添加记录' }}</h3>
+          <div v-for="f in table.fields" :key="f.name" style="margin-bottom:16px;">
+            <label style="display:block;margin-bottom:6px;font-weight:600;font-size:14px;">{{ f.name }}<span v-if="f.required" style="color:var(--danger)">*</span></label>
+            <input type="text" v-model="formData[f.name]" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none;box-sizing:border-box;">
           </div>
-          <div v-if="!importStep || importStep==='upload'">
-            <p style="color:var(--text-secondary);font-size:13px;margin:0 0 16px">请上传 CSV 文件（第一行应为字段名，建议用 UTF-8 编码）</p>
-            <div style="border:2px dashed var(--border);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all 0.15s" :style="dragOver?{borderColor:'var(--primary)',background:'var(--primary-light)'}:{borderColor:'var(--border)'}" @click="$refs.fileInput.click()" @dragover.prevent="dragOver=true" @dragleave="dragOver=false" @drop.prevent="handleFileDrop">
-              <div style="font-size:40px;margin-bottom:12px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
-              <p style="font-weight:600;color:var(--text);margin:0 0 4px">点击选择 CSV 文件</p>
-              <p style="font-size:13px;color:var(--text-secondary);margin:0">或将文件拖到此处</p>
-            </div>
-            <input ref="fileInput" type="file" accept=".csv,.txt" style="display:none" @change="handleFileSelect">
-            <p v-if="importError" style="color:var(--danger);font-size:13px;margin-top:8px;text-align:center">{{ importError }}</p>
-            <div style="display:flex;gap:12px;margin-top:16px">
-              <button class="btn btn-secondary" @click="showImport=false">取消</button>
-              <button class="btn btn-secondary" @click="downloadTemplate" style="flex:1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg> 下载字段模板</button>
-            </div>
-          </div>
-          <div v-else-if="importStep==='preview'">
-            <p style="font-size:14px;margin:0 0 12px">
-              共 <strong style="color:var(--primary)">{{ importData.length }}</strong> 条数据，待导入到「{{ table.name }}」
-            </p>
-            <div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;margin-bottom:12px">
-              <table style="width:100%;border-collapse:collapse;font-size:13px">
-                <thead>
-                  <tr style="background:var(--bg)">
-                    <th v-for="h in importHeaders" :key="h" style="padding:8px 12px;text-align:left;font-weight:600;border-bottom:1px solid var(--border);white-space:nowrap">{{ h }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(row,i) in importData.slice(0,20)" :key="i">
-                    <td v-for="h in importHeaders" :key="h" style="padding:8px 12px;border-bottom:1px solid var(--border);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ row[h] }}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <div v-if="importData.length>20" style="padding:12px;text-align:center;color:var(--text-secondary);font-size:13px">
-                还有 {{ importData.length-20 }} 条数据...
-              </div>
-            </div>
-            <!-- 字段映射 -->
-            <div style="margin-bottom:12px">
-              <label style="font-weight:600;font-size:13px;display:block;margin-bottom:8px">字段映射（CSV列 → 数据表字段）</label>
-              <div style="display:flex;flex-wrap:wrap;gap:8px">
-                <div v-for="h in importHeaders" :key="h" style="display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px">
-                  <span style="font-weight:600;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ h</span>
-                  <span style="color:var(--text-secondary)">→</span>
-                  <select v-model="fieldMap[h]" style="border:none;background:transparent;font-size:12px;outline:none;color:var(--primary);font-weight:600;cursor:pointer">
-                    <option value="">忽略</option>
-                    <option v-for="f in table.fields" :key="f.name" :value="f.name">{{ f.name }}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div style="display:flex;gap:12px">
-              <button class="btn btn-secondary" @click="importStep='upload';importData=[];importHeaders=[];fieldMap={}">← 重新选择</button>
-              <button class="btn btn-primary" @click="doImport" :disabled="importing" style="flex:1">
-                {{ importing ? '导入中...' : '确认导入 '+importData.length+' 条' }}
-              </button>
-            </div>
-            <p v-if="importError" style="color:var(--danger);font-size:13px;margin-top:8px;text-align:center">{{ importError }}</p>
-          </div>
-          <div v-else-if="importStep==='done'">
-            <div style="text-align:center;padding:20px 0">
-              <div style="font-size:56px;margin-bottom:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <h3 style="margin:0 0 8px">导入完成！</h3>
-              <p style="color:var(--text-secondary);margin:0">成功导入 <strong style="color:var(--primary)">{{ importedCount }}</strong> 条数据</p>
-              <p v-if="importFailed>0" style="color:var(--danger);margin:8px 0 0">失败 {{ importFailed }} 条（格式错误）</p>
-            </div>
-            <div style="display:flex;gap:12px">
-              <button class="btn btn-secondary" @click="showImport=false;importStep='upload'">继续导入</button>
-              <button class="btn btn-primary" @click="showImport=false;loadRecords()" style="flex:1">好的，查看数据</button>
-            </div>
+          <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px;">
+            <button @click="closeModal" class="btn btn-secondary" style="padding:10px 20px;">取消</button>
+            <button @click="saveRecord" :disabled="saving" class="btn btn-primary" style="padding:10px 20px;">{{ saving ? '保存中...' : '保存' }}</button>
           </div>
         </div>
       </div>
-
-      <!-- 表格视图 -->
-      <template v-if="viewMode === 'table'">
-        <!-- 搜索 -->
-        <div style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-          <div class="search-wrap">
-            <input v-model="search" @input="debounceSearch" placeholder="搜索记录...">
-          </div>
-          <span class="record-count-badge">共 {{ total }} 条</span>
-        </div>
-        <!-- 表格（桌面） -->
-        <div style="background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--border);display:none" class="desktop-table">
-          <table style="width:100%;border-collapse:collapse;min-width:600px">
-            <thead>
-              <tr>
-                <th v-for="f in table.fields" :key="f.name" style="padding:12px 16px;text-align:left;font-weight:700;font-size:13px;color:var(--text);border-bottom:1px solid var(--border);white-space:nowrap;background:var(--bg)">{{ f.name }}<span v-if="f.required" style="color:var(--danger)">*</span></th>
-                <th style="padding:12px 16px;width:100px;background:var(--bg);border-bottom:1px solid var(--border)">操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="r in records" :key="r.id" style="transition:background 0.1s">
-                <td v-for="f in table.fields" :key="f.name" style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px">
-                  <template v-if="f.type==='checkbox'"><span :style="r.data[f.name] ? 'color:var(--accent)' : 'color:var(--text-secondary)'">{{ r.data[f.name] ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg> 是' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> 否'</span></template>
-                  <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:2px 10px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:12px;font-weight:600">{{ r.data[f.name] || '—'</span></template>
-                  <template v-else><span style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">{{ r.data[f.name] || '—'</span></template>
-                </td>
-                <td style="padding:12px 16px;border-bottom:1px solid var(--border)">
-                  <button @click="editRecord(r)" style="background:none;border:none;cursor:pointer;color:var(--primary);font-size:13px;margin-right:8px">编辑</button>
-                  <button @click="deleteRecord(r)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:13px">删除</button>
-                </td>
-              </tr>
-              <tr v-if="!records.length"><td :colspan="(table.fields?.length||1)+1" style="text-align:center;padding:48px;color:var(--text-secondary)"><div style="font-size:40px;margin-bottom:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12 12 20l-10-8V6c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v6z"/><line x1="12" y1="20" x2="12" y2="12"/></svg></div>暂无数据</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- 卡片列表（手机） -->
-        <div class="record-cards" style="display:none;flex-direction:column;gap:12px">
-          <div v-for="r in records" :key="r.id" style="background:var(--surface);border-radius:12px;padding:14px 16px;border:1px solid var(--border)">
-            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px">
-              <div style="font-size:12px;color:var(--text-secondary)">#{{ r.id }}</div>
-              <div style="display:flex;gap:8px">
-                <button @click="editRecord(r)" style="background:var(--primary-light);border:none;cursor:pointer;color:var(--primary);font-size:12px;padding:4px 10px;border-radius:6px;font-weight:600">编辑</button>
-                <button @click="deleteRecord(r)" style="background:#FEE2E2;border:none;cursor:pointer;color:#DC2626;font-size:12px;padding:4px 10px;border-radius:6px;font-weight:600">删除</button>
-              </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <div v-for="f in table.fields" :key="f.name">
-                <div style="font-size:11px;color:var(--text-secondary);margin-bottom:2px">{{ f.name }}</div>
-                <template v-if="f.type==='checkbox'"><span :style="r.data[f.name] ? 'color:var(--accent)' : 'color:var(--text-secondary)'">{{ r.data[f.name] ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>' }} {{ r.data[f.name] ? '是' : '否'</span></template>
-                <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:2px 8px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:12px;font-weight:600">{{ r.data[f.name] || '—'</span></template>
-                <template v-else><span style="font-size:14px;font-weight:500">{{ r.data[f.name] || '—'</span></template>
-              </div>
-            </div>
-          </div>
-          <div v-if="!records.length" style="text-align:center;padding:40px;color:var(--text-secondary)"><div style="font-size:40px;margin-bottom:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12 12 20l-10-8V6c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v6z"/><line x1="12" y1="20" x2="12" y2="12"/></svg></div>暂无数据，点击添加记录开始</div>
-        </div>
-        <!-- 分页 -->
-        <div v-if="pages > 1" style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:20px;">
-          <button class="btn btn-secondary" :disabled="page<=1" @click="page--;loadRecords()">上一页</button>
-          <span style="font-size:14px">第 {{ page }} / {{ pages }} 页</span>
-          <button class="btn btn-secondary" :disabled="page>=pages" @click="page++;loadRecords()">下一页</button>
-        </div>
-      </template>
-
-      <!-- 看板视图 -->
-      <template v-else-if="viewMode === 'kanban'">
-        <div style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-          <span style="font-size:14px;font-weight:600;color:var(--text-secondary)">分组字段：</span>
-          <select v-model="kanbanGroupBy" @change="loadKanban" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;background:white;max-width:200px">
-            <option value="">— 选择分组字段 —</option>
-            <option v-for="f in kanbanFields" :key="f.name" :value="f.name">{{ f.name }} ({{ f.type }})</option>
-          </select>
-          <span style="font-size:13px;color:var(--text-secondary)">{{ total }} 条记录</span>
-        </div>
-        <div v-if="!kanbanGroupBy" style="text-align:center;padding:60px 20px;color:var(--text-secondary);border:2px dashed var(--border);border-radius:16px;">
-          <div style="font-size:48px;margin-bottom:12px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg></div>
-          <h3 style="margin-bottom:8px;color:var(--text)">选择分组字段</h3>
-          <p>请选择上方下拉框中的字段（如下拉/状态）来开启看板视图</p>
-        </div>
-        <div v-else-if="kanbanColumns.length === 0" style="text-align:center;padding:60px 20px;color:var(--text-secondary);border:2px dashed var(--border);border-radius:16px;">
-          <div style="font-size:48px;margin-bottom:12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12 12 20l-10-8V6c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v6z"/><line x1="12" y1="20" x2="12" y2="12"/></svg></div>
-          <h3 style="margin-bottom:8px;color:var(--text)">暂无数据</h3>
-          <p>添加记录后即可在看板中查看</p>
-          <button class="btn btn-primary" @click="openAdd" style="margin-top:12px">添加第一条记录</button>
-        </div>
-        <div v-else style="display:flex;gap:16px;overflow-x:auto;padding-bottom:20px;align-items:flex-start;min-height:400px">
-          <div v-for="col in kanbanColumns" :key="col.value"
-            :style="dragOverColumn===col.value?'border-color:var(--primary);background:var(--primary-light)':'border-color:var(--border);background:var(--bg)'"
-            style="min-width:280px;max-width:320px;flex-shrink:0;border-radius:14px;border:2px solid var(--border);display:flex;flex-direction:column;transition:all 0.15s"
-            @dragover.prevent="kanbanDragOver(col.value)"
-            @dragleave="kanbanDragLeave()"
-            @drop="kanbanDrop(col.value)">
-            <!-- 列头 -->
-            <div :style="'padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:'+(col.color||'var(--primary)')+';border-radius:12px 12px 0 0'">
-              <div style="display:flex;align-items:center;gap:8px">
-                <div style="width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.3)"></div>
-                <span :style="'font-weight:800;font-size:15px;color:'+((col.color==='#FEF08A'||col.color==='#FDE68A'||col.color==='#D9F99D'||col.color==='#A7F3D0'||col.color==='#FBCFE8'||col.color==='#FCA5A5')?'#1E293B':'white')">{{ col.value</span>
-              </div>
-              <span :style="'padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700;backdrop-filter:blur(4px);background:rgba(0,0,0,0.2);color:'+((col.color==='#FEF08A'||col.color==='#FDE68A'||col.color==='#D9F99D'||col.color==='#A7F3D0'||col.color==='#FBCFE8'||col.color==='#FCA5A5')?'#1E293B':'white')">{{ col.records.length</span>
-            </div>
-            <!-- 卡片列表 -->
-            <div style="padding:4px 12px 12px;flex:1;display:flex;flex-direction:column;gap:10px;min-height:80px;overflow-y:auto;max-height:calc(100vh - 320px)">
-              <div v-for="r in col.records" :key="r.id"
-                draggable="true"
-                @dragstart="kanbanDragStart(r)"
-                @click="editRecord(r)"
-                style="background:white;border-radius:10px;padding:12px 14px;border:1.5px solid var(--border);cursor:grab;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.05)"
-                :style="draggingId===r.id?'opacity:0.5;transform:rotate(2deg)':''">
-                <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px">#{{ r.id }}</div>
-                <div v-for="f in table.fields.filter(x=>x.name!==kanbanGroupBy)" :key="f.name" style="margin-bottom:4px">
-                  <div v-if="r.data[f.name]" style="display:flex;align-items:center;gap:6px;min-width:0">
-                    <span style="font-size:12px;color:var(--text);font-weight:600;flex-shrink:0;width:50px">{{ f.name</span>
-                    <template v-if="f.type==='checkbox'"><span :style="r.data[f.name]?'color:var(--accent)':'color:var(--text-secondary)'">{{ r.data[f.name]?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>'</span></template>
-                    <template v-else-if="f.type==='select'"><span style="display:inline-block;padding:1px 8px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:11px;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.data[f.name]</span></template>
-                    <template v-else-if="f.type==='number'||f.type==='currency'"><span style="font-weight:700;font-size:13px">{{ r.data[f.name]</span></template>
-                    <template v-else><span style="font-size:13px;font-weight:500;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">{{ r.data[f.name]</span></template>
-                  </div>
-                </div>
-              </div>
-              <!-- 添加卡片 -->
-              <button @click.stop="openAddForColumn(col.value)" style="width:100%;padding:10px;border:2px dashed var(--border);border-radius:10px;background:transparent;color:var(--text-secondary);cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:6px">
-                <span style="font-size:16px">+</span> 添加到"{{ col.value }}"
-              </button>
-            </div>
-          </div>
-        </div>
-      </template>
-
-      <!-- 日历视图 -->
-      <template v-else-if="viewMode === 'calendar'">
-        <div style="margin-bottom:16px">
-          <select v-model="calDateField" @change="loadCalendar" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;background:white;max-width:200px;margin-right:12px">
-            <option value="">选择日期字段</option>
-            <option v-for="f in calDateFields" :key="f.name" :value="f.name">{{ f.name }}</option>
-          </select>
-          <button @click="calPrevMonth" style="padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:white;cursor:pointer;font-size:16px">‹</button>
-          <span style="margin:0 16px;font-weight:700;font-size:16px;min-width:120px;display:inline-block;text-align:center">{{ calYear }}年 {{ calMonth+1 }}月</span>
-          <button @click="calNextMonth" style="padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:white;cursor:pointer;font-size:16px">›</button>
-          <button @click="calToday" style="padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:white;cursor:pointer;font-size:13px;margin-left:8px">今天</button>
-        </div>
-        <div v-if="!calDateField" style="text-align:center;padding:60px 20px;color:var(--text-secondary);border:2px dashed var(--border);border-radius:16px;">
-          <div style="font-size:56px;margin-bottom:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-          <p>请选择上方下拉框中的日期字段来开启日历视图</p>
-        </div>
-        <div v-else style="border:1.5px solid var(--border);border-radius:12px;overflow:hidden">
-          <!-- 星期头 -->
-          <div style="display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg-secondary);border-bottom:1.5px solid var(--border)">
-            <div v-for="d in ['一','二','三','四','五','六','日']" :key="d" style="padding:10px 4px;text-align:center;font-weight:700;font-size:13px;color:var(--text-secondary)">{{ d }}</div>
-          </div>
-          <!-- 日期格子 -->
-          <div style="display:grid;grid-template-columns:repeat(7,1fr)">
-            <div v-for="(cell,ci) in calCells" :key="ci"
-              :style="{
-                'min-height':'90px','border-right':'1px solid var(--border)','border-bottom':'1px solid var(--border)',
-                'padding':'6px','background': cell.isToday?'rgba(79,70,229,0.05)': cell.isOtherMonth?'var(--bg-secondary)':'white',
-                'opacity': cell.isOtherMonth ? 0.5 : 1
-              }"
-              :class="'cell' + (ci%7===6?' cell-sun':'') + (ci%7===5?' cell-sat':'')">
-              <div style="font-size:13px;font-weight:600;margin-bottom:4px"
-                :style="{'color': ci%7===6?'#DC2626': ci%7===5?'#059669':'var(--text-secondary)'}">{{ cell.day }}</div>
-              <div v-for="ev in cell.events.slice(0,3)" :key="ev.id"
-                @click="editRecord(ev)"
-                style="font-size:11px;padding:2px 5px;border-radius:4px;margin-bottom:2px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
-                :style="{'background':ev._color||'#4F46E5','color':'white'}">{{ ev._label||'记录' }}</div>
-              <div v-if="cell.events.length > 3" style="font-size:11px;color:var(--text-secondary);padding:2px 5px">+{{ cell.events.length-3 }} 更多</div>
-              <button v-if="cell.dateStr" @click="openAddForDate(cell.dateStr)"
-                style="margin-top:4px;width:100%;padding:3px;border:1px dashed var(--border);border-radius:6px;background:transparent;cursor:pointer;font-size:12px;opacity:0.6;color:var(--text-secondary)">+</button>
-            </div>
-          </div>
-        </div>
-      </template>
-
-      <!-- 添加/编辑记录弹窗 -->
-      <div class="modal-overlay" v-if="showModal" @click.self="closeModal">
-        <div class="modal" style="max-width:600px">
-          <div class="modal-header">
-            <div class="modal-title">{{ editingRecord ? '编辑记录' : '添加记录' }}</div>
-            <button class="modal-close" @click="closeModal" style="background:none;border:none;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-secondary)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-          </div>
-          <div style="max-height:60vh;overflow-y:auto;padding-right:4px">
-            <div class="form-group" v-for="f in table.fields" :key="f.name">
-              <label style="display:block;margin-bottom:6px;font-weight:600;font-size:14px">{{ f.name }}<span v-if="f.required" style="color:var(--danger)">*</span></label>
-              <textarea v-if="f.type==='textarea'" v-model="formData[f.name]" rows="3" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:10px;resize:none;font-size:15px;outline:none"></textarea>
-              <input v-else-if="f.type==='checkbox'" type="checkbox" v-model="formData[f.name]" style="width:18px;height:18px">
-              <input v-else-if="f.type==='number' || f.type==='currency'" type="number" v-model="formData[f.name]" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
-              <input v-else-if="f.type==='date'" type="date" v-model="formData[f.name]" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
-              <input v-else-if="f.type==='email'" type="email" v-model="formData[f.name]" placeholder="email@example.com" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
-              <input v-else-if="f.type==='phone'" type="tel" v-model="formData[f.name]" placeholder="手机号码" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
-              <input v-else-if="f.type==='url'" type="url" v-model="formData[f.name]" placeholder="https://" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
-              <select v-else-if="f.type==='select'" v-model="formData[f.name]" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none;background:white">
-                <option value="">{{ (f.options||[]).length > 0 ? '请选择' : '请先在编辑字段中添加选项' }}</option>
-                <option v-for="opt in (f.options||[])" :key="opt" :value="opt">{{ opt }}</option>
-              </select>
-              <input v-else type="text" v-model="formData[f.name]" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
-            </div>
-          </div>
-          <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px">
-            <button class="btn btn-secondary" @click="closeModal">取消</button>
-            <button class="btn btn-primary" @click="saveRecord" :disabled="saving">{{ saving ? '保存中...' : '保存' }}</button>
-          </div>
-        </div>
-      </div>
-      <!-- 表单管理面板 -->
-      <div class="modal-overlay" v-if="showFormsPanel" @click.self="showFormsPanel=false">
-        <div class="modal" style="max-width:640px">
-          <div class="modal-header">
-            <div class="modal-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> 表单管理</div>
-            <button class="modal-close" @click="showFormsPanel=false">×</button>
-          </div>
-          <div style="max-height:60vh;overflow-y:auto;padding:4px 0">
-            <div v-if="forms.length === 0" style="text-align:center;padding:40px 20px;color:var(--text-secondary)">
-              <p>还没有表单，创建一个吧</p>
-            </div>
-            <div v-for="f in forms" :key="f.id" style="padding:14px;border-bottom:1px solid var(--border)">
-              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-                <span style="font-weight:700;font-size:15px;flex:1">{{ f.name</span>
-                <span :style="{'color':f.enabled?'var(--success)':'var(--text-secondary)','font-size':'12px'}">{{ f.enabled?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 启用':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> 停用'</span>
-                <button @click="deleteForm(f)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:14px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
-              </div>
-              <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">{{ f.description || '无描述' }}</div>
-              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
-                <span v-for="fn in f.allowed_fields" :key="fn" style="font-size:12px;padding:2px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">{{ fn</span>
-              </div>
-              <div style="display:flex;gap:8px;align-items:center">
-                <input :value="formPublicUrl(f.form_key)" readonly onclick="this.select()"
-                  style="flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;background:var(--bg)">
-                <button @click="copyFormUrl(f.form_key)" class="btn btn-secondary" style="padding:8px 12px;font-size:12px">复制链接</button>
-              </div>
-            </div>
-            <div style="padding:16px;border-top:1.5px solid var(--border);margin-top:4px">
-              <div style="font-weight:700;margin-bottom:12px;font-size:14px">创建新表单</div>
-              <div class="form-group">
-                <label style="display:block;margin-bottom:6px;font-weight:600;font-size:14px">表单名称</label>
-                <input v-model="newForm.name" placeholder="如：客户反馈表单" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
-              </div>
-              <div class="form-group">
-                <label style="display:block;margin-bottom:6px;font-weight:600;font-size:14px">描述（可选）</label>
-                <input v-model="newForm.description" placeholder="表单用途说明" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;outline:none">
-              </div>
-              <div class="form-group">
-                <label style="display:block;margin-bottom:6px;font-weight:600;font-size:14px">允许提交的字段</label>
-                <div style="display:flex;flex-wrap:wrap;gap:6px">
-                  <label v-for="field in table.fields" :key="field.name" style="display:flex;align-items:center;gap:4px;font-size:13px;padding:4px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border);cursor:pointer">
-                    <input type="checkbox" :checked="newForm.allowed_fields.includes(field.name)" @change="toggleFormField(field.name)">
-                    {{ field.name }}
-                  </label>
-                </div>
-              </div>
-              <button class="btn btn-primary" @click="createForm" :disabled="savingForm" style="margin-top:8px">
-                {{ savingForm ? '创建中...' : '创建表单' }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 字段编辑器弹窗 -->
-      <div class="modal-overlay" v-if="showFieldEditor" @click.self="showFieldEditor=false">
-        <div class="modal" style="max-width:600px">
-          <div class="modal-header">
-            <div class="modal-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>️ 编辑字段 - {{ table.name }}</div>
-            <button class="modal-close" @click="showFieldEditor=false">×</button>
-          </div>
-          <div style="max-height:60vh;overflow-y:auto;padding:4px 0">
-            <div style="padding:12px 0 8px;border-bottom:1.5px solid var(--border);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
-              <span style="font-size:13px;color:var(--text-secondary)">共 {{ editingFields.length }} 个字段</span>
-              <button @click="addNewField" style="padding:6px 14px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">+ 添加字段</button>
-            </div>
-            <div v-for="(f, i) in editingFields" :key="i" style="padding:12px 14px;background:var(--bg);border-radius:10px;margin-bottom:8px;border:1.5px solid var(--border)">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-                <input v-model="f.name" placeholder="字段名称" style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:14px;outline:none">
-                <select v-model="f.type" style="padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;outline:none;background:white">
-                  <option value="text">文本</option>
-                  <option value="number">数字</option>
-                  <option value="select">下拉</option>
-                  <option value="checkbox">复选</option>
-                  <option value="date">日期</option>
-                  <option value="textarea">多行文本</option>
-                  <option value="currency">金额</option>
-                  <option value="email">邮箱</option>
-                  <option value="phone">电话</option>
-                  <option value="url">链接</option>
-                </select>
-                <button @click="removeField(i)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:16px;padding:4px">×</button>
-              </div>
-              <div v-if="f.type==='select'" style="margin-top:8px">
-                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px">下拉选项（点击输入框修改）：</div>
-                <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
-                  <div v-for="(opt, oi) in (f.options||[])" :key="oi" style="display:flex;align-items:center;gap:4px">
-                    <input v-model="f.options[oi]" :placeholder="'选项'+(oi+1)"
-                      style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;width:100px;outline:none">
-                    <button @click="f.options.splice(oi,1)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:14px;padding:2px">×</button>
-                  </div>
-                  <button @click="debugAddOpt(f)" style="padding:6px 12px;border:1.5px dashed var(--primary);border-radius:6px;background:var(--primary-light);cursor:pointer;font-size:13px;color:var(--primary);font-weight:600">+ 添加选项</button>
-                </div>
-              </div>
-            </div>
-            <div v-if="editingFields.length === 0" style="text-align:center;padding:40px;color:var(--text-secondary)">
-              暂无字段，点击上方「添加字段」开始
-            </div>
-          </div>
-          <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:16px">
-            <button class="btn btn-secondary" @click="showFieldEditor=false">取消</button>
-            <button class="btn btn-primary" @click="saveFields" :disabled="savingFields">
-              {{ savingFields ? '保存中...' : '保存字段' }}
-            </button>
-          </div>
-        </div>
-      </div>
-
     </div>
   `,
   props: ['appId', 'tableId'],
@@ -1601,12 +1254,12 @@ const PublicForm = {
         <h2 style="color:#333;margin-bottom:8px">表单不存在</h2>
         <p style="color:#666">{{ error }}</p>
       </div>
-      <div v-else-if="submitted" style="text-align:center;padding:60px 20px;background:white;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08)">
+      <div v-if="submitted" style="text-align:center;padding:60px 20px;background:white;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08)">
         <div style="font-size:64px;margin-bottom:20px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.8 11.3 2 22l10.7-3.79M4 3h.01M8 7h4m4 0h.01M11 11h.01M20.7 3a9 9 0 0 1 0 13.3"/><path d="M14 3a9 9 0 0 1-2.6 5.5L20 22"/></svg></div>
         <h2 style="color:#333;margin-bottom:12px">提交成功！</h2>
         <p style="color:#666">感谢您的填写，数据已收到</p>
       </div>
-      <div v-else-if="!formDef" style="text-align:center;padding:60px;color:#666">加载中...</div>
+      <div v-if="!formDef" style="text-align:center;padding:60px;color:#666">加载中...</div>
       <div v-else style="background:white;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);overflow:hidden">
         <div style="background:linear-gradient(135deg,#4F46E5,#7C3AED);padding:28px 32px">
           <h1 style="color:white;font-size:22px;margin:0 0 8px">{{ formDef.name }}</h1>
@@ -1665,11 +1318,15 @@ const ProfileView = {
       fetch(window.location.origin + '/api/auth/export-data', {
         headers: { Authorization: 'Bearer ' + token },
       }).then(r => r.json()).then(data => {
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
+        const json = JSON.stringify(data, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
         const a = document.createElement('a');
-        a.href = url; a.download = 'lingda_data_' + new Date().toISOString().slice(0,10) + '.json'; a.click();
-        URL.revokeObjectURL(url);
+        a.href = URL.createObjectURL(blob);
+        a.download = 'lingda_data_' + new Date().toISOString().slice(0,10) + '.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
         showToast('数据已导出', 'success');
       }).catch(() => showToast('导出失败', 'error'));
     }
@@ -1692,7 +1349,11 @@ const ProfileView = {
       if (!props.user?.name) return '?';
       return props.user.name.slice(0, 2);
     });
-    return { darkMode, toggleDark, logout, initials, exportData, deleteAccount };
+    const darkIcon = computed(() => darkMode.value
+      ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg> 切换亮色模式'
+      : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> 切换暗色模式'
+    );
+    return { darkMode, toggleDark, logout, initials, exportData, deleteAccount, darkIcon };
   },
   template: `
     <div class="profile-view">
@@ -1704,7 +1365,7 @@ const ProfileView = {
       <div class="profile-section">
         <div class="profile-section-title">设置</div>
         <div class="profile-item" @click="toggleDark">
-          <span v-html="darkMode ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>️ 切换亮色模式' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> 切换暗色模式'</span>
+          <span v-html="darkIcon"></span>
         </div>
       </div>
       <div class="profile-section">
@@ -1793,7 +1454,7 @@ const AdminPanel = {
           <span style="font-size:12px;color:var(--text-secondary)">共 {{ totalUsers }} 位用户</span>
           <div style="display:flex;gap:6px">
             <button @click="prevPage" :disabled="page <= 1" style="padding:5px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:12px">上一页</button>
-            <span style="padding:5px 10px;font-size:12px;font-weight:600">{{ page }} / {{ totalPages</span>
+            <span style="padding:5px 10px;font-size:12px;font-weight:600">{{ page }} / {{ totalPages }}</span>
             <button @click="nextPage" :disabled="page >= totalPages" style="padding:5px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:12px">下一页</button>
           </div>
         </div>
@@ -1926,10 +1587,6 @@ const App = {
       <div class="main-content">
         <div class="topbar" style="display:flex;align-items:center;justify-content:space-between">
           <div class="topbar-title">{{ currentView === 'app' ? '应用详情' : currentView === 'table' ? '数据管理' : '我的应用' }}</div>
-          <div style="display:flex;align-items:center;gap:12px">
-            <div style="font-size:13px;color:var(--text-secondary);display:none" class="show-mobile">退出登录</div>
-            <button @click="logout" class="btn btn-secondary" style="padding:6px 14px;font-size:13px;border-radius:20px" class="show-desktop">退出登录</button>
-          </div>
         </div>
         <app-list v-if="currentView==='dashboard'" />
         <app-detail v-else-if="currentView==='app'" :appId="routeParams?.appId" :key="'app-'+routeParams?.appId" />
@@ -1947,7 +1604,7 @@ const App = {
           <span>数据表</span>
         </div>
         <div class="mobile-nav-item" @click="goProfile">
-          <i class="<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>"></i>
+          <i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></i>
           <span>我的</span>
         </div>
       </nav>
