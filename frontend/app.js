@@ -165,6 +165,25 @@ const AppList = {
           <i class="pi pi-plus"></i> 新建应用
         </button>
       </div>
+      <!-- 统计卡片 -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px">
+        <div style="background:linear-gradient(135deg,#4F46E5,#7C3AED);color:white;padding:16px 20px;border-radius:12px">
+          <div style="font-size:28px;font-weight:800">{{ apps.length }}</div>
+          <div style="font-size:13px;opacity:0.85">应用总数</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#059669,#10B981);color:white;padding:16px 20px;border-radius:12px">
+          <div style="font-size:28px;font-weight:800">{{ totalTables }}</div>
+          <div style="font-size:13px;opacity:0.85">数据表总数</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#D97706,#F59E0B);color:white;padding:16px 20px;border-radius:12px">
+          <div style="font-size:28px;font-weight:800">{{ totalRecords }}</div>
+          <div style="font-size:13px;opacity:0.85">记录总数</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#DC2626,#EF4444);color:white;padding:16px 20px;border-radius:12px">
+          <div style="font-size:28px;font-weight:800">{{ totalForms }}</div>
+          <div style="font-size:13px;opacity:0.85">公开表单</div>
+        </div>
+      </div>
       <!-- 无遮罩层，靠点击卡片本身收回 -->
       <div class="app-grid">
         <div v-for="app in apps" :key="app.id" style="position:relative;overflow:hidden;border-radius:12px;margin-bottom:12px">
@@ -937,6 +956,7 @@ const TableDetail = {
       <!-- ======= 看板视图 ======= -->
       <div v-if="viewMode==='kanban'">
         <div style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <span style="font-size:13px;background:var(--primary-light);color:var(--primary);padding:4px 12px;border-radius:20px;font-weight:600">共 {{ total }} 条记录</span>
           <span style="font-size:14px;color:var(--text-secondary)">按</span>
           <select v-model="kanbanGroupBy" @change="loadKanban" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;background:white">
             <option value="">请选择分组字段</option>
@@ -956,7 +976,7 @@ const TableDetail = {
                 <div :style="'width:10px;height:10px;border-radius:50%;background:'+col.color"></div>
                 <span style="font-weight:700;font-size:14px">{{ col.value || '(空)' }}</span>
               </div>
-              <span style="font-size:12px;color:var(--text-secondary);background:var(--surface);padding:2px 8px;border-radius:10px">{{ col.records.length }}</span>
+              <span style="font-size:12px;color:white;background:rgba(0,0,0,0.2);padding:2px 10px;border-radius:10px;font-weight:700">{{ col.records.length }} 条</span>
             </div>
             <div v-for="r in col.records" :key="r.id"
               draggable="true"

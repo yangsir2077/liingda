@@ -79,3 +79,23 @@ def delete_app(app_id):
     db.session.delete(app)
     db.session.commit()
     return jsonify({'message': '删除成功'})
+
+
+@apps_bp.route('/stats', methods=['GET'])
+@jwt_required()
+def my_stats():
+    """用户个人统计"""
+    user_id = get_jwt_identity()
+    apps = App.query.filter_by(user_id=user_id).all()
+    total_tables = sum(app.tables.count() for app in apps)
+    total_forms = sum(app.forms.count() for app in apps)
+    total_records = 0
+    for app in apps:
+        for tbl in app.tables.all():
+            total_records += tbl.records.count()
+    return jsonify({
+        'app_count': len(apps),
+        'table_count': total_tables,
+        'form_count': total_forms,
+        'record_count': total_records,
+    })
