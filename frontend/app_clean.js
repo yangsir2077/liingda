@@ -1,8 +1,5 @@
 // 零搭 NoCode Platform - Frontend App
-const { createApp, ref, computed, onMounted, watch, nextTick, provide, inject, getCurrentInstance } = Vue;
-
-// 全局组件状态共享 key
-const CONFIRM_KEY = window.CONFIRM_KEY = Symbol("confirm");
+const { createApp, ref, computed, onMounted, watch, nextTick } = Vue;
 
 // API 基础 URL
 const API_BASE = '/api';
@@ -39,6 +36,37 @@ function showToast(msg, type = 'info') {
 }
 
 // ============ 图标选项（清晰表意的Unicode符号） ============
+const ICON_SVGS = {
+  '信封': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+  '文档': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
+  '客户': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  '数据': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>',
+  '项目': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
+  '日程': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
+  '财务': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+  '库存': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+  '行政': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+  '客服': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+  '培训': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
+  '物流': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
+  '工具': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+};
+const ICON_OPTIONS = [
+  { label: '文档', bg: '#EEF2FF', color: '#4F46E5', svg: ICON_SVGS['文档'] },
+  { label: '客户', bg: '#E0F2FE', color: '#0891B2', svg: ICON_SVGS['客户'] },
+  { label: '数据', bg: '#D1FAE5', color: '#059669', svg: ICON_SVGS['数据'] },
+  { label: '项目', bg: '#FEF3C7', color: '#D97706', svg: ICON_SVGS['项目'] },
+  { label: '日程', bg: '#F3E8FF', color: '#7C3AED', svg: ICON_SVGS['日程'] },
+  { label: '财务', bg: '#FEE2E2', color: '#DC2626', svg: ICON_SVGS['财务'] },
+  { label: '库存', bg: '#FFEDD5', color: '#EA580C', svg: ICON_SVGS['库存'] },
+  { label: '行政', bg: '#F1F5F9', color: '#64748B', svg: ICON_SVGS['行政'] },
+  { label: '客服', bg: '#FCE7F3', color: '#DB2777', svg: ICON_SVGS['客服'] },
+  { label: '培训', bg: '#CCFBF1', color: '#0D9488', svg: ICON_SVGS['培训'] },
+  { label: '物流', bg: '#EDE9FE', color: '#9333EA', svg: ICON_SVGS['物流'] },
+  { label: '工具', bg: '#E2E8F0', color: '#475569', svg: ICON_SVGS['工具'] },
+];
+const ICON_MAP = Object.fromEntries(ICON_OPTIONS.map(i => [i.label, i]));
+function getAppIcon(label) { return ICON_MAP[label] || ICON_OPTIONS[0]; }
 
 // ============ 认证页面 ============
  AuthPage = {
@@ -70,23 +98,16 @@ function showToast(msg, type = 'info') {
             <label>昵称（选填）</label>
             <input type="text" v-model="name" placeholder="你怎么称呼">
           </div>
-          <div class="form-group" v-if="mode === 'forgot'">
-            <label>邮箱</label>
-            <input type="email" v-model="email" placeholder="输入注册邮箱">
-          </div>
           <div class="form-group" v-if="mode === 'verify'">
             <label>验证码</label>
             <input type="text" v-model="verifyCode" placeholder="请输入6位验证码" maxlength="6" required style="letter-spacing:4px;font-size:18px;text-align:center">
           </div>
           <button type="submit" class="btn btn-primary btn-block" :disabled="loading">
-            {{ loading ? '处理中...' : (mode === 'login' ? '登录' : mode === 'register' ? '注册' : mode === 'forgot' ? '发送验证码' : '验证邮箱') }}
+            {{ loading ? '处理中...' : (mode === 'login' ? '登录' : mode === 'register' ? '注册' : '验证邮箱') }}
           </button>
         </form>
         <div v-if="mode === 'verify'" style="margin-top:12px;text-align:center">
           <a href="#" @click.prevent="mode = 'login'" style="color:var(--primary);font-size:13px">返回登录</a>
-        </div>
-        <div v-if="mode === 'login'" style="margin-top:12px;text-align:center">
-          <a href="#" @click.prevent="mode = 'forgot'" style="color:var(--primary);font-size:13px">忘记密码？</a>
         </div>
       </div>
     </div>
@@ -102,11 +123,9 @@ function showToast(msg, type = 'info') {
     async function submit() {
       loading.value = true;
       try {
-        const endpoint = mode.value === 'login' ? '/auth/login' : mode.value === 'forgot' ? '/auth/send-reset-code' : '/auth/register';
+        const endpoint = mode.value === 'login' ? '/auth/login' : '/auth/register';
         const payload = mode.value === 'login'
           ? { email: email.value, password: password.value }
-          : mode.value === 'forgot'
-          ? { email: email.value }
           : { email: email.value, password: password.value, name: name.value };
         const res = await api.post(endpoint, payload);
         if (res.data.need_verify) {
@@ -148,15 +167,50 @@ const AppList = {
       </div>
       <!-- 统计卡片 -->
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px">
-        <StatsCard label="应用总数" :value="apps.length" gradient="purple" />
-        <StatsCard label="数据表总数" :value="totalTables" gradient="green" />
-        <StatsCard label="记录总数" :value="totalRecords" gradient="orange" />
-        <StatsCard label="公开表单" :value="totalForms" gradient="red" />
+        <div style="background:linear-gradient(135deg,#4F46E5,#7C3AED);color:white;padding:16px 20px;border-radius:12px">
+          <div style="font-size:28px;font-weight:800">{{ apps.length }}</div>
+          <div style="font-size:13px;opacity:0.85">应用总数</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#059669,#10B981);color:white;padding:16px 20px;border-radius:12px">
+          <div style="font-size:28px;font-weight:800">{{ totalTables }}</div>
+          <div style="font-size:13px;opacity:0.85">数据表总数</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#D97706,#F59E0B);color:white;padding:16px 20px;border-radius:12px">
+          <div style="font-size:28px;font-weight:800">{{ totalRecords }}</div>
+          <div style="font-size:13px;opacity:0.85">记录总数</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#DC2626,#EF4444);color:white;padding:16px 20px;border-radius:12px">
+          <div style="font-size:28px;font-weight:800">{{ totalForms }}</div>
+          <div style="font-size:13px;opacity:0.85">公开表单</div>
+        </div>
       </div>
       <!-- 无遮罩层，靠点击卡片本身收回 -->
       <div class="app-grid">
-        <div v-for="app in apps" :key="app.id">
-          <AppCard :app="app" @delete="deleteApp" @click="openApp" />
+        <div v-for="app in apps" :key="app.id" style="position:relative;overflow:hidden;border-radius:12px;margin-bottom:12px">
+          <!-- 删除区域（滑开才显示） -->
+          <div v-if="swipedId === app.id"
+            @click="swipedId = null"
+            style="position:absolute;top:0;right:0;bottom:0;width:80px;background:#DC2626;display:flex;align-items:center;justify-content:center;z-index:0;border-radius:12px">
+            <button @click.stop="deleteApp(app)"
+              style="background:none;border:none;color:white;font-size:13px;font-weight:700;cursor:pointer;text-align:center;line-height:1.4">
+              删<br>除
+            </button>
+          </div>
+          <!-- 卡片主体 -->
+          <div class="app-card"
+            @touchstart="onTouchStart($event, app.id)"
+            @touchmove="onTouchMove($event, app.id)"
+            @touchend="onTouchEnd($event, app.id)"
+            @click="handleCardClick(app)"
+            :style="{ transform: swipedId === app.id ? 'translateX(-80px)' : 'translateX(0)', transition: transitioning ? 'transform 0.3s' : 'none', position:'relative',zIndex:1 }">
+            <div class="app-card-icon" :style="{ background: (ICON_MAP[app.icon] || ICON_OPTIONS[0]).bg, color: (ICON_MAP[app.icon] || ICON_OPTIONS[0]).color }" v-html="(ICON_MAP[app.icon] || ICON_OPTIONS[0]).svg"></div>
+            <div class="app-card-name">{{ app.name }}</div>
+            <div class="app-card-desc">{{ app.description || '暂无描述' }}</div>
+            <div class="app-card-meta">
+              <span>{{ app.table_count }} 个数据表</span>
+              <button @click.stop="deleteApp(app)" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:13px;font-weight:600;padding:0;margin-left:auto">删除</button>
+            </div>
+          </div>
         </div>
         <div class="new-app-card" @click="showCreate = true">
           <i class="pi pi-plus-circle"></i>
@@ -227,36 +281,74 @@ const AppList = {
     </div>
   `,
   setup() {
-    const showConfirm = inject('confirmRef', ref(null));
     const apps = ref([]);
     const showCreate = ref(false);
     const showIconPicker = ref(false);
     const newApp = ref({ name: '', icon: '文档', description: '' });
     const creating = ref(false);
     const ICON_LIST = '▤⊕▊◫✔¥⚡✉✏◁⚡◈⬡✧◎⬢✶☰◆▣◈'.split('');
-
-    const totalTables = ref(0);
-    const totalRecords = ref(0);
-    const totalForms = ref(0);
-    async function load() {
-      try {
-        const [appsRes, statsRes] = await Promise.all([
-          api.get('/apps'),
-          api.get('/apps/stats').catch(() => ({ data: {} }))
-        ]);
-        apps.value = appsRes.data;
-        if (statsRes.data) {
-          totalTables.value = statsRes.data.table_count || 0;
-          totalRecords.value = statsRes.data.record_count || 0;
-          totalForms.value = statsRes.data.form_count || 0;
+    const swipedId = ref(null);
+    const transitioning = ref(false);
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let didSwipe = false;
+    let clickBlocked = false;
+    function handleCardClick(app) {
+      if (clickBlocked) { clickBlocked = false; return; }
+      swipedId.value = null;
+      openApp(app);
+    }
+    function onTouchStart(e, id) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      didSwipe = false;
+      transitioning.value = false;
+    }
+    function onTouchMove(e, id) {
+      const dx = e.touches[0].clientX - touchStartX;
+      const dy = e.touches[0].clientY - touchStartY;
+      if (!didSwipe) {
+        if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
+          didSwipe = true;
         }
       }
+      if (didSwipe) {
+        e.preventDefault();
+        const card = e.currentTarget;
+        card.style.transform = `translateX(${Math.max(-80, dx)}px)`;
+        if (swipedId.value !== id) swipedId.value = id;
+      }
+    }
+    function onTouchEnd(e, id) {
+      transitioning.value = true;
+      const card = e.currentTarget;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (!didSwipe) {
+        // 轻触 -> 让click事件自然触发
+        swipedId.value = null;
+        card.style.transform = '';
+      } else {
+        // 滑动结束 -> 吸附，并阻止click
+        clickBlocked = true;
+        if (dx < -40) {
+          card.style.transform = 'translateX(-80px)';
+          swipedId.value = id;
+        } else {
+          card.style.transform = '';
+          swipedId.value = null;
+        }
+      }
+    }
+    async function load() {
+      try { const res = await api.get('/apps'); apps.value = res.data; }
       catch (e) { showToast('加载失败', 'error'); }
     }
     function pickIcon(label) { newApp.value.icon = label; }
     function goBack() { history.back(); }
     async function deleteApp(app) {
-      showConfirm.value = { msg: `确定删除应用「${app.name}」？所有数据将被永久删除！`, action: () => api.delete(`/apps/${app.id}`).then(() => { apps.value = apps.value.filter(x => x.id !== app.id); showToast('已删除', 'success'); }).catch(e => showToast('删除失败', 'error')) };
+      if (!confirm(`确定删除应用"${app.name}"？所有数据将被永久删除！`)) return;
+      try { await api.delete(`/apps/${app.id}`); apps.value = apps.value.filter(x => x.id !== app.id); showToast('已删除', 'success'); }
+      catch (e) { showToast('删除失败', 'error'); }
     }
     function openApp(app) { location.hash = `#app/${app.id}`; }
     async function createApp() {
@@ -273,7 +365,7 @@ const AppList = {
       finally { creating.value = false; }
     }
     onMounted(load);
-    return { apps, showCreate, showIconPicker, newApp, creating, openApp, createApp, pickIcon, deleteApp, goBack, ICON_OPTIONS, ICON_MAP, getAppIcon, totalTables, totalRecords, totalForms, showConfirm };
+    return { apps, showCreate, showIconPicker, newApp, creating, openApp, createApp, pickIcon, handleCardClick, deleteApp, goBack, ICON_OPTIONS, ICON_MAP, getAppIcon, swipedId, transitioning, onTouchStart, onTouchMove, onTouchEnd };
   }
 };
 
@@ -429,7 +521,9 @@ const AppDetail = {
       showBuilder.value = true;
     }
     async function deleteTable(t) {
-      showConfirm.value = { msg: `确定删除数据表「${t.name}」？所有数据将被永久删除！`, action: () => api.delete(`/tables/${t.id}`).then(() => { tables.value = tables.value.filter(x => x.id !== t.id); showToast('已删除', 'success'); }).catch(e => showToast('删除失败', 'error')) };
+      if (!confirm(`确定删除数据表"${t.name}"？所有数据将被永久删除！`)) return;
+      try { await api.delete(`/tables/${t.id}`); showToast('已删除', 'success'); tables.value = tables.value.filter(x => x.id !== t.id); }
+      catch (e) { showToast('删除失败', 'error'); }
     }
     function addField(type) { tableForm.value.fields.push({ name: '', type: type.value, required: false, pattern: '', customPattern: '', options: type.value === 'select' ? ['选项1', '选项2'] : [] }); }
     function removeField(i) { tableForm.value.fields.splice(i, 1); }
@@ -651,7 +745,12 @@ const UserManagement = {
       } catch (e) { showToast('操作失败', 'error'); }
     }
     async function deleteUser(u) {
-      showConfirm.value = { msg: `确定删除用户 ${u.name} (${u.email})？此操作不可恢复！`, action: () => api.delete(`/admin/users/${u.id}`).then(() => { users.value = users.value.filter(x => x.id !== u.id); showToast('已删除', 'success'); }).catch(e => showToast('删除失败', 'error')) };
+      if (!confirm(`确定删除用户 ${u.name} (${u.email})？此操作不可恢复！`)) return;
+      try {
+        await api.delete(`/admin/users/${u.id}`);
+        users.value = users.value.filter(x => x.id !== u.id);
+        showToast('已删除', 'success');
+      } catch (e) { showToast('删除失败', 'error'); }
     }
     onMounted(loadUsers);
     return { users, loading, error, search, page, totalPages, currentUserId, loadUsers, debounce, toggleAdmin, revokeAdmin, deleteUser };
@@ -670,7 +769,14 @@ const ProfilePage = {
     async function deleteAccount() {
       const password = prompt('请输入当前密码以确认注销账号：');
       if (!password) return;
-      showConfirm.value = { msg: '确定要注销账号吗？此操作不可恢复，所有数据将永久删除！', action: () => api.delete('/auth/account').then(() => { showToast('账号已注销', 'success'); logout(); }).catch(e => showToast('注销失败', 'error')) };
+      if (!confirm('确定要注销账号吗？此操作不可恢复，所有数据将永久删除！')) return;
+      deleting.value = true;
+      try {
+        await api.post('/auth/delete-account', { password });
+        localStorage.removeItem('lingda_token');
+        location.hash = '#login';
+        location.reload();
+      } catch (e) { alert('注销失败：' + (e.response?.data?.error || '密码错误或请稍后重试')); deleting.value = false; }
     }
     onMounted(loadUser);
     return { userInfo, deleting, logout, deleteAccount };
@@ -1162,11 +1268,6 @@ const TableDetail = {
     const sortOrder = ref('desc');
     // 列筛选
     const colFilters = ref({});
-    const filters = ref({});  // 筛选值
-    const filterField = ref('');  // 当前筛选字段
-    const hiddenCols = ref(new Set());  // 隐藏的列
-    const showColPanel = ref(false);  // 列筛选弹窗
-    function toggleCol(name) { const s = hiddenCols.value; if (s.has(name)) s.delete(name); else s.add(name); }
 
     // 视图模式
     const viewMode = ref('table');
@@ -1206,12 +1307,11 @@ const TableDetail = {
     const dragOver = ref(false);
 
     function debounceSearch() { clearTimeout(searchTimer); searchTimer = setTimeout(() => { page.value = 1; selectedIds.value.clear(); loadRecords(); }, 300); }
-    function debounceFilter() { clearTimeout(searchTimer); searchTimer = setTimeout(() => { page.value = 1; loadRecords(); }, 300); }
     function toggleSort(field) { if (sortField.value === field) sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'; else { sortField.value = field; sortOrder.value = 'desc'; } page.value = 1; selectedIds.value.clear(); loadRecords(); }
     function toggleSelectAll() { if (selectedIds.value.size === records.value.length) { selectedIds.value.clear(); } else { records.value.forEach(r => selectedIds.value.add(r.id)); } }
     function toggleSelect(id) { if (selectedIds.value.has(id)) selectedIds.value.delete(id); else selectedIds.value.add(id); }
     function clearSelection() { selectedIds.value.clear(); showBatchPanel.value = false; }
-    async function batchDelete() { showConfirm.value = { msg: `确认删除选中的 ${selectedIds.value.size} 条记录？`, action: () => api.post(`/tables/${props.tableId}/records/batch`, { action: 'delete', ids: [...selectedIds.value] }).then(() => { showToast(`已删除 ${selectedIds.value.size} 条`, 'success'); clearSelection(); loadRecords(); }).catch(e => showToast('批量删除失败', 'error')) }; }
+    async function batchDelete() { showConfirm.value = { msg: `确认删除选中的 ${selectedIds.value.size} 条记录？`, action: () => api.post(`/tables/${props.tableId}/records/batch`, { action: 'delete', ids: [...selectedIds.value] }).then(() => { showToast(`已删除 ${selectedIds.value.size} 条`, 'success'); clearSelection(); loadRecords(); }).catch(e => showToast('批量删除失败', 'error')) } }
     async function batchUpdateField() { if (!batchField.value || !batchValue.value) return; try { for (const id of selectedIds.value) { await api.put(`/records/${id}`, { data: { [batchField.value]: batchValue.value } }); } showToast(`已更新 ${selectedIds.value.size} 条`, 'success'); clearSelection(); loadRecords(); } catch (e) { showToast('批量更新失败', 'error'); } }
 
     function getRecordTitle(r) {
@@ -1274,7 +1374,9 @@ const TableDetail = {
     }
 
     async function deleteRecord(r) {
-      showConfirm.value = { msg: '确认删除这条记录？', action: () => api.delete(`/records/${r.id}`).then(() => { showToast('已删除', 'success'); loadRecords(); }).catch(e => showToast('删除失败', 'error')) };
+      if (!confirm('确认删除这条记录？')) return;
+      try { await api.delete(`/records/${r.id}`); showToast('已删除', 'success'); loadRecords(); }
+      catch (e) { showToast('删除失败', 'error'); }
     }
 
     function goBack() { history.back(); }
@@ -1476,7 +1578,7 @@ const TableDetail = {
       } catch (e) { showToast('创建失败', 'error'); }
       finally { savingForm.value = false; }
     }
-    async function deleteForm(f) { showConfirm.value = { msg: `删除表单「${f.name}」？`, action: () => api.delete(`/forms/${f.id}`).then(() => { loadForms(); showToast('已删除', 'success'); }).catch(e => showToast('删除失败', 'error')) }; }
+    async function deleteForm(f) { showConfirm.value = { msg: `删除表单「${f.name}」？`, action: () => api.delete(`/forms/${f.id}`).then(() => { loadForms(); showToast('已删除', 'success'); }).catch(e => showToast('删除失败', 'error')) } }
     function formPublicUrl(key) { return `${(window.location.origin || '')}/#/public/form/${key}`; }
     function copyFormUrl(key) { navigator.clipboard.writeText(formPublicUrl(key)).then(() => showToast('链接已复制', 'success')); }
 
@@ -1509,7 +1611,7 @@ const TableDetail = {
   }
 };
 // ============ 主应用 ============
-const App = window.__App = {
+const App = {
   setup() {
     const route = ref(location.hash.slice(1) || 'dashboard');
     function parseRoute(h) {
@@ -1541,7 +1643,7 @@ const App = window.__App = {
       route.value = parseRoute(hash);
     }
     function navigateTo(view, id) { if (view === 'dashboard') { location.hash = '#dashboard'; } else if (view === 'app' && id) { location.hash = `#app/${id}`; } else if (view === 'profile') { location.hash = '#profile'; } else if (view === 'users') { location.hash = '#users'; } else if (view === 'appEmpty') { location.hash = '#app'; } }
-
+    function logoutWithConfirm(msg) { showConfirm.value = { msg: msg || '确定退出登录？', ok: logout }; }
     function logout() { localStorage.removeItem('lingda_token'); location.hash = '#login'; location.reload(); }
     onMounted(async () => { await checkAuth(); window.addEventListener('hashchange', navigate); });
     const currentView = computed(() => typeof route.value === 'string' ? route.value : (route.value?.view || null));
@@ -1549,15 +1651,13 @@ const App = window.__App = {
     const currentUser = ref(null);
     async function loadUser() { try { const r = await api.get('/auth/me'); currentUser.value = r.data; } catch {} }
     const isAdmin = computed(() => currentUser.value?.is_admin);
-    const showConfirm = ref(null); // 确保初始为 null
-    function confirmClose() { showConfirm.value = null; }
-    provide('confirmRef', showConfirm);  // string key so children can inject
-    window.__confirmClose = confirmClose;
-    provide('confirmClose', confirmClose);
+    const showConfirm = ref(null);
+    function confirmDialog(msg) { return new Promise(resolve => { showConfirm.value = { msg, action: () => { resolve(true); showConfirm.value = null; }, cancel: () => { resolve(false); showConfirm.value = null; } }; }); }
     function confirmOk() { const a = showConfirm.value?.action; showConfirm.value = null; if (a) a(); }
     function logoutWithConfirm() { showConfirm.value = { msg: '确定退出登录？', action: logout }; }
+    function logoutWithConfirm() { showConfirm.value = { msg: '确定退出登录？', ok: logout }; }
     onMounted(async () => { await checkAuth(); if (route.value !== 'login') await loadUser(); window.addEventListener('hashchange', navigate); });
-    return { view: route, currentView, routeParams, navigateTo, logout, logoutWithConfirm, currentUser, isAdmin, showConfirm, confirmOk };
+    return { view: route, currentView, routeParams, navigateTo, logout, logoutWithConfirm, currentUser, isAdmin, showConfirm, confirmDialog, confirmOk };
   },
   template: `
     <auth-page v-if="view==='login'" />
@@ -1596,7 +1696,19 @@ const App = window.__App = {
         <user-management v-else-if="currentView==='users'" />
         <form-public-page v-else-if="currentView==='form-public'" :formKey="routeParams?.formKey" />
       </div>
-      <ConfirmDialog />
+      <!-- 自定义确认弹窗 -->
+      <div v-if="showConfirm" class="modal-overlay" @click.self="showConfirm.value = null">
+        <div style="background:var(--surface);border-radius:16px;padding:28px;max-width:360px;width:100%;text-align:center">
+          <div style="width:48px;height:48px;background:#FEE2E2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:#DC2626;font-size:24px;font-weight:700">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <p style="font-size:16px;font-weight:600;margin-bottom:24px">{{ showConfirm.msg }}</p>
+          <div style="display:flex;gap:12px">
+            <button @click="showConfirm.value = null" style="flex:1;padding:12px;border:1.5px solid var(--border);border-radius:10px;background:white;font-size:15px;font-weight:600;cursor:pointer">取消</button>
+            <button @click="confirmOk()" style="flex:1;padding:12px;background:var(--danger);color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer">确定</button>
+          </div>
+        </div>
+      </div>
       <!-- 手机底部导航 -->
       <nav class="mobile-nav">
         <div class="mobile-nav-item" :class="{active: currentView==='dashboard'}" @click="navigateTo('dashboard')">
@@ -1617,4 +1729,5 @@ const App = window.__App = {
   components: { AuthPage, AppList, AppDetail, TableDetail, ProfilePage, FormPublicPage, UserManagement }
 };
 
-
+const app = createApp(App);
+app.mount('#app');

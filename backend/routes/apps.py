@@ -88,7 +88,7 @@ def my_stats():
     user_id = get_jwt_identity()
     apps = App.query.filter_by(user_id=user_id).all()
     total_tables = sum(app.tables.count() for app in apps)
-    total_forms = sum(app.forms.count() for app in apps)
+    total_forms = sum(sum(t.forms.count() for t in app.tables.all()) for app in apps)
     total_records = 0
     for app in apps:
         for tbl in app.tables.all():
