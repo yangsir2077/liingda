@@ -294,7 +294,7 @@ const AppList = {
       finally { creating.value = false; }
     }
     onMounted(load);
-    return { apps, showCreate, showIconPicker, newApp, creating, openApp, createApp, pickIcon, ICON_OPTIONS, ICON_LIST, swipedId, transitioning, onTouchStart, onTouchMove, onTouchEnd };
+    return { apps, showCreate, showIconPicker, newApp, creating, openApp, createApp, pickIcon, handleCardClick, deleteApp, goBack, ICON_OPTIONS, ICON_LIST, swipedId, transitioning, onTouchStart, onTouchMove, onTouchEnd };
   }
 };
 
