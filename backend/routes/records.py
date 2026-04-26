@@ -1,9 +1,46 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db, App, Table, Record
-import json
+import json as _json
+
+def _json_loads_or(s, default):
+    if not s:
+        return default
+    try:
+        return _json.loads(s)
+    except:
+        return default
 
 records_bp = Blueprint('records', __name__)
+
+
+def _apply_filters(query, table_id, table_fields):
+    """Apply column filters based on filter_<field> query params"""
+    for key, val in request.args.items():
+        if not key.startswith('filter_'):
+            continue
+        field_name = key[7:]  # strip 'filter_'
+        # check field exists
+        field = next((f for f in table_fields if f.get('name') == field_name), None)
+        if not field:
+            continue
+        import json as _json
+        try:
+            records = Record.query.filter_by(table_id=table_id).all()
+            filtered = []
+            for r in records:
+                d = _json.loads(r.data) if r.data else {}
+                val_lower = val.lower()
+                rec_val = str(d.get(field_name, '') or '').lower()
+                if val == '' or val_lower == rec_val or (val_lower in rec_val and val_lower):
+                    filtered.append(r.id)
+            if filtered:
+                query = query.filter(Record.id.in_(filtered))
+            else:
+                query = query.filter(Record.id == 0)  # no match
+        except:
+            pass
+    return query
 
 
 @records_bp.route('/tables/<int:table_id>/records', methods=['GET'])
@@ -12,19 +49,23 @@ def list_records(table_id):
     user_id = get_jwt_identity()
     table = Table.query.get_or_404(table_id)
     App.query.filter_by(id=table.app_id, user_id=user_id).first_or_404()
+    table_fields = _json_loads_or(table.fields, [])
 
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 50, type=int)
-    sort = request.args.get('sort', 'created_at')
-    order = request.args.get('order', 'desc')
+    sort = request.args.get('sort_field', request.args.get('sort', 'created_at'))
+    order = request.args.get('sort_order', request.args.get('order', 'desc'))
 
     query = Record.query.filter_by(table_id=table_id)
+    query = _apply_filters(query, table_id, table_fields)
+
     if sort == 'created_at':
-        query = query.order_by(Record.created_at.desc() if order == 'desc' else Record.created_at)
+        query = query.order_by(Record.created_at.desc() if order == 'desc' else Record.created_at.asc())
     elif sort == 'sort_order':
         query = query.order_by(Record.sort_order.asc() if order == 'asc' else Record.sort_order.desc())
     else:
-        query = query.order_by(Record.created_at.desc())
+        # dynamic sort by field - use data JSON
+        pass  # keep default
 
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     return jsonify({
@@ -43,9 +84,17 @@ def create_record(table_id):
     App.query.filter_by(id=table.app_id, user_id=user_id).first_or_404()
 
     data = request.get_json() or {}
+    record_data = data.get('data', {})
+    # 自动编号: 表名缩写+6位序号
+    prefix = table.name[:2] if table.name else 'RD'
+    count = table.records.count() + 1
+    auto_id = f"{prefix}{str(count).zfill(6)}"
+    if '编号' in (table.fields or []) and not record_data.get('编号'):
+        record_data['编号'] = auto_id
+
     record = Record(
         table_id=table_id,
-        data=json.dumps(data.get('data', {})),
+        data=json.dumps(record_data),
         sort_order=data.get('sort_order', 0),
     )
     db.session.add(record)
