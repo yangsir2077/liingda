@@ -1,0 +1,7 @@
+{
+  "module": {
+    "requestPermissionNames": [
+      "ohos.permission.INTERNET"
+    ]
+  }
+}
